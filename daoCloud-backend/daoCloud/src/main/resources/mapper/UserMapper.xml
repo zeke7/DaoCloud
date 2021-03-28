@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.mapper.UserMapper">
+    <insert id="addUser" parameterType="User">
+        insert into user (user_name, user_nickname, user_school, user_department, user_no, user_disp, user_phone, user_role)
+        values (#{username},#{userNickname},#{userSchool},#{userDepartment},#{userNo},#{userDisp},#{userPhone},#{userRole})
+    </insert>
+<!--    <select id="queryUserByPhone" resultType="user">-->
+<!--        select * from user where user_phone = #{userPhone};-->
+<!--    </select>-->
+</mapper>

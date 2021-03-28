@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+<form th:action="@{/signup}" method="post">
+    <p>昵称：<input type="text" name="usernickname"></p>
+
+    <p>手机号：<input type="text" name="userphone"></p>
+    <p>验证码：<input type="text" name="verifycode"></p>
+    <p>密码：<input type="text" name="userpassword"></p>
+    <p>学校名称：<input type="text" name="schoolname"></p>
+    <p>姓名：<input type="text" name="username"></p>
+    <p>学号：<input type="text" name="userno"></p>
+    <p>院系名称：<input type="text" name="departmentname"></p>
+    <p>简介：<input type="text" name="userdisp"></p>
+    <select name="userole" th:default="1">
+        <option value="1">学生</option>
+        <option value="2">老师</option>
+    </select>
+
+    <p><input type="submit"></p>
+</form>
+</body>
+</html>
