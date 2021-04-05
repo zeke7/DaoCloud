@@ -19,7 +19,7 @@ public class SendSmsServiceImpl implements SendSmsService {
 
     @Override
     public boolean send(String phoneNum, String templateCode, Map<String, Object> code) {
-        DefaultProfile profile = DefaultProfile.getProfile("cn-qingdao", "LTAI5tEMbRU3dQZ9A7LtSizu", "<accessSecret>");
+        DefaultProfile profile = DefaultProfile.getProfile("cn-qingdao", "", "<accessSecret>");
         IAcsClient client = new DefaultAcsClient(profile);
 
         CommonRequest request = new CommonRequest();
