@@ -27,7 +27,7 @@ class DaoCloudApplicationTests {
 
     @Test
     void contextLoads() {
-//        DefaultProfile profile = DefaultProfile.getProfile("cn-qingdao", "LTAI5tEMbRU3dQZ9A7LtSizu", "<accessSecret>");
+//        DefaultProfile profile = DefaultProfile.getProfile("cn-qingdao", "", "<accessSecret>");
 //        IAcsClient client = new DefaultAcsClient(profile);
 //
 //        CommonRequest request = new CommonRequest();
