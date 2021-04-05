@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 public interface UserService {
 
-    User queryUserByPhone(String userphone);
+    User queryUserByName(String username);
 
-    int addUser(User user);
+    int insertUser(User user);
 }

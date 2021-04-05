@@ -11,12 +11,12 @@ import java.util.List;
 @Repository
 public interface AccountMapper {
 
-
     List<Account> qAList();
 
-    Account queryAccounts(int id);
+    int updatePassword(Account account);
 
     Account queryAccountByPhone(String phone);
 
     int addAccount(Account account);
+
 }

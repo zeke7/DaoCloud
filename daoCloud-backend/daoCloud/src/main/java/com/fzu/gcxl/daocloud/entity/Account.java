@@ -11,11 +11,15 @@ import lombok.NoArgsConstructor;
 public class Account {
     // 账号id
     private Integer accountId;
-    // 验证码
-    private String loginVerifyCode;
     // 注册手机
-    private String loginPhone;
+    private String accountPhone;
     // 注册密码
-    private String loginPassword;
+    private String accountPwd;
+    // 验证码
+    private String accountVcode;
+    //
+    private String accountRole;
+    //
+    private String accountPerm;
 
 }

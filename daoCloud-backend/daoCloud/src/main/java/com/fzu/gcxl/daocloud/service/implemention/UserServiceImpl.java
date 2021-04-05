@@ -13,12 +13,12 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public User queryUserByPhone(String userphone) {
-        return userMapper.queryUserByPhone(userphone);
+    public User queryUserByName(String username) {
+        return userMapper.queryUserByName(username);
     }
 
     @Override
-    public int addUser(User user) {
-        return userMapper.addUser(user);
+    public int insertUser(User user) {
+        return userMapper.insertUser(user);
     }
 }

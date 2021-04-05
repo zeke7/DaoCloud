@@ -6,5 +6,7 @@ public interface AccountService {
 
     Account queryAccountByPhone(String phone);
 
+    int updatePassword(Account account);
+
     int addAccount(Account account);
 }
