@@ -9,4 +9,5 @@ https://github.com/zeke7/DaoCloud/blob/main/daoCloud_background_vue/src/views/mo
 编辑页链接：  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud_background_vue/src/views/modules/student/school-add-or-update.vue  
 HTTP拦截器链接：  
+https://github.com/zeke7/DaoCloud/blob/main/daoCloud-backend/daoCloud/src/main/java/com/fzu/gcxl/daocloud/config/  
 客户端调用REST API链接：  
