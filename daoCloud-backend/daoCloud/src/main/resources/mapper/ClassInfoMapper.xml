@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.ClassInfoRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
+    <id column="classinfo_id" jdbcType="INTEGER" property="classinfoId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="class_code" jdbcType="VARCHAR" property="classCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    classinfo_id, user_name, user_phone, class_code, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from class_info
+    where classinfo_id = #{classinfoId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectUserByphonecode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class_info
+    where class_code = #{classcode,jdbcType=VARCHAR} and user_phone = #{userphone,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from class_info
+    where classinfo_id = #{classinfoId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
+    insert into class_info (classinfo_id, user_name, user_phone, 
+      class_code, create_time)
+    values (#{classinfoId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR}, 
+      #{classCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
+    insert into class_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="classinfoId != null">
+        classinfo_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="classCode != null">
+        class_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="classinfoId != null">
+        #{classinfoId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null">
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
+    update class_info
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null">
+        class_code = #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where classinfo_id = #{classinfoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
+    update class_info
+    set user_name = #{userName,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      class_code = #{classCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where classinfo_id = #{classinfoId,jdbcType=INTEGER}
+  </update>
+</mapper>

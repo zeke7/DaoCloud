@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.ClassRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.Class">
+    <id column="class_code" jdbcType="VARCHAR" property="classCode" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="class_member" jdbcType="INTEGER" property="classMember" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="class_isclose" jdbcType="VARCHAR" property="classIsclose" />
+    <result column="class_semester" jdbcType="VARCHAR" property="classSemester" />
+    <result column="class_isallowed" jdbcType="VARCHAR" property="classIsallowed" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    class_code, class_id, user_phone, class_name, class_member, create_time, class_isclose, 
+    class_semester, class_isallowed
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from class
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from class
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Class">
+    insert into class (class_code, class_id, user_phone, 
+      class_name, class_member, create_time, 
+      class_isclose, class_semester, class_isallowed
+      )
+    values (#{classCode,jdbcType=VARCHAR}, #{classId,jdbcType=INTEGER}, #{userPhone,jdbcType=VARCHAR}, 
+      #{className,jdbcType=VARCHAR}, #{classMember,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{classIsclose,jdbcType=VARCHAR}, #{classSemester,jdbcType=VARCHAR}, #{classIsallowed,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Class">
+    insert into class
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="classCode != null">
+        class_code,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="className != null">
+        class_name,
+      </if>
+      <if test="classMember != null">
+        class_member,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="classIsclose != null">
+        class_isclose,
+      </if>
+      <if test="classSemester != null">
+        class_semester,
+      </if>
+      <if test="classIsallowed != null">
+        class_isallowed,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="classCode != null">
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="className != null">
+        #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="classMember != null">
+        #{classMember,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classIsclose != null">
+        #{classIsclose,jdbcType=VARCHAR},
+      </if>
+      <if test="classSemester != null">
+        #{classSemester,jdbcType=VARCHAR},
+      </if>
+      <if test="classIsallowed != null">
+        #{classIsallowed,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Class">
+    update class
+    <set>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="className != null">
+        class_name = #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="classMember != null">
+        class_member = #{classMember,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classIsclose != null">
+        class_isclose = #{classIsclose,jdbcType=VARCHAR},
+      </if>
+      <if test="classSemester != null">
+        class_semester = #{classSemester,jdbcType=VARCHAR},
+      </if>
+      <if test="classIsallowed != null">
+        class_isallowed = #{classIsallowed,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.Class">
+    update class
+    set class_id = #{classId,jdbcType=INTEGER},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      class_name = #{className,jdbcType=VARCHAR},
+      class_member = #{classMember,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      class_isclose = #{classIsclose,jdbcType=VARCHAR},
+      class_semester = #{classSemester,jdbcType=VARCHAR},
+      class_isallowed = #{classIsallowed,jdbcType=VARCHAR}
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectAllClassesByUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class
+    where user_phone = #{userPhone,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByClassName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllClasses" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class
+  </select>
+
+</mapper>

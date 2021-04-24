@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.CheckinRecordRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.CheckinRecord">
+    <id column="checkin_id" jdbcType="INTEGER" property="checkinId" />
+    <result column="checkin_time" jdbcType="TIMESTAMP" property="checkinTime" />
+    <result column="checkin_location" jdbcType="VARCHAR" property="checkinLocation" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="class_code" jdbcType="VARCHAR" property="classCode" />
+    <result column="checkin_startdate" jdbcType="TIMESTAMP" property="checkinStartdate" />
+    <result column="teacher_id" jdbcType="VARCHAR" property="teacherId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    checkin_id, checkin_time, checkin_location, user_id, class_code, checkin_startdate, 
+    teacher_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from checkin_record
+    where checkin_id = #{checkinId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from checkin_record
+    where checkin_id = #{checkinId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.CheckinRecord">
+    insert into checkin_record (checkin_id, checkin_time, checkin_location, 
+      user_id, class_code, checkin_startdate, 
+      teacher_id)
+    values (#{checkinId,jdbcType=INTEGER}, #{checkinTime,jdbcType=TIMESTAMP}, #{checkinLocation,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{classCode,jdbcType=VARCHAR}, #{checkinStartdate,jdbcType=TIMESTAMP}, 
+      #{teacherId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.CheckinRecord">
+    insert into checkin_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="checkinId != null">
+        checkin_id,
+      </if>
+      <if test="checkinTime != null">
+        checkin_time,
+      </if>
+      <if test="checkinLocation != null">
+        checkin_location,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="classCode != null">
+        class_code,
+      </if>
+      <if test="checkinStartdate != null">
+        checkin_startdate,
+      </if>
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="checkinId != null">
+        #{checkinId,jdbcType=INTEGER},
+      </if>
+      <if test="checkinTime != null">
+        #{checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkinLocation != null">
+        #{checkinLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null">
+        #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinStartdate != null">
+        #{checkinStartdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.CheckinRecord">
+    update checkin_record
+    <set>
+      <if test="checkinTime != null">
+        checkin_time = #{checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkinLocation != null">
+        checkin_location = #{checkinLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="classCode != null">
+        class_code = #{classCode,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinStartdate != null">
+        checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where checkin_id = #{checkinId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.CheckinRecord">
+    update checkin_record
+    set checkin_time = #{checkinTime,jdbcType=TIMESTAMP},
+      checkin_location = #{checkinLocation,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      class_code = #{classCode,jdbcType=VARCHAR},
+      checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP},
+      teacher_id = #{teacherId,jdbcType=VARCHAR}
+    where checkin_id = #{checkinId,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="selectByCodeandDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checkin_record
+    where  class_code = #{classCode,jdbcType=VARCHAR},checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByCodeDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checkin_record
+    where  class_code = #{classCode,jdbcType=VARCHAR} and checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+  </select>
+
+  <select id="selectCheckinRecordsForTeacher" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checkin_record
+    where  class_code = #{classCode,jdbcType=VARCHAR},checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+        and teacher_id = #{teacherId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectCheckinRecordsForStudent" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checkin_record
+    where  class_code = #{classCode,jdbcType=VARCHAR},checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+    and user_id = #{studentId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.DictionaryRespository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
+    <id column="dic_code" jdbcType="VARCHAR" property="dicCode" />
+    <result column="dic_id" jdbcType="INTEGER" property="dicId" />
+    <result column="dic_name" jdbcType="VARCHAR" property="dicName" />
+    <result column="dic_discription" jdbcType="VARCHAR" property="dicDiscription" />
+    <result column="dic_detailcode" jdbcType="VARCHAR" property="dicDetailcode" />
+    <result column="dic_detailname" jdbcType="VARCHAR" property="dicDetailname" />
+    <result column="dic_detaildescription" jdbcType="VARCHAR" property="dicDetaildescription" />
+    <result column="dic_value" jdbcType="VARCHAR" property="dicValue" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dic_code, dic_id, dic_name, dic_discription, dic_detailcode, dic_detailname, dic_detaildescription, 
+    dic_value
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dictionary
+    where dic_code = #{dicCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByDetailCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionary
+    where dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR} and dic_code = #{dicCode,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from dictionary
+    where dic_code = #{dicCode,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByDetailCode" parameterType="java.lang.String">
+    delete from dictionary
+    where dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR} and dic_code = #{dicCode,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
+    insert into dictionary (dic_code, dic_id, dic_name, 
+      dic_discription, dic_detailcode, dic_detailname, 
+      dic_detaildescription, dic_value)
+    values (#{dicCode,jdbcType=VARCHAR}, #{dicId,jdbcType=INTEGER}, #{dicName,jdbcType=VARCHAR}, 
+      #{dicDiscription,jdbcType=VARCHAR}, #{dicDetailcode,jdbcType=VARCHAR}, #{dicDetailname,jdbcType=VARCHAR}, 
+      #{dicDetaildescription,jdbcType=VARCHAR}, #{dicValue,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
+    insert into dictionary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dicCode != null">
+        dic_code,
+      </if>
+      <if test="dicId != null">
+        dic_id,
+      </if>
+      <if test="dicName != null">
+        dic_name,
+      </if>
+      <if test="dicDiscription != null">
+        dic_discription,
+      </if>
+      <if test="dicDetailcode != null">
+        dic_detailcode,
+      </if>
+      <if test="dicDetailname != null">
+        dic_detailname,
+      </if>
+      <if test="dicDetaildescription != null">
+        dic_detaildescription,
+      </if>
+      <if test="dicValue != null">
+        dic_value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dicCode != null">
+        #{dicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicId != null">
+        #{dicId,jdbcType=INTEGER},
+      </if>
+      <if test="dicName != null">
+        #{dicName,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDiscription != null">
+        #{dicDiscription,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDetailcode != null">
+        #{dicDetailcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDetailname != null">
+        #{dicDetailname,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDetaildescription != null">
+        #{dicDetaildescription,jdbcType=VARCHAR},
+      </if>
+      <if test="dicValue != null">
+        #{dicValue,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
+    update dictionary
+    <set>
+      <if test="dicId != null">
+        dic_id = #{dicId,jdbcType=INTEGER},
+      </if>
+      <if test="dicName != null">
+        dic_name = #{dicName,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDiscription != null">
+        dic_discription = #{dicDiscription,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDetailcode != null">
+        dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDetailname != null">
+        dic_detailname = #{dicDetailname,jdbcType=VARCHAR},
+      </if>
+      <if test="dicDetaildescription != null">
+        dic_detaildescription = #{dicDetaildescription,jdbcType=VARCHAR},
+      </if>
+      <if test="dicValue != null">
+        dic_value = #{dicValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dic_code = #{dicCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
+    update dictionary
+    set dic_id = #{dicId,jdbcType=INTEGER},
+      dic_name = #{dicName,jdbcType=VARCHAR},
+      dic_discription = #{dicDiscription,jdbcType=VARCHAR},
+      dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR},
+      dic_detailname = #{dicDetailname,jdbcType=VARCHAR},
+      dic_detaildescription = #{dicDetaildescription,jdbcType=VARCHAR},
+      dic_value = #{dicValue,jdbcType=VARCHAR}
+    where dic_code = #{dicCode,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="selectAllDictionaries" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionary
+  </select>
+</mapper>

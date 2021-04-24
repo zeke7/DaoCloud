@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.SystemParameterRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
+    <id column="sys_id" jdbcType="INTEGER" property="sysId" />
+    <result column="sys_name" jdbcType="VARCHAR" property="sysName" />
+    <result column="sys_parameter" jdbcType="VARCHAR" property="sysParameter" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sys_id, sys_name, sys_parameter
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from system_parameter
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from system_parameter
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
+    insert into system_parameter (sys_id, sys_name, sys_parameter
+      )
+    values (#{sysId,jdbcType=INTEGER}, #{sysName,jdbcType=VARCHAR}, #{sysParameter,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
+    insert into system_parameter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sysId != null">
+        sys_id,
+      </if>
+      <if test="sysName != null">
+        sys_name,
+      </if>
+      <if test="sysParameter != null">
+        sys_parameter,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sysId != null">
+        #{sysId,jdbcType=INTEGER},
+      </if>
+      <if test="sysName != null">
+        #{sysName,jdbcType=VARCHAR},
+      </if>
+      <if test="sysParameter != null">
+        #{sysParameter,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
+    update system_parameter
+    <set>
+      <if test="sysName != null">
+        sys_name = #{sysName,jdbcType=VARCHAR},
+      </if>
+      <if test="sysParameter != null">
+        sys_parameter = #{sysParameter,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
+    update system_parameter
+    set sys_name = #{sysName,jdbcType=VARCHAR},
+      sys_parameter = #{sysParameter,jdbcType=VARCHAR}
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="getAllSysParams" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from system_parameter
+  </select>
+
+</mapper>
