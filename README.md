@@ -9,7 +9,7 @@ https://github.com/zeke7/DaoCloud/blob/main/daoCloud_background_vue/src/views/mo
 编辑页链接：  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud_background_vue/src/views/modules/student/school-add-or-update.vue  
 HTTP拦截器链接：  
-https://github.com/zeke7/DaoCloud/blob/main/daoCloud-backend/daoCloudv2/src/main/java/com/fzu/gcxl/daocloud/config/ShiroConfig.java
+https://github.com/zeke7/DaoCloud/blob/main/daoCloud-backend/daoCloud/src/main/java/com/fzu/gcxl/daocloud/infrastructure/config/ShiroConfig.java  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud-mobile/common/index.js  
 客户端调用REST API链接：  
 https://github.com/zeke7/DaoCloud/tree/main/daoCloud-backend/daoCloud/src/main/java/com/fzu/gcxl/daocloud/frontinterface/controller   
