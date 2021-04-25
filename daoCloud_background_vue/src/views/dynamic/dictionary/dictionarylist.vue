@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" v-title data-title="数据字典">
     <el-card class="filter-container" shadow="never" style="margin-top: 15px">
       <div>
         <i class="el-icon-search"></i>
@@ -337,6 +337,11 @@ export default {
       // });
     },
     initDataList() {
+      this.$http.login.getDictionary().then(res=>{
+        if (res) {
+          console.log(res)
+        }
+      })
       // let url =
       //   this.$route.query.type != undefined
       //     ? `sysdict/data/dictType/${this.$route.query.type}`

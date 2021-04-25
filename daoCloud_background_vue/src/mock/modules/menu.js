@@ -34,27 +34,7 @@ var menuList = [{
     'type': 0,
     'icon': 'el-icon-setting',
     'orderNum': 0,
-    'subMenuList': [{
-        'menuId': 2,
-        'parentId': 1,
-        'name_zh': '菜单管理',
-        'name_en': 'Administrator List',
-        'url': 'sys/UserList',
-        'type': 1,
-        'icon': 'el-icon-user',
-        'orderNum': 1,
-        'subMenuList': []
-    },
-        {
-            'menuId': 3,
-            'parentId': 1,
-            'name_zh': '角色管理',
-            'name_en': 'Role Control',
-            'type': 1,
-            'icon': 'el-icon-price-tag',
-            'orderNum': 2,
-            'subMenuList': []
-        },
+    'subMenuList': [
         {
             'menuId': 4,
             'parentId': 1,
@@ -68,7 +48,7 @@ var menuList = [{
         {
             'menuId': 5,
             'parentId': 1,
-            'name_zh': '定时任务',
+            'name_zh': '签到管理',
             'name_en': 'Menu Control',
             'url': '',
             'type': 1,

@@ -10,12 +10,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      '/api': {
-        target: '',
+    proxyTable: devEnv.OPEN_PROXY === false ? {} : {
+      '/proxyApi': {
+        target: 'http://112.74.55.61:8081/',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/proxyApi': '/'
         }
       }
     },

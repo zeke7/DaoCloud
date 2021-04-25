@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import Home from '../views/Home.vue'
-// import {
-// 	getToken
-// } from '@/http/auth.js'
+import {
+	getToken
+} from '@/http/auth.js'
 import http from '@/http/http.js'
 import {
 	isURL,
@@ -29,41 +29,40 @@ const routes = [
 			name: "Login"
 		}
 	},
-	// {
-	// 	path: '/',
-	// 	redirect: {
-	// 		name: "Home"
-	// 	}
-	// },
 	{
 		path: '/404',
 		name: '404',
-		component: () => import('@/components/common/404.vue')
+		component: () => import('@/views/common/404.vue')
 	},
 	{
 		path: '/403',
 		name: '403',
-		component: () => import('@/components/common/403.vue')
+		component: () => import('@/views/common/403.vue')
 	},
 	{
 		path: '/500',
 		name: '500',
-		component: () => import('@/components/common/500.vue')
+		component: () => import('@/views/common/500.vue')
 	},
 	{
 		path: '/Login',
 		name: 'Login',
-		component: () => import('@/components/common/Login.vue')
+		component: () => import('@/views/common/Login.vue')
+	},
+	{
+		path: '/loginByCode',
+		name: 'Login',
+		component: () => import('@/views/common/loginByCode.vue')
 	},
 	{
 		path: '/register',
 		name: 'register',
-		component: () => import('@/components/common/register.vue')
+		component: () => import('@/views/common/register.vue')
 	},
 	{
 		path: '/forgetPassword',
 		name: 'forgetPassword',
-		component: () => import('@/components/common/forgetPassWord.vue')
+		component: () => import('@/views/common/forgetPassWord.vue')
 	},
 	{
 		path: '/classList',
@@ -138,7 +137,7 @@ const router = new VueRouter({
 	// routes 用于定义 路由跳转 规则
 	routes,
 	// mode 用于去除地址中的 #
-	mode: 'history',
+	mode: 'hash',
 	// scrollBehavior 用于定义路由切换时，页面滚动。
 	scrollBehavior: () => ({
 		y: 0
@@ -153,15 +152,16 @@ router.beforeEach((to, from, next) => {
 	// to.meta.isRouter 表示是否开启动态路由
 	// isDynamicRoutes 判断该路由是否为动态路由（页面刷新时，动态路由没有 isRouter 值，此时 to.meta.isRouter 条件不成立，即动态路由拼接逻辑不能执行）
 	if (to.meta.isRouter || isDynamicRoutes(to.path)) {
-		// console.log(router)
-		// 获取 token 值
-		// let token = getToken()
-		// // token 不存在时，跳转到 登录页面
-		// if (!token || !/\S/.test(token)) {
-		// 	next({
-		// 		name: 'Login'
-		// 	})
-		// }
+		//获取 token 值
+		let token = Vue.cookie.get('token')
+		// token 不存在时，跳转到 登录页面
+		if (!token || !/\S/.test(token)) {
+			this.$cookie.delete('token')
+			next({
+				name: 'Login'
+			})
+		}
+		next()
 		// token 存在时，判断是否已经获取过 动态菜单，未获取，即 false 时，需要获取
 		if (!router.options.isAddDynamicMenuRoutes) {
 			http.menu.getMenus().then((response => {

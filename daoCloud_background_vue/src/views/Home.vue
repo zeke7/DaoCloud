@@ -2,8 +2,8 @@
     <!--
         v-loading、element-loading-text、element-loading-background、element-loading-spinner 用于定义加载的样式
      -->
-    <el-container class="container" v-loading="false" element-loading-text="拼命加载中" element-loading-background="rgba(0, 0, 0, 0.8)"
-     element-loading-spinner="el-icon-loading">
+    <el-container class="container" v-loading="false" element-loading-text="拼命加载中" element-loading-background="rgba(0, 0, 0, 0.8) "
+     element-loading-spinner="el-icon-loading" v-title data-title="首页">
         <!-- 侧边栏 -->
         <Aside :foldAside="foldAside" />
         <!--

@@ -1,5 +1,5 @@
 <template>
-  <div class="mod-config">
+  <div class="mod-config" v-title data-title="参数管理">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <!-- <el-form-item>
         <el-input v-model="dataForm.paramKey" placeholder="参数名" clearable></el-input>
@@ -90,7 +90,7 @@
         pageIndex: 1,
         pageSize: 5,
         totalPage: 0,
-        dataListLoading: false,
+        dataListLoading: true,
         dataListSelections: [],
         addOrUpdateVisible: false
       }
@@ -105,17 +105,17 @@
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        this.$http({
-          url: this.$http.adornUrl('syssettings/settings/list'),
-          method: 'get'
-        }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.dataList = data.rows
-            this.totalPage = data.total
-          } else {
-            this.dataList = []
-            this.totalPage = 0
+        this.$http.login.getParamters().then(res => {
+          if (res) {
+            console.log(res)
           }
+          // if (res) {
+          //   this.dataList = res.rows
+          //   this.totalPage = rese.total
+          // } else {
+          //   this.dataList = []
+          //   this.totalPage = 0
+          // }
           this.dataListLoading = false
         })
       },

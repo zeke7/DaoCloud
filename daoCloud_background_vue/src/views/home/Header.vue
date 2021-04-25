@@ -36,11 +36,13 @@
 </template>
 
 <script>
+ import  Vue from 'vue'
 	import {
 		mapState
 	} from 'vuex'
 	import UpdatePassword from '@/views/home/UpdatePassword.vue'
 	import Setup from '@/views/home/Setup.vue'
+  import router from "@/router";
   import {removeToken} from '@/http/auth.js'
 	export default {
 		name: 'Header',
@@ -104,7 +106,8 @@
 			},
 			// 退出登录，回到登录界面
 			logout() {
-        removeToken()
+			  Vue.cookie.delete('token')
+        router.options.isAddDynamicMenuRoutes = false
 				this.$router.push({
 					name: "Login"
 				})

@@ -8,7 +8,7 @@ import {
     Message
 } from 'element-ui'
 import axios from 'axios'
-
+import merge from 'lodash/merge'
 // 创建 axios 实例
 const http = axios.create({
     // 统一 url 配置，定义访问前缀 baseURL
@@ -28,7 +28,7 @@ const http = axios.create({
 http.interceptors.request.use(
     config => {
         // 让每个请求携带 token
-        config.headers['Admin-Token'] = getToken()
+        config.headers['token'] = getToken()
         return config
     },
     error => {
@@ -43,7 +43,7 @@ http.interceptors.response.use(
         const res = response.data
         // 当 token 失效时，清除 cookie 保存的 token 值，并跳转到登陆界面
         if (res && res.code === 401) {
-            removeToken()
+            this.$cookie.delete('token')
             Message({
                 message: res.message,
                 type: 'error',
@@ -65,4 +65,5 @@ http.interceptors.response.use(
         return Promise.reject(error)
     }
 )
+//
 export default http

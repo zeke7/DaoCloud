@@ -1,16 +1,5 @@
-<!--<template>-->
-<!--  <div>-->
-<!--    <h1>Menu Control</h1>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--</script>-->
-
-<!--<style>-->
-<!--</style>-->
 <template>
-  <div class="mod-role">
+  <div class="mod-role" v-title data-title="班课列表">
     <el-form
         :inline="true"
         :model="dataForm"
@@ -57,6 +46,13 @@
         @selection-change="selectionChangeHandle"
         style="width: 100%;"
     >
+      <el-table-column
+          prop="schoolName"
+          header-align="center"
+          align="center"
+          label="学校名称"
+      >
+      </el-table-column>
       <el-table-column
           prop="uniacadaName"
           header-align="center"
@@ -153,6 +149,8 @@
 
 <script>
 import { isAuth } from '../../../utils'
+import {mapState} from "vuex";
+import AddOrUpdate from "@/views/dynamic/sys/classList-add-or-update";
 export default {
   data () {
     return {
@@ -172,23 +170,43 @@ export default {
       stuData: []
     }
   },
+  components: {
+    AddOrUpdate
+  },
+  computed: {
+    ...mapState('user', ['userName']),
+  },
   // activated() {
   //   this.getDataList();
   // },
   mounted () {
-    this.getSchool().then(() => {
-      if (this.$route.query.id !== undefined) {
-        this.nowSchool = this.$route.query.id
-      } else {
-        this.nowSchool = this.schoolList[0].value || 0
+    this.$http.login.getClassInfo(this.userName).then(res =>{
+      if (res){
+        console.log(res)
       }
-
-      this.getDataList(this.nowSchool)
     })
+    // this.getSchool().then(() => {
+    //   if (this.$route.query.id !== undefined) {
+    //     this.nowSchool = this.$route.query.id
+    //   } else {
+    //     this.nowSchool = this.schoolList[0].value || 0
+    //   }
+    //
+    //   this.getDataList(this.nowSchool)
+    // })
   },
   methods: {
     // 获取数据列表
     getSchool () {
+      console.log(this.userName)
+      let val = {
+        username: this.userName
+      }
+      this.$http.login.getClassInfo(val).then(res => {
+        if (res) {
+          console.log(res)
+        }
+      })
     },
     getDataList (id) {
       console.log(id)

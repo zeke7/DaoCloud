@@ -1,5 +1,10 @@
 <template>
-  <div class="login-wrapper">
+  <div class="login-wrapper" v-title data-title="登录">
+    <div class="brand-info">
+      <img src="~@/assets/logo.png" alt="">
+      <h2 class="brand-info__text" style="display: inline-block">到 云</h2>
+      <p class="brand-info__intro">到云——第16组</p>
+    </div>
     <div class="login-content">
       <div class="login-main">
         <h2 class="login-main-title">管理员登录</h2>
@@ -12,6 +17,8 @@
           </el-form-item>
           <el-form-item>
             <a @click="forgetPassword()" style="color: beige">忘记密码</a>
+            <br>
+            <a @click="loginChange()" style="color: beige">验证码登录</a>
           </el-form-item>
           <el-form-item>
             <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
@@ -32,7 +39,6 @@ export default {
       dataForm: {
         userName: '',
         password: '',
-        language: 'zh'
       },
       dataRule: {}
     }
@@ -61,41 +67,40 @@ export default {
     }),
     // 提交表单
     dataFormSubmit() {
-      // TODO：登录代码逻辑待完善
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          // this.$router.push({
+          //         name: 'Home'
+          //       })
           let val = {
-            account: this.dataForm.userName,
-            passWord: this.dataForm.password
+            username: this.dataForm.userName,
+            password: this.dataForm.password
           }
           this.$http.login.getToken(val).then(response => {
-            console.log(response)
-            // this.$message({
-            //   message: this.$t("login.signInSuccess"),
-            //   type: 'success'
-            // })
-            // 保存 token
-            setToken(response.data.token)
-            this.updateName(this.dataForm.userName)
-            this.$router.push({
-              name: 'Home'
+            if (response.status === 200 && response.data.msg === '登录成功(Login Success.)') {
+              this.$message({
+                message: '登录成功',
+                type: 'success'
+              })
+              // 保存 token
+              this.$cookie.set('token', response.headers.authorization, response.config.timeout)
+              this.updateName(this.dataForm.userName)
+              this.$router.push({
+                name: 'Home'
+              })
+            }else {
+              this.$message({
+                type: "info",
+                message: '用户名或密码错误'
+              })
+            }
+          }).catch((err) =>{
+            console.log(err)
+            this.$message({
+              type: "info",
+              message: '出问题了'
             })
           })
-          // this.$http.login.getToken().then(response => {
-          //     this.$http.menu.getMenus().then(response => {
-          //       console.log(response)
-          //     })
-          //   this.$message({
-          //     message: this.$t("login.signInSuccess"),
-          //     type: 'success'
-          //   })
-          //   // 保存 token
-          //   setToken(response.data.token)
-          //   this.updateName(this.dataForm.userName)
-          //   this.$router.push({
-          //     name: 'Home'
-          //   })
-          // })
         }
       })
     },
@@ -104,6 +109,9 @@ export default {
     },
     forgetPassword() {
       this.$router.push('/forgetPassWord')
+    },
+    loginChange() {
+      this.$router.push('/loginByCode')
     }
   },
   created() {
@@ -137,6 +145,7 @@ export default {
   overflow: hidden;
   background-color: aliceblue;
   background-size: 100% 100%;
+  background-image: url(~@/assets/login_bg.jpg);
 }
 
 .login-content {
@@ -146,12 +155,27 @@ export default {
   bottom: 0;
   left: 0;
   margin: auto;
-  height: 350px;
+  height: 400px;
   width: 400px;
   background-color: #112234;
   opacity: .8;
 }
-
+.brand-info {
+  margin: 50px 1000px 0 90px;
+  color: #fff;
+}
+.brand-info__text {
+  margin:  0 0 22px 0;
+  font-size: 48px;
+  font-weight: 400;
+  text-transform : uppercase;
+}
+.brand-info__intro {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.58;
+  opacity: .6;
+}
 .login-main {
   color: beige;
   padding: 20px 20px 10px 20px;
