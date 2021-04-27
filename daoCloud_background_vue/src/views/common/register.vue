@@ -9,26 +9,26 @@
       <div class="login-main">
         <h2 class="login-main-title">账号注册</h2>
         <el-form :model="dataForm" :rules="rules" ref="dataForm" @keyup.enter.native="ruleFormSubmit()" status-icon>
-          <el-form-item prop="username">
-            <el-input v-model="dataForm.username" placeholder="用户名"></el-input>
+          <el-form-item prop="userName">
+            <el-input v-model="dataForm.userName" placeholder="用户名"></el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
           </el-form-item>
-          <el-form-item prop="userschool">
-            <el-input v-model="dataForm.userschool"  placeholder="用户学校"></el-input>
+          <el-form-item prop="userSchool">
+            <el-input v-model="dataForm.userSchool"  placeholder="用户学校"></el-input>
           </el-form-item>
-          <el-form-item prop="userdepartment">
-            <el-input v-model="dataForm.userdepartment"  placeholder="用户院系"></el-input>
+          <el-form-item prop="userDepartment">
+            <el-input v-model="dataForm.userDepartment"  placeholder="用户院系"></el-input>
           </el-form-item>
-          <el-form-item prop="usersno">
-            <el-input v-model="dataForm.usersno"  placeholder="用户工号"></el-input>
+          <el-form-item prop="userSno">
+            <el-input v-model="dataForm.userSno"  placeholder="用户工号"></el-input>
           </el-form-item>
-          <el-form-item prop="userphone">
-            <el-input v-model="dataForm.userphone" placeholder="手机号"></el-input>
+          <el-form-item prop="userPhone">
+            <el-input v-model="dataForm.userPhone" placeholder="手机号"></el-input>
           </el-form-item>
           <el-form-item prop="captcha">
-            <el-input v-model="dataForm.codefromuser" placeholder="输入验证码"></el-input>
+            <el-input v-model="dataForm.captcha" placeholder="输入验证码"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button class="login-btn-submit" type="primary" @click="backToLogin()">返回</el-button>
@@ -51,30 +51,33 @@ export default {
         callback()
       }
     }
-    const validatePass2 = (rule, value, callback) => {
+    const rightPhone = (rule, value, callback) =>{
       if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else {
+        callback(new Error('手机号不能为空'))
+      }else if (!(/^1[3456789]\d{9}$/.test(value))) {
+        callback(new Error('手机号格式不对'))
+      }else {
+        this.check = false
         callback()
       }
     }
     return {
       activeName: 'second',
       dataForm: {
-        userphone: '',
-        username: '',
+        userPhone: '',
+        userName: '',
         password: '',
-        userschool: '',
-        userdepartment: '',
-        usersno: '',
-        userole: '',
-        codefromuser: ''
+        userSchool: '',
+        userDepartment: '',
+        userSno: '',
+        userRole: '',
+        captcha: ''
       },
       content: '发送验证码',
       canClick: true,
       totalTime: 60,
       rules: {
-        username: [
+        userName: [
           { required: true, message: '请输入您的用户名', trigger: 'blur' },
           { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
         ],
@@ -82,17 +85,16 @@ export default {
           { required: true, validator: validatePass, trigger: 'blur' },
           { min: 6, message: '长度在要大于等于6个字符', trigger: 'blur' }
         ],
-        userphone: [
-          { required: true, message: '请输入您的手机号', trigger: 'blur' },
-          { min: 11, message: '长度为11位', trigger: 'blur' }
+        userPhone: [
+          { required: true, validator: rightPhone, trigger: 'blur' }
         ],
-        userschool: [
+        userSchool: [
           { required: true, message: '请输入您的学校', trigger: 'blur' }
         ],
-        userdepartment: [
+        userDepartment: [
           { required: true, message: '请输入您的院系', trigger: 'blur' }
         ],
-        usersno: [
+        userSno: [
           { required: true, message: '请输入您的工号', trigger: 'blur' }
         ],
       }
@@ -103,14 +105,14 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let form = {
-            userphone: this.dataForm.userphone,
-            username: this.dataForm.username + " ",
+            userphone: this.dataForm.userPhone,
+            username: this.dataForm.userName + " ",
             password: this.dataForm.password,
-            userschool: this.dataForm.userschool + " ",
-            userdepartment: this.dataForm.userdepartment + " ",
-            usersno: this.dataForm.usersno,
+            userschool: this.dataForm.userSchool + " ",
+            userdepartment: this.dataForm.userDepartment + " ",
+            usersno: this.dataForm.userSno,
             userole: '',
-            codefromuser: this.dataForm.codefromuser,
+            codefromuser: this.dataForm.captcha,
             mobiledevice : 'BACKEND'
           }
           this.$http.login.register(form).then(res =>{
@@ -141,7 +143,7 @@ export default {
     countDown () {
       this.getCaptcha()
       if (!this.canClick) return
-      if (this.dataForm.userphone == '' || this.dataForm.userphone.length < 2) return
+      if (this.dataForm.userPhone == '' || this.dataForm.userPhone.length < 2) return
       this.canClick = false
       this.content = this.totalTime + 's后重新发送'
       let clock = window.setInterval(() => {
@@ -156,13 +158,16 @@ export default {
       }, 1000)
     },
     getCaptcha () {
-      if (this.dataForm.userphone === null || this.dataForm.userphone === '') {
+      if (this.dataForm.userPhone === null || this.dataForm.userPhone === '') {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        this.$http.login.getCaptcha(this.dataForm.userphone).then(res =>{
-          if (res && res.data.msg === 'ok') {
+        this.$http.login.getCaptcha(this.dataForm.userPhone).then(res =>{
+          if (res.status === 200 && res.data.msg === 'ok') {
             console.log(res)
+          }else if (res.data.msg === '验证码已存在，还未过期') {
+            console.log(res)
+            this.$message.error('验证码获取频繁，请稍后在获取')
           }
         })
       }

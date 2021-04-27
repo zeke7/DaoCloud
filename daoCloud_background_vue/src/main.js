@@ -14,7 +14,6 @@ Vue.use(ElementUI);
 Vue.use(VueCookie)
 // 全局挂载 http（axios）,使用的时候直接使用 this.$http 即可。
 Vue.prototype.$http = http
-
 // 非生产环境, 适配mockjs模拟数据
 if (process.env.NODE_ENV !== 'production') {
     require('@/mock')

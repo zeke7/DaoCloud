@@ -9,8 +9,8 @@
       <div class="login-main">
         <h2 class="login-main-title">找回密码</h2>
         <el-form :model="dataForm" :rules="rules" ref="dataForm" @keyup.enter.native="ruleFormSubmit()" status-icon>
-          <el-form-item prop="userName">
-            <el-input v-model="dataForm.userName" placeholder="输入待找回的手机号"></el-input>
+          <el-form-item prop="userPhone">
+            <el-input v-model="dataForm.userPhone" placeholder="输入待找回的手机号"></el-input>
           </el-form-item>
           <el-form-item prop="newPassword">
             <el-input v-model="dataForm.newPassword" type="password" placeholder="输入新密码"></el-input>
@@ -35,7 +35,7 @@
 <script>
 export default {
   data () {
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
@@ -57,18 +57,27 @@ export default {
         callback()
       }
     }
+    const rightPhone = (rule, value, callback) =>{
+      if (value === '') {
+        callback(new Error('手机号不能为空'))
+      }else if (!(/^1[3456789]\d{9}$/.test(value))) {
+        callback(new Error('手机号格式不对'))
+      }else {
+        this.check = false
+        callback()
+      }
+    }
     return {
       activeName: 'second',
       dataForm: {
-        userName: '',
+        userPhone: '',
         newPassword: '',
         checkNewPass: '',
         captcha: ''
       },
       rules: {
-        userName: [
-          { required: true, message: '请输入您的手机号', trigger: 'blur' },
-          { min: 11, message: '长度不小于11个字符', trigger: 'blur' }
+        userPhone: [
+          { required: true, validator: rightPhone, trigger: 'blur' }
         ],
         newPassword: [
           { required: true, validator: validatePass, trigger: 'blur' },
@@ -90,7 +99,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let form = {
-            userphone: this.dataForm.userName,
+            userphone: this.dataForm.userPhone,
             newpassword: this.dataForm.newPassword,
             codefromuser: this.dataForm.captcha
           }
@@ -122,7 +131,7 @@ export default {
     countDown () {
       this.getCapthca()
       if (!this.canClick) return
-      if (this.dataForm.userName == '' || this.dataForm.userName.length < 2) return
+      if (this.dataForm.userPhone == '' || this.dataForm.userPhone.length < 2) return
       this.canClick = false
       this.content = this.totalTime + 's后重新发送'
       let clock = window.setInterval(() => {
@@ -137,13 +146,16 @@ export default {
       }, 1000)
     },
     getCapthca () {
-      if (this.dataForm.userName === null || this.dataForm.userName === '') {
+      if (this.dataForm.userPhone === null || this.dataForm.userPhone === '') {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        this.$http.login.getCaptcha(this.dataForm.userName).then(res =>{
-          if (res) {
+        this.$http.login.getCaptcha(this.dataForm.userPhone).then(res =>{
+          if (res.status === 200 && res.data.msg === 'ok') {
             console.log(res)
+          }else if (res.status === 200 && res.data.msg === '验证码已存在，还未过期') {
+            console.log(res)
+            this.$message.error('验证码获取频繁，请稍后在获取')
           }
         })
       }

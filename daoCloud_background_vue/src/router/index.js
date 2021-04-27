@@ -26,7 +26,7 @@ const routes = [
 	{
 		path: '/',
 		redirect: {
-			name: "Login"
+			name: "Home"
 		}
 	},
 	{
@@ -156,39 +156,39 @@ router.beforeEach((to, from, next) => {
 		let token = Vue.cookie.get('token')
 		// token 不存在时，跳转到 登录页面
 		if (!token || !/\S/.test(token)) {
-			this.$cookie.delete('token')
+			// this.$cookie.delete('token')
 			next({
 				name: 'Login'
 			})
-		}
-		next()
-		// token 存在时，判断是否已经获取过 动态菜单，未获取，即 false 时，需要获取
-		if (!router.options.isAddDynamicMenuRoutes) {
-			http.menu.getMenus().then((response => {
-				// 数据返回成功时
-				if (response && response.data.code === 200) {
-					// 设置动态菜单为 true，表示不用再次获取
-					router.options.isAddDynamicMenuRoutes = true
-					// 获取动态菜单数据
-					let results = fnAddDynamicMenuRoutes(response.data.data)
-					// 如果动态菜单数据存在，对其进行处理
-					if (results && results.length > 0) {
-						// 遍历第一层数据
-						results.map(value => {
-							// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
-							if (!value.path) {
-								value.path = `/DynamicRoutes-${value.meta.menuId}`
-								value.name = `DynamicHome-${value.meta.menuId}`
-								value.component = () => import('@/views/Home.vue')
-							}
-						})
+		}else {
+			// token 存在时，判断是否已经获取过 动态菜单，未获取，即 false 时，需要获取
+			if (!router.options.isAddDynamicMenuRoutes) {
+				http.menu.getMenus().then((response => {
+					// 数据返回成功时
+					if (response && response.data.code === 200) {
+						// 设置动态菜单为 true，表示不用再次获取
+						router.options.isAddDynamicMenuRoutes = true
+						// 获取动态菜单数据
+						let results = fnAddDynamicMenuRoutes(response.data.data)
+						// 如果动态菜单数据存在，对其进行处理
+						if (results && results.length > 0) {
+							// 遍历第一层数据
+							results.map(value => {
+								// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
+								if (!value.path) {
+									value.path = `/DynamicRoutes-${value.meta.menuId}`
+									value.name = `DynamicHome-${value.meta.menuId}`
+									value.component = () => import('@/views/Home.vue')
+								}
+							})
+						}
+						// 使用 vuex 管理动态路由数据
+						router.app.$options.store.dispatch('common/updateDynamicRoutes', results)
+						// 使用 router 实例的 addRoutes 方法，给当前 router 实例添加一个动态路由
+						router.addRoutes(results)
 					}
-					// 使用 vuex 管理动态路由数据
-					router.app.$options.store.dispatch('common/updateDynamicRoutes', results)
-					// 使用 router 实例的 addRoutes 方法，给当前 router 实例添加一个动态路由
-					router.addRoutes(results)
-				}
-			}))
+				}))
+			}
 		}
 	}
 	next()

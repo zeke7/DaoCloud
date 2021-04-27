@@ -40,7 +40,7 @@
 	import {
 		mapState
 	} from 'vuex'
-	import UpdatePassword from '@/views/home/UpdatePassword.vue'
+	import UpdatePassword from '@/views/common/UpdatePassword.vue'
 	import Setup from '@/views/home/Setup.vue'
   import router from "@/router";
   import {removeToken} from '@/http/auth.js'

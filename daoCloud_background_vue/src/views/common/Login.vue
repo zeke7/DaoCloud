@@ -9,8 +9,8 @@
       <div class="login-main">
         <h2 class="login-main-title">管理员登录</h2>
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
-          <el-form-item prop="userName">
-            <el-input v-model="dataForm.userName" :placeholder="language.userName"></el-input>
+          <el-form-item prop="userPhone">
+            <el-input v-model="dataForm.userPhone" placeholder="手机号"></el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input v-model="dataForm.password" type="password" :placeholder="language.password"></el-input>
@@ -21,7 +21,7 @@
             <a @click="loginChange()" style="color: beige">验证码登录</a>
           </el-form-item>
           <el-form-item>
-            <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+            <el-button class="login-btn-submit" type="primary" :class="{disabled: !this.check}" :disabled="check" @click="dataFormSubmit()">登录</el-button>
             <el-button class="login-btn-submit" type="primary" @click="toRegister">注册</el-button>
           </el-form-item>
         </el-form>
@@ -35,12 +35,30 @@ import {setToken} from '@/http/auth.js'
 // import axios from "axios";
 export default {
   data() {
+    const rightPhone = (rule, value, callback) =>{
+      if (value === '') {
+        callback(new Error('手机号不能为空'))
+      }else if (!(/^1[3456789]\d{9}$/.test(value))) {
+        callback(new Error('手机号格式不对'))
+      }else {
+        this.check = false
+        callback()
+      }
+    }
     return {
       dataForm: {
-        userName: '',
+        userPhone: '',
         password: '',
       },
-      dataRule: {}
+      check: true,
+      dataRule: {
+        userPhone: [
+            {required: true, validator: rightPhone, trigger: 'blur'}
+        ],
+        password: [
+            {required: true, message: '密码不能为空', trigger: 'blur'}
+        ]
+      },
     }
   },
   computed: {
@@ -48,7 +66,7 @@ export default {
     language() {
       return {
         title: this.$t("login.title"),
-        userName: this.$t("login.userName"),
+        userPhone: this.$t("login.userName"),
         password: this.$t("login.password"),
         language: this.$t("login.language"),
         zh: this.$t("language.zh"),
@@ -69,22 +87,20 @@ export default {
     dataFormSubmit() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          // this.$router.push({
-          //         name: 'Home'
-          //       })
           let val = {
-            username: this.dataForm.userName,
+            username: this.dataForm.userPhone,
             password: this.dataForm.password
           }
           this.$http.login.getToken(val).then(response => {
             if (response.status === 200 && response.data.msg === '登录成功(Login Success.)') {
+              console.log(response)
               this.$message({
                 message: '登录成功',
                 type: 'success'
               })
               // 保存 token
-              this.$cookie.set('token', response.headers.authorization, response.config.timeout)
-              this.updateName(this.dataForm.userName)
+              this.$cookie.set('token', response.headers.authorization,1)
+              this.updateName(this.dataForm.userPhone)
               this.$router.push({
                 name: 'Home'
               })
@@ -120,18 +136,6 @@ export default {
     this.resetState()
     // 登录页面，默认选择当前语言
     this.dataForm.language = this.$i18n.locale
-    this.dataRule = {
-      userName: [{
-        required: true,
-        message: '用户名不能为空',
-        trigger: 'blur'
-      }],
-      password: [{
-        required: true,
-        message: '密码不能为空',
-        trigger: 'blur'
-      }]
-    }
   }
 }
 </script>

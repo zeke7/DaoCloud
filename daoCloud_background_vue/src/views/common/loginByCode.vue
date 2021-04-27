@@ -9,8 +9,8 @@
       <div class="login-main">
         <h2 class="login-main-title">管理员登录</h2>
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
-          <el-form-item prop="userphone">
-            <el-input v-model="dataForm.userphone" placeholder="请输入您的手机号"></el-input>
+          <el-form-item prop="userPhone">
+            <el-input v-model="dataForm.userPhone" placeholder="请输入您的手机号"></el-input>
           </el-form-item>
           <el-form-item prop="chaptca">
             <el-input v-model="dataForm.chaptca" placeholder="请输入验证码"></el-input>
@@ -18,7 +18,7 @@
           <el-form-item>
             <el-button class="login-btn-submit" type="primary" @click="toLogin()">返回</el-button>
             <el-button type="primary" class="login-btn-submit" :class="{disabled: !this.canClick}" @click="countDown" :disabled="!canClick">{{content}}</el-button>
-            <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit('dataForm')">登录</el-button>
+            <el-button class="login-btn-submit" type="primary" :class="{disabled: !this.check}" :disabled="check"  @click="dataFormSubmit('dataForm')">登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -31,12 +31,27 @@ import {setToken} from '@/http/auth.js'
 // import axios from "axios";
 export default {
   data() {
+    const rightPhone = (rule, value, callback) =>{
+      if (value === '') {
+        callback(new Error('手机号不能为空'))
+      }else if (!(/^1[3456789]\d{9}$/.test(value))) {
+        callback(new Error('手机号格式不对'))
+      }else {
+        this.check = false
+        callback()
+      }
+    }
     return {
       dataForm: {
-        userphone: '',
+        userPhone: '',
         chaptca: '',
       },
-      dataRule: {},
+      check: true,
+      dataRule: {
+        userPhone: [
+          {required: true, validator: rightPhone, trigger: 'blur'}
+        ]
+      },
       content: '发送验证码',
       canClick: true,
       totalTime: 60,
@@ -70,7 +85,7 @@ export default {
     countDown () {
       this.getCaptcha()
       if (!this.canClick) return
-      if (this.dataForm.userphone == '' || this.dataForm.userphone.length < 2) return
+      if (this.dataForm.userPhone === '' || this.dataForm.userPhone.length < 2) return
       this.canClick = false
       this.content = this.totalTime + 's后重新发送'
       let clock = window.setInterval(() => {
@@ -85,13 +100,16 @@ export default {
       }, 1000)
     },
     getCaptcha () {
-      if (this.dataForm.userphone === null || this.dataForm.userphone === '') {
+      if (this.dataForm.userPhone === null || this.dataForm.userPhone === '') {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        this.$http.login.getCaptcha(this.dataForm.userphone).then(res =>{
-          if (res) {
+        this.$http.login.getCaptcha(this.dataForm.userPhone).then(res =>{
+          if (res.status === 200 && res.data.msg === 'ok') {
             console.log(res)
+          }else if (res.data.msg === '验证码已存在，还未过期') {
+            console.log(res)
+            this.$message.error('验证码获取频繁，请稍后在获取')
           }
         })
       }
@@ -100,10 +118,7 @@ export default {
     dataFormSubmit() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          // this.$router.push({
-          //         name: 'Home'
-          //       })
-          this.$http.login.loginByCode(this.dataForm.userphone, this.dataForm.chaptca).then(response => {
+          this.$http.login.loginByCode(this.dataForm.userPhone, this.dataForm.chaptca).then(response => {
             console.log(response)
             if (response.status === 200 && response.data.msg === '验证码验证成功') {
               console.log(response)
@@ -112,8 +127,8 @@ export default {
                 type: 'success'
               })
               // 保存 token
-              this.$cookie.set('token', response.headers.authorization, response.config.timeout)
-              this.updateName(this.dataForm.userphone)
+              this.$cookie.set('token', response.headers.authorization, 1)
+              this.updateName(this.dataForm.userPhone)
               this.$router.push({
                 name: 'Home'
               })
@@ -140,18 +155,6 @@ export default {
     this.resetState()
     // 登录页面，默认选择当前语言
     this.dataForm.language = this.$i18n.locale
-    this.dataRule = {
-      userName: [{
-        required: true,
-        message: '用户名不能为空',
-        trigger: 'blur'
-      }],
-      chaptca: [{
-        required: true,
-        message: '验证码不能为空',
-        trigger: 'blur'
-      }]
-    }
   }
 }
 </script>
