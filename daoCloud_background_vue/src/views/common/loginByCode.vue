@@ -104,7 +104,16 @@ export default {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        this.$http.login.getCaptcha(this.dataForm.userPhone).then(res =>{
+        // this.$http.commonUser.getCaptcha1().then(res =>{
+        //   if (res.status === 200 && res.data.msg === 'ok') {
+        //     console.log(res)
+        //   }else if (res.data.msg === '验证码已存在，还未过期') {
+        //     console.log(res)
+        //     this.$message.error('验证码获取频繁，请稍后在获取')
+        //   }
+        // })
+        this.$http.commonUser.getCaptcha(this.dataForm.userPhone, "L0").then(res =>{
+          console.log(res)
           if (res.status === 200 && res.data.msg === 'ok') {
             console.log(res)
           }else if (res.data.msg === '验证码已存在，还未过期') {
@@ -118,10 +127,9 @@ export default {
     dataFormSubmit() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.$http.login.loginByCode(this.dataForm.userPhone, this.dataForm.chaptca).then(response => {
+          this.$http.commonUser.loginByCode(this.dataForm.userPhone, this.dataForm.chaptca, 'L0').then(response => {
             console.log(response)
-            if (response.status === 200 && response.data.msg === '验证码验证成功') {
-              console.log(response)
+            if (response.status === 200 && response.data.msg === '登录成功(Login Success.)') {
               this.$message({
                 message: '登录成功',
                 type: 'success'

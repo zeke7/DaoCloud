@@ -103,7 +103,8 @@ export default {
             newpassword: this.dataForm.newPassword,
             codefromuser: this.dataForm.captcha
           }
-          this.$http.login.forgetPassword(form).then(res=> {
+          this.$http.commonUser.forgetPassword(form).then(res=> {
+            console.log(res)
             if (res.status === 200 && res.data.msg === '密码修改成功') {
               console.log(res)
               this.$message({
@@ -113,6 +114,12 @@ export default {
               })
               this.$router.push({
                 name: 'Login'
+              })
+            }else if(res.status === 200 && res.data.msg === '验证码不正确') {
+              this.$message({
+                type: 'warning',
+                message: '验证码不正确',
+                duration: 1000
               })
             }
           })
@@ -150,7 +157,7 @@ export default {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        this.$http.login.getCaptcha(this.dataForm.userPhone).then(res =>{
+        this.$http.commonUser.getCaptcha(this.dataForm.userPhone, 'R2').then(res =>{
           if (res.status === 200 && res.data.msg === 'ok') {
             console.log(res)
           }else if (res.status === 200 && res.data.msg === '验证码已存在，还未过期') {

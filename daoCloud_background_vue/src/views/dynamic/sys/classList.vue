@@ -180,7 +180,8 @@ export default {
   //   this.getDataList();
   // },
   mounted () {
-    this.$http.login.getClassInfo(this.userName).then(res =>{
+    let token = this.$cookie.get('token')
+    this.$http.commonUser.getClassInfo(this.userName, token).then(res =>{
       if (res){
         console.log(res)
       }
@@ -202,7 +203,7 @@ export default {
       let val = {
         username: this.userName
       }
-      this.$http.login.getClassInfo(val).then(res => {
+      this.$http.commonUser.getClassInfo(val).then(res => {
         if (res) {
           console.log(res)
         }

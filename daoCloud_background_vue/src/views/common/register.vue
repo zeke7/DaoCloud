@@ -104,18 +104,17 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let form = {
-            userphone: this.dataForm.userPhone,
-            username: this.dataForm.userName + " ",
-            password: this.dataForm.password,
-            userschool: this.dataForm.userSchool + " ",
-            userdepartment: this.dataForm.userDepartment + " ",
-            usersno: this.dataForm.userSno,
-            userole: '',
-            codefromuser: this.dataForm.captcha,
-            mobiledevice : 'BACKEND'
-          }
-          this.$http.login.register(form).then(res =>{
+          let userPhone = this.dataForm.userPhone
+          let userName =  this.dataForm.userName + ''
+          let password = this.dataForm.password
+          let userSchool = this.dataForm.userSchool + ''
+          let userDepartment = this.dataForm.userDepartment + ''
+          let userSno = this.dataForm.userSno
+          let userole = "1"
+          let codeFromUser = this.dataForm.captcha
+          let mobileDevice = 'BACKEND'
+          let type =  'S1'
+          this.$http.commonUser.register(userPhone, userName, password, userSchool, userDepartment, userSno, userole, codeFromUser, mobileDevice, type).then(res =>{
             if (res.status === 200 && res.data.msg === '账户已经存在'){
               console.log(res)
               this.$message({
@@ -162,7 +161,7 @@ export default {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        this.$http.login.getCaptcha(this.dataForm.userPhone).then(res =>{
+        this.$http.commonUser.getCaptcha(this.dataForm.userPhone, "S1").then(res =>{
           if (res.status === 200 && res.data.msg === 'ok') {
             console.log(res)
           }else if (res.data.msg === '验证码已存在，还未过期') {

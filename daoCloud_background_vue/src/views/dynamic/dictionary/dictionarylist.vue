@@ -337,7 +337,8 @@ export default {
       // });
     },
     initDataList() {
-      this.$http.login.getDictionary().then(res=>{
+      let token = this.$cookie.get('token')
+      this.$http.commonUser.getDictionary(token).then(res=>{
         if (res) {
           console.log(res)
         }

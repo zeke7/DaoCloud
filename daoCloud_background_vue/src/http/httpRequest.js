@@ -1,9 +1,9 @@
-// import Vue from 'vue'
 import {
     getToken,
     removeToken
 } from '@/http/auth.js'
 import router from '@/router'
+import Vue from 'vue'
 import {
     Message
 } from 'element-ui'
@@ -28,7 +28,7 @@ const http = axios.create({
 http.interceptors.request.use(
     config => {
         // 让每个请求携带 token
-        config.headers['token'] = getToken()
+        config.headers['Authorization'] = Vue.cookie.get('token')
         return config
     },
     error => {

@@ -91,9 +91,8 @@ export default {
             username: this.dataForm.userPhone,
             password: this.dataForm.password
           }
-          this.$http.login.getToken(val).then(response => {
+          this.$http.commonUser.getToken(val).then(response => {
             if (response.status === 200 && response.data.msg === '登录成功(Login Success.)') {
-              console.log(response)
               this.$message({
                 message: '登录成功',
                 type: 'success'
@@ -114,7 +113,7 @@ export default {
             console.log(err)
             this.$message({
               type: "info",
-              message: '出问题了'
+              message: '账号不存在或出问题了'
             })
           })
         }

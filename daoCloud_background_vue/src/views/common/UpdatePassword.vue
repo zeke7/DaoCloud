@@ -90,7 +90,9 @@ export default {
     },
     // 表单提交，回到登录界面
     dataFormSubmit() {
-      this.$http.login.modifyPassword(this.userName, this.dataForm.password, this.dataForm.newPassword).then(res => {
+      let token = this.$cookie.get('token')
+      console.log(token)
+      this.$http.commonUser.modifyPassword(this.userName, this.dataForm.password, this.dataForm.newPassword).then(res => {
         if (res.status === 200) {
           this.visible = false;
           this.$nextTick(() => {

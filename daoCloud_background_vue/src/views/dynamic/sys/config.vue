@@ -105,7 +105,8 @@
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        this.$http.login.getParamters().then(res => {
+        let token = this.$cookie.get('token')
+        this.$http.commonUser.getParamters(token).then(res => {
           if (res) {
             console.log(res)
           }

@@ -155,8 +155,7 @@ router.beforeEach((to, from, next) => {
 		//获取 token 值
 		let token = Vue.cookie.get('token')
 		// token 不存在时，跳转到 登录页面
-		if (!token || !/\S/.test(token)) {
-			// this.$cookie.delete('token')
+		if (!token || !/\S/.test(token) || token === 'undefined') {
 			next({
 				name: 'Login'
 			})
