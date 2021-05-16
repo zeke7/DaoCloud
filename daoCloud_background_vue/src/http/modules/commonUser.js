@@ -25,7 +25,7 @@ export function loginByCode(userphone, codefromuser, type) {
     })
 }
 
-export function register(userphone, username, password, userschool, userdepartment, userSno, userole, codefromuser, mobiledevice, type) {
+export function register(userphone, username, password, userschool, userdepartment, usersno, userole, codefromuser, mobiledevice, type) {
     return http({
         url: '/signup',
         method: 'post',
@@ -35,7 +35,7 @@ export function register(userphone, username, password, userschool, userdepartme
             password,
             userschool,
             userdepartment,
-            userSno,
+            usersno,
             userole,
             codefromuser,
             mobiledevice,
@@ -59,9 +59,7 @@ export function modifyPassword(username, password, newpassword, token) {
     return http({
         url: '/reset-password',
         method: 'post',
-        headers: {
-			Authorization: token
-		},
+        header: token,
         data: {
             username,
             password,
@@ -70,42 +68,21 @@ export function modifyPassword(username, password, newpassword, token) {
     })
 }
 
-export function forgetPassword(data) {
+export function forgetPassword(userphone, newpassword, codefromuser, type) {
     return http({
         url: '/backpassword',
         method: 'post',
-        data
+        data: {
+            userphone,
+            newpassword,
+            codefromuser,
+            type
+        }
     })
 }
 
-export function getClassInfo(userphone, token) {
-    return http({
-        url: '/classesdto', params: {userphone},
-        method: 'get',
-        headers: {
-            Authorization: token
-        }
-        // data: {
-        //     userphone
-        // }
-    })
-}
 
-export function getDictionary(token) {
-    return http({
-        url: '/alldictionarydetails',
-        method: 'get',
-        headers: {
-            Authorization: token
-        }
-    })
-}
-export function getParamters(token) {
-    return http({
-        url: '/allsystemparamters',
-        method: 'get',
-        headers: {
-            Authorization: token
-        }
-    })
-}
+
+
+
+

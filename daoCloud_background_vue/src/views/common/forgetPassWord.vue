@@ -98,12 +98,7 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let form = {
-            userphone: this.dataForm.userPhone,
-            newpassword: this.dataForm.newPassword,
-            codefromuser: this.dataForm.captcha
-          }
-          this.$http.commonUser.forgetPassword(form).then(res=> {
+          this.$http.commonUser.forgetPassword(this.dataForm.userPhone, this.dataForm.newPassword, this.dataForm.captcha, "R2").then(res=> {
             console.log(res)
             if (res.status === 200 && res.data.msg === '密码修改成功') {
               console.log(res)

@@ -5,37 +5,28 @@
         :model="dataForm"
         @keyup.enter.native="getDataList()"
     >
-      <el-form-item>
-        <el-form-item label="院系列表">
-          <el-select v-model="nowSchool">
-            <el-option
-                :label="item.label"
-                :value="item.value"
-                v-for="item in schoolList"
-                :key="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-input
-          v-model="dataForm.roleName"
-          placeholder="班课Id"
-          clearable
-        ></el-input>
-      </el-form-item>
+      <!--      <el-form-item>-->
+      <!--        <el-input-->
+      <!--          v-model="dataForm.roleName"-->
+      <!--          placeholder="班课Id"-->
+      <!--          clearable-->
+      <!--        ></el-input>-->
+      <!--      </el-form-item>-->
       <el-form-item>
         <el-input
-            v-model="dataForm.roleName"
-            placeholder="班课名称"
+            v-model="dataForm.classCode"
+            placeholder="课程编号"
             clearable
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList(nowSchool)">查询</el-button>
+        <el-button @click="getDataList(dataForm.classCode)">查询</el-button>
         <el-button
             v-if="haveAuth('sys:user:save')"
             type="primary"
             @click="addOrUpdateHandle()"
-        >新增</el-button
+        >新增
+        </el-button
         >
       </el-form-item>
     </el-form>
@@ -47,46 +38,64 @@
         style="width: 100%;"
     >
       <el-table-column
-          prop="schoolName"
+
           header-align="center"
           align="center"
           label="学校名称"
       >
+        <template v-slot="scope">
+          <span>{{ scope.row.userSchool }}</span>
+        </template>
       </el-table-column>
       <el-table-column
-          prop="uniacadaName"
+          prop="userDepartment"
           header-align="center"
           align="center"
           label="院系名称"
       >
       </el-table-column>
       <el-table-column
-          prop="courseName"
           header-align="center"
           align="center"
           label="课程名称"
       >
+        <template slot-scope="scope">
+          <span>{{ scope.row.className }}</span>
+        </template>
       </el-table-column>
       <el-table-column
-          prop="teacherName"
+          header-align="center"
+          align="center"
+          label="课程编号"
+      >
+        <template slot-scope="scope">
+          <span>{{ scope.row.classCode }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+          prop="userName"
           header-align="center"
           align="center"
           label="任课老师"
       >
       </el-table-column>
       <el-table-column
-          prop="studentNum"
           header-align="center"
           align="center"
           label="学生数量"
       >
         <template slot-scope="scope">
-          <el-button size="mini" @click="alertModal(scope.row)">{{
-              scope.row.studentNum || 0
-            }}</el-button>
+          <span>{{ scope.row.classNum || 0 }}</span>
+          <!--          <el-button size="mini" @click="alertModal(scope.row)">{{scope.row.classes[0].classMember || 0 }}</el-button>-->
         </template>
       </el-table-column>
-
+      <el-table-column
+          prop="classSemester"
+          header-align="center"
+          align="center"
+          label="课程学期"
+      >
+      </el-table-column>
       <el-table-column
           fixed="right"
           header-align="center"
@@ -99,13 +108,15 @@
               type="text"
               size="small"
               @click="addOrUpdateHandle(scope.row)"
-          >修改</el-button
+          >修改
+          </el-button
           >
           <el-button
               type="text"
               size="small"
-              @click="deleteHandle(scope.row.courseId)"
-          >删除</el-button
+              @click="deleteHandle(scope.row.classId)"
+          >删除
+          </el-button
           >
         </template>
       </el-table-column>
@@ -148,14 +159,16 @@
 </template>
 
 <script>
-import { isAuth } from '../../../utils'
+var _index;
+import {isAuth} from '../../../utils'
 import {mapState} from "vuex";
-import AddOrUpdate from "@/views/dynamic/sys/classList-add-or-update";
+import AddOrUpdate from "./classList-add-or-update";
+
 export default {
-  data () {
+  data() {
     return {
       dataForm: {
-        roleName: ''
+        classCode: ''
       },
       dataList: [],
       pageIndex: 1,
@@ -179,12 +192,51 @@ export default {
   // activated() {
   //   this.getDataList();
   // },
-  mounted () {
+  mounted() {
     let token = this.$cookie.get('token')
-    this.$http.commonUser.getClassInfo(this.userName, token).then(res =>{
-      if (res){
-        console.log(res)
+    this.$http.classConfig.getClassInfo(this.userName, token).then(res => {
+      if (res) {
+        console.log(res.data)
+        let temp = []
+        let data = res.data.data
+        for (let i = 0; i < data.length; i++) {
+          let course = res.data.data[i].classes
+          if (course.length >= 1) {
+            for (let j = 0; j < course.length; j++) {
+              temp[j] = {}
+              temp[j].userSchool = data[i].userSchool
+              temp[j].userDepartment = data[i].userDepartment
+              temp[j].userName = data[i].userName
+              temp[j].className = course[j].className
+              temp[j].classCode = course[j].classCode
+              temp[j].classNum = course[j].classMember
+              temp[j].classId = course[j].classId
+              if (course[j].classSemester === null) {
+                temp[j].classSemester = '暂无'
+              }else {
+                temp[j].classSemester = course[j].classSemester
+              }
+            }
+            // for (let i = 0; i < dataLen; i++) {
+            //   if (res.data.data[i].classes.length >= 1){
+            //     let courseLen = res.data.data[i].classes.length;
+            //     for (let j = 0; j < courseLen; j++) {
+            //       this.dataList[j].course = res.data.data[i].classes[j].className
+            //       this.dataList[j].classNum = res.data.data[i].classes[j].classMember
+            //     }
+            //   }
+            // }
+          }
+        }
+        this.dataList = temp
+        // this.dataList = res.data.data
       }
+    }).catch((err) => {
+      console.log(err)
+      this.$message({
+        type: "info",
+        message: '目前没有班课'
+      })
     })
     // this.getSchool().then(() => {
     //   if (this.$route.query.id !== undefined) {
@@ -198,63 +250,84 @@ export default {
   },
   methods: {
     // 获取数据列表
-    getSchool () {
+    getSchool() {
       console.log(this.userName)
       let val = {
         username: this.userName
       }
-      this.$http.commonUser.getClassInfo(val).then(res => {
+      this.$http.classConfig.getClassInfo(val).then(res => {
         if (res) {
           console.log(res)
         }
       })
     },
-    getDataList (id) {
-      console.log(id)
+    getDataList(classCode) {
+      let data = {
+        classcode: classCode
+      }
+      let token = this.$cookie.get('token')
+      this.$http.classConfig.classCurd('get', data, token).then(res => {
+        if (res) {
+          console.log(res.data.data)
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataList = []
+              this.dataList = res.data.data
+            }
+          })
+        }
+      })
     },
     // 每页数
-    sizeChangeHandle (val) {
+    sizeChangeHandle(val) {
       this.pageSize = val
       this.pageIndex = 1
       this.getDataList()
     },
     // 当前页
-    currentChangeHandle (val) {
+    currentChangeHandle(val) {
       this.pageIndex = val
       this.getDataList()
     },
     // 多选
-    selectionChangeHandle (val) {
+    selectionChangeHandle(val) {
       this.dataListSelections = val
     },
     // 新增 / 修改
-    addOrUpdateHandle (row = {}) {
+    addOrUpdateHandle: function (row = {}, userName = '') {
+      userName = this.userName
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row)
+        this.$refs.addOrUpdate.init(row, userName)
       })
     },
     // 删除
-    deleteHandle (courseId) {
-      this.$confirm(`确定对[id=${courseId}]进行删除操作?`, '提示', {
+    deleteHandle(id) {
+      this.$confirm(`确定对[id=${id}]进行删除操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        let token = this.$cookie.get('token')
+        this.$http.classConfig.classCurd('delete', null, token).then(res => {
+          console.log(res)
+        })
       })
-          .then(() => {
-
+          .catch(() => {
           })
-          .catch(() => {})
     },
-    haveAuth (auth) {
+    haveAuth(auth) {
       console.log(auth + ' ' + isAuth(auth))
       // return isAuth(auth)
       return true
     },
     /* 弹出学生列表 */
-    alertModal (row) {
+    alertModal(row) {
       console.log(row)
-    }
+    },
   }
 }
 </script>

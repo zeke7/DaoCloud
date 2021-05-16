@@ -1,41 +1,34 @@
 <template>
   <el-dialog
-    :title="dataForm.sysSettingsId == null ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible"
+      :title="dataForm.sysId === null ? '新增' : '修改'"
+      :close-on-click-modal="false"
+      :visible.sync="visible"
   >
     <el-form
-      :model="dataForm"
-      :rules="dataRule"
-      ref="dataForm"
-      @keyup.enter.native="dataFormSubmit()"
-      label-width="120px"
+        :model="dataForm"
+        :rules="dataRule"
+        ref="dataForm"
+        @keyup.enter.native="dataFormSubmit()"
+        label-width="120px"
     >
-      <el-form-item label="id" prop="sysSettingsId" hidden>
-        <el-input v-model="dataForm.sysSettingsId" placeholder="id"></el-input>
-      </el-form-item>
-
-      <el-form-item label="每次签到经验" prop="eachSignExp">
+      <el-form-item label="参数名称" prop="sysName">
         <el-input
-          v-model="dataForm.eachSignExp"
-          placeholder="每次签到经验"
+            v-model="dataForm.sysName"
+            placeholder="参数名称"
         ></el-input>
       </el-form-item>
-      <el-form-item label="每次签到时间" prop="eachSignTime">
+      <el-form-item label="参数值" prop="sysParameter">
         <el-input
-          v-model="dataForm.eachSignTime"
-          placeholder="每次签到时间"
+            v-model="dataForm.sysParameter"
+            placeholder="参数值"
         ></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
-      </el-form-item>
-      <!--<el-form-item label="状态">
-        <el-select v-model="dataForm.status">
-          <el-option label="启用" value="0"></el-option>
-          <el-option label="禁用" value="1"></el-option>
-        </el-select>
-      </el-form-item>-->
+      <!--      <el-form-item label="状态">-->
+      <!--        <el-select v-model="dataForm.status">-->
+      <!--          <el-option label="启用" value="0"></el-option>-->
+      <!--          <el-option label="禁用" value="1"></el-option>-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -46,67 +39,90 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       visible: false,
       dataForm: {
-        sysSettingsId: null,
-        eachSignExp: '',
-        eachSignTime: '',
+        sysId: null,
+        sysName: '',
+        sysParameter: '',
         remark: '',
         status: '1'
       },
       dataRule: {
-        eachSignExp: [
-          { required: true, message: '每次签到经验不能为空', trigger: 'blur' }
+        sysName: [
+          {required: true, message: '参数名不能为空', trigger: 'blur'}
         ],
-        eachSignTime: [
-          { required: true, message: '每次签到时间不能为空', trigger: 'blur' }
+        sysParameter: [
+          {required: true, message: '参数值不能为空', trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
-    init (row = {}) {
-      this.dataForm.sysSettingsId =
-        row.sysSettingsId == undefined ? null : row.sysSettingsId
+    init(row = {}) {
+      this.dataForm.sysId = row.sysId == undefined ? null : row.sysId
       this.visible = true
       this.$nextTick(() => {
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate()
         }
-        console.log(this.dataForm.sysSettingsId)
-
         if (
-          this.dataForm.sysSettingsId != undefined &&
-          this.dataForm.sysSettingsId != null
+            this.dataForm.sysId != undefined &&
+            this.dataForm.sysId != null
         ) {
-          this.dataForm.eachSignExp = row.eachSignExp
-          this.dataForm.eachSignTime = row.eachSignTime
+          this.dataForm.sysName = row.sysName
+          this.dataForm.sysParameter = row.sysParameter
           this.dataForm.status = '1'
           this.dataForm.remark = row.remark
         } else {
           this.dataForm = {
-            sysSettingsId: null,
-            eachSignExp: '',
-            eachSignTime: '',
+            sysId: null,
+            sysName: '',
+            sysParameter: '',
             remark: '',
             status: '1'
           }
         }
       })
+      console.log(this.dataForm.sysId)
     },
     // 表单提交
-    dataFormSubmit () {
+    dataFormSubmit() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          let method =
-            this.dataForm.sysSettingsId == undefined ? 'post' : 'put'
-          this.$http({
-            url: this.$http.adornUrl(`syssettings/settings`),
-            method: method,
-            data: this.$http.adornData(this.dataForm)
-          }).then(({ data }) => {
+          let token = this.$cookie.get('token')
+          let method = this.dataForm.sysId == undefined ? 'post' : 'put'
+          let data = {}
+          if (this.dataForm.sysId == undefined) {
+            data = {
+              sysname: this.dataForm.sysName,
+              sysvalue: this.dataForm.sysParameter
+            }
+          } else {
+            data = {
+              sysname: this.dataForm.sysName,
+              sysvalue: this.dataForm.sysParameter,
+              sysid: this.dataForm.sysId
+            }
+          }
+          console.log(data)
+          this.$http.systemConfig.systemCurd(method, data, token).then(res => {
+            if (res) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false
+                  this.$emit('refreshDataList')
+                }
+              })
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+          this.$http.commonUser.systemCurd({}).then(({data}) => {
             if (data && data.code === 200) {
               this.$message({
                 message: '操作成功',

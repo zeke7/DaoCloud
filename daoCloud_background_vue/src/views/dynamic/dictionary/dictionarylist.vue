@@ -40,8 +40,8 @@
 
     <div class="operate-container" shadow="never" style="margin-top: 15px">
       <div slot="header" class="clearfix">
-        <el-button size="mini" class="btn-add" @click="handleAdd"
-          >添加</el-button
+        <el-button size="mini" class="btn-add" @click="addOrUpdateHandle()"
+          >新增</el-button
         >
         <el-button
           size="mini"
@@ -63,38 +63,52 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column align="center" label="ID">
           <template slot-scope="scope">
-            <span>{{ scope.row.dictDataId }}</span>
+            <span>{{ scope.row.dicId }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="名称">
           <template slot-scope="scope">
-            <span>{{ scope.row.dictLabel }}</span>
+            <span>{{ scope.row.dicName }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="value">
           <template slot-scope="scope">
-            <span>{{ scope.row.dictValue }}</span>
+            <span>{{ scope.row.dicValue }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="排序">
+        <el-table-column align="center" label="描述">
           <template slot-scope="scope">
-            <span>{{ scope.row.dictDataSort }}</span>
+            <span>{{ scope.row.dicDiscription }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="操作" width="180">
+<!--          <template slot-scope="scope">-->
+<!--            <el-button size="small" @click="handleEdit(scope.$index, scope.row)"-->
+<!--              >编辑</el-button-->
+<!--            >-->
+<!--            <el-button-->
+<!--              type="danger"-->
+<!--              size="small"-->
+<!--              @click="handleDel(scope.$index, scope.row)"-->
+<!--              >删除</el-button-->
+<!--            >-->
+<!--          </template>-->
           <template slot-scope="scope">
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button
+            <el-button
+                type="text"
+                size="small"
+                @click="addOrUpdateHandle(scope.row)"
+            >修改</el-button
             >
             <el-button
-              type="danger"
-              size="small"
-              @click="handleDel(scope.$index, scope.row)"
-              >删除</el-button
+                type="text"
+                size="small"
+                @click="deleteHandle(scope.row.courseId)"
+            >删除</el-button
             >
           </template>
         </el-table-column>
@@ -107,113 +121,114 @@
       :limit.sync="listQuery.pageSize"
       @pagination="getList"
     />
+    <!-- 弹窗, 新增 / 修改 -->
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+<!--    &lt;!&ndash;新增界面&ndash;&gt;-->
+<!--    <el-dialog-->
+<!--      title="新增"-->
+<!--      :visible.sync="addFormVisible"-->
+<!--      :close-on-click-modal="false"-->
+<!--    >-->
+<!--      <el-form-->
+<!--        :model="addForm"-->
+<!--        label-width="80px"-->
+<!--        :rules="addFormRules"-->
+<!--        ref="addForm"-->
+<!--      >-->
+<!--        &lt;!&ndash; <el-form-item label="ID" prop="dictDataId">-->
+<!--          <el-input v-model="addForm.dictDataId" auto-complete="off"></el-input>-->
+<!--        </el-form-item> &ndash;&gt;-->
+<!--        <el-form-item label="名称" prop="dictLabel">-->
+<!--          <el-input v-model="addForm.dictLabel" auto-complete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="值" prop="dictValue">-->
+<!--          <el-input v-model="addForm.dictValue" auto-complete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="排序" prop="dictDataSort">-->
+<!--          <el-input-->
+<!--            v-model="addForm.dictDataSort"-->
+<!--            auto-complete="off"-->
+<!--          ></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="字典类型">-->
+<!--          <el-select v-model="addForm.dictType">-->
+<!--            <el-option-->
+<!--              :label="item.label"-->
+<!--              :value="item.value"-->
+<!--              v-for="item in typeList"-->
+<!--              :key="item.value"-->
+<!--              >{{ item.value }}</el-option-->
+<!--            >-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button @click.native="addFormVisible = false">取消</el-button>-->
+<!--        <el-button type="primary" @click.native="addSubmit">提交</el-button>-->
+<!--      </div>-->
+<!--    </el-dialog>-->
 
-    <!--新增界面-->
-    <el-dialog
-      title="新增"
-      :visible.sync="addFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        :model="addForm"
-        label-width="80px"
-        :rules="addFormRules"
-        ref="addForm"
-      >
-        <!-- <el-form-item label="ID" prop="dictDataId">
-          <el-input v-model="addForm.dictDataId" auto-complete="off"></el-input>
-        </el-form-item> -->
-        <el-form-item label="名称" prop="dictLabel">
-          <el-input v-model="addForm.dictLabel" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="值" prop="dictValue">
-          <el-input v-model="addForm.dictValue" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" prop="dictDataSort">
-          <el-input
-            v-model="addForm.dictDataSort"
-            auto-complete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="字典类型">
-          <el-select v-model="addForm.dictType">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="item in typeList"
-              :key="item.value"
-              >{{ item.value }}</el-option
-            >
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addSubmit">提交</el-button>
-      </div>
-    </el-dialog>
-
-    <!--编辑界面-->
-    <el-dialog
-      title="编辑"
-      :visible.sync="editFormVisible"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        :model="editForm"
-        label-width="80px"
-        :rules="editFormRules"
-        ref="editForm"
-      >
-        <!-- <el-form-item label="ID" prop="dictDataId">
-          <el-input
-            v-model="editForm.dictDataId"
-            auto-complete="off"
-          ></el-input>
-        </el-form-item> -->
-        <el-form-item label="名称" prop="dictLabel">
-          <el-input v-model="editForm.dictLabel" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="值" prop="dictValue">
-          <el-input v-model="editForm.dictValue" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" prop="dictDataSort">
-          <el-input
-            v-model="editForm.dictDataSort"
-            auto-complete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="字典类型">
-          <el-select v-model="editForm.dictType">
-            <el-option
-              :label="item.label"
-              :value="item.value"
-              v-for="item in typeList"
-              :key="item.value"
-              >{{ item.value }}</el-option
-            >
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="_editSubmit">提交</el-button>
-      </div>
-    </el-dialog>
+<!--    &lt;!&ndash;编辑界面&ndash;&gt;-->
+<!--    <el-dialog-->
+<!--      title="编辑"-->
+<!--      :visible.sync="editFormVisible"-->
+<!--      :close-on-click-modal="false"-->
+<!--    >-->
+<!--      <el-form-->
+<!--        :model="editForm"-->
+<!--        label-width="80px"-->
+<!--        :rules="editFormRules"-->
+<!--        ref="editForm"-->
+<!--      >-->
+<!--        &lt;!&ndash; <el-form-item label="ID" prop="dictDataId">-->
+<!--          <el-input-->
+<!--            v-model="editForm.dictDataId"-->
+<!--            auto-complete="off"-->
+<!--          ></el-input>-->
+<!--        </el-form-item> &ndash;&gt;-->
+<!--        <el-form-item label="名称" prop="dictLabel">-->
+<!--          <el-input v-model="editForm.dictLabel" auto-complete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="值" prop="dictValue">-->
+<!--          <el-input v-model="editForm.dictValue" auto-complete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="排序" prop="dictDataSort">-->
+<!--          <el-input-->
+<!--            v-model="editForm.dictDataSort"-->
+<!--            auto-complete="off"-->
+<!--          ></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="字典类型">-->
+<!--          <el-select v-model="editForm.dictType">-->
+<!--            <el-option-->
+<!--              :label="item.label"-->
+<!--              :value="item.value"-->
+<!--              v-for="item in typeList"-->
+<!--              :key="item.value"-->
+<!--              >{{ item.value }}</el-option-->
+<!--            >-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button @click.native="editFormVisible = false">取消</el-button>-->
+<!--        <el-button type="primary" @click.native="_editSubmit">提交</el-button>-->
+<!--      </div>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
 <script>
-var _index;
+// var _index;
+import AddOrUpdate from './dic-add-or-update'
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 const statusMap = {
   "0": "禁用",
   "1": "启用"
 };
-
 export default {
   name: "bannerAdvList",
-  components: { Pagination },
+  components: { Pagination, AddOrUpdate },
   filters: {
     statusFilter(status) {
       return statusMap[status];
@@ -262,7 +277,7 @@ export default {
         solt: "",
         dictType: ""
       },
-      editFormVisible: false, // 编辑界面是否显示
+      addOrUpdateVisible: false, // 编辑界面是否显示
       editLoading: false,
       editFormRules: {
         name: [{ required: true, message: "请输入ID", trigger: "blur" }],
@@ -338,9 +353,10 @@ export default {
     },
     initDataList() {
       let token = this.$cookie.get('token')
-      this.$http.commonUser.getDictionary(token).then(res=>{
+      this.$http.dicConfig.getDictionary(token).then(res=>{
         if (res) {
           console.log(res)
+          this.list = res.data.data
         }
       })
       // let url =
@@ -408,58 +424,77 @@ export default {
       //   }
       // });
     },
-    handleDel(index, row) {
-      // 删除的逻辑：this.$confirm是element的提示信息功能
-      // 确认删的时候this.list.splice(index, 1)使用splice方法将list数组的第index条移出数组
-      // index是删除按钮中@click="handleDel(scope.$index, scope.row)"传入的参数，代表所删除对应的 行
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+    // 新增 / 修改
+    addOrUpdateHandle: function (row = {}) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(row)
       })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl("sysdict/data/" + row.dictDataId),
-            method: "delete",
-            data: {}
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: "删除成功",
-                type: "success",
-                duration: 1500,
-                onClose: () => {
-                  this.initDataList();
-                }
-              });
-            } else {
-              this.$message.error(data.msg);
-            }
-          });
-        })
-        .catch(err => {
-          this.$message({
-            type: "error",
-            message: err
-          });
-        });
     },
-    // 编辑逻辑
-    // 创建一个全局变量，
-    // 在script开始位置，
-    // 在函数中将变量赋值给editData，代表的是list数组中的下下标
-    // 在修改编辑框中input绑定的数据是update
-    // 所以只要把修改后的数据赋值给表格中的数据list，即可完成更新
-    handleEdit: function(index, row) {
-      this.editFormVisible = true;
-      this.update = Object.assign({}, row);
-      _index = index;
-      this.editForm = row;
-      if (this.$refs["edit"]) {
-        this.$refs["editForm"].clearValidate();
-      }
-      // this.$refs.test(row.dictDataId)
+    // 删除
+    deleteHandle (courseId) {
+      this.$confirm(`确定对[id=${courseId}]进行删除操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+          .then(() => {
+
+          })
+          .catch(() => {})
     },
+    // handleDel(index, row) {
+    //   // 删除的逻辑：this.$confirm是element的提示信息功能
+    //   // 确认删的时候this.list.splice(index, 1)使用splice方法将list数组的第index条移出数组
+    //   // index是删除按钮中@click="handleDel(scope.$index, scope.row)"传入的参数，代表所删除对应的 行
+    //   this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       this.$http({
+    //         url: this.$http.adornUrl("sysdict/data/" + row.dictDataId),
+    //         method: "delete",
+    //         data: {}
+    //       }).then(({ data }) => {
+    //         if (data && data.code === 200) {
+    //           this.$message({
+    //             message: "删除成功",
+    //             type: "success",
+    //             duration: 1500,
+    //             onClose: () => {
+    //               this.initDataList();
+    //             }
+    //           });
+    //         } else {
+    //           this.$message.error(data.msg);
+    //         }
+    //       });
+    //     })
+    //     .catch(err => {
+    //       this.$message({
+    //         type: "error",
+    //         message: err
+    //       });
+    //     });
+    // },
+    // // 编辑逻辑
+    // // 创建一个全局变量，
+    // // 在script开始位置，
+    // // 在函数中将变量赋值给editData，代表的是list数组中的下下标
+    // // 在修改编辑框中input绑定的数据是update
+    // // 所以只要把修改后的数据赋值给表格中的数据list，即可完成更新
+    // handleEdit: function(index, row) {
+    //   this.editFormVisible = true;
+    //   this.update = Object.assign({}, row);
+    //   _index = index;
+    //   this.editForm = row;
+    //   if (this.$refs["edit"]) {
+    //     this.$refs["editForm"].clearValidate();
+    //   }
+    //   // this.$refs.test(row.dictDataId)
+    // },
     test(id) {
       this.editForm.dictDataId = id || 0;
       this.$http({
@@ -501,6 +536,9 @@ export default {
       //     this.$message.error(data.msg);
       //   }
       // });
+    },
+    getDataList (id) {
+      console.log(id)
     },
     delall() {
       // 批量删：删除数组中0-数组长度的项，即全部

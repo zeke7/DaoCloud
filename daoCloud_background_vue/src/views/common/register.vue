@@ -109,12 +109,12 @@ export default {
           let password = this.dataForm.password
           let userSchool = this.dataForm.userSchool + ''
           let userDepartment = this.dataForm.userDepartment + ''
-          let userSno = this.dataForm.userSno
-          let userole = "1"
+          let usersno = this.dataForm.userSno
+          let userole = "admin"
           let codeFromUser = this.dataForm.captcha
           let mobileDevice = 'BACKEND'
           let type =  'S1'
-          this.$http.commonUser.register(userPhone, userName, password, userSchool, userDepartment, userSno, userole, codeFromUser, mobileDevice, type).then(res =>{
+          this.$http.commonUser.register(userPhone, userName, password, userSchool, userDepartment, usersno, userole, codeFromUser, mobileDevice, type).then(res =>{
             if (res.status === 200 && res.data.msg === '账户已经存在'){
               console.log(res)
               this.$message({
