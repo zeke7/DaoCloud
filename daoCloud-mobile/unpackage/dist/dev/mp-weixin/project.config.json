@@ -24,8 +24,48 @@
       "list": []
     },
     "miniprogram": {
-      "current": -1,
-      "list": []
+      "list": [
+        {
+          "name": "login",
+          "id": 0,
+          "pathName": "pages/login/login"
+        },
+        {
+          "name": "register",
+          "id": 1,
+          "pathName": "pages/login/register"
+        },
+        {
+          "name": "forget-password",
+          "id": 2,
+          "pathName": "pages/login/forget-password"
+        },
+        {
+          "name": "test",
+          "id": 3,
+          "pathName": "pages/test/test"
+        },
+        {
+          "name": "creatclass",
+          "id": 4,
+          "pathName": "pages/class/creat"
+        },
+        {
+          "name": "home",
+          "id": 5,
+          "pathName": "pages/home/home"
+        },
+        {
+          "name": "suc",
+          "id": 6,
+          "pathName": "pages/class/suc-creat"
+        },
+        {
+          "name": "qiandao",
+          "id": 7,
+          "pathName": "pages/signin/signin"
+        }
+      ]
     }
   }
 }

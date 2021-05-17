@@ -1,0 +1,27 @@
+
+.CBlue {
+	background-color: #007aff;
+	-webkit-box-shadow: 0 5px 5px #007aff;
+	        box-shadow: 0 5px 5px #007aff;
+}
+.CGray {
+	background-color: #DCDCDC;
+	-webkit-box-shadow: 0 5px 5px #DCDCDC;
+	        box-shadow: 0 5px 5px #DCDCDC;
+}
+.module {
+	overflow: hidden;
+	margin: 20rpx auto;
+	width: 220rpx;
+	height: 220rpx;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	color: #fff;
+	text-align: center;
+}
+.module .text {
+	font-size: 20px;
+	margin: 50rpx auto 10rpx;
+}
+
+

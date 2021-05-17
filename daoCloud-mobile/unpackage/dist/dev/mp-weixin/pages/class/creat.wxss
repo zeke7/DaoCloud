@@ -1,0 +1,11 @@
+
+.button {
+	font-size: 28rpx;		
+	color: #fff;
+	height: 90rpx;
+	line-height: 90rpx;
+	margin: 80rpx 20rpx 0 20rpx;
+	-webkit-border-radius: 50rpx;
+	        border-radius: 50rpx;
+}
+

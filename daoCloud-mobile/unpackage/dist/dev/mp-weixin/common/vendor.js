@@ -1,6 +1,6 @@
-(global["webpackJsonp"] = global["webpackJsonp"] || []).push([["common/vendor"],[
-/* 0 */,
-/* 1 */
+(global["webpackJsonp"] = global["webpackJsonp"] || []).push([["common/vendor"],{
+
+/***/ 1:
 /*!************************************************************!*\
   !*** ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js ***!
   \************************************************************/
@@ -503,7 +503,7 @@ function processArgs(methodName, fromArgs) {var argsOption = arguments.length > 
           keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
         }
         if (!keyOption) {// 不支持的参数
-          console.warn("\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F ".concat(methodName, "\u6682\u4E0D\u652F\u6301").concat(key));
+          console.warn("The '".concat(methodName, "' method of platform '\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F' does not support option '").concat(key, "'"));
         } else if (isStr(keyOption)) {// 重写参数 key
           toArgs[keyOption] = fromArgs[key];
         } else if (isPlainObject(keyOption)) {// {name:newName,value:value}可重新指定参数 key:value
@@ -538,7 +538,7 @@ function wrapper(methodName, method) {
     var protocol = protocols[methodName];
     if (!protocol) {// 暂不支持的 api
       return function () {
-        console.error("\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F \u6682\u4E0D\u652F\u6301".concat(methodName));
+        console.error("Platform '\u5FAE\u4FE1\u5C0F\u7A0B\u5E8F' does not support '".concat(methodName, "'."));
       };
     }
     return function (arg1, arg2) {// 目前 api 最多两个参数
@@ -585,7 +585,7 @@ function createTodoApi(name) {
 
   {var fail = _ref.fail,complete = _ref.complete;
     var res = {
-      errMsg: "".concat(name, ":fail:\u6682\u4E0D\u652F\u6301 ").concat(name, " \u65B9\u6CD5") };
+      errMsg: "".concat(name, ":fail method '").concat(name, "' not supported") };
 
     isFn(fail) && fail(res);
     isFn(complete) && complete(res);
@@ -619,7 +619,7 @@ function getProvider(_ref2)
     isFn(success) && success(res);
   } else {
     res = {
-      errMsg: 'getProvider:fail:服务[' + service + ']不存在' };
+      errMsg: 'getProvider:fail service not found' };
 
     isFn(fail) && fail(res);
   }
@@ -1323,7 +1323,12 @@ function parseBaseApp(vm, _ref3)
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
-
+      if (this.mpType === 'page') {// hack vue-i18n
+        var app = getApp();
+        if (app.$vm && app.$vm.$i18n) {
+          this._i18n = app.$vm.$i18n;
+        }
+      }
       if (this.mpType !== 'app') {
         initRefs(this);
         initMocks(this, mocks);
@@ -1792,7 +1797,204 @@ var uni$1 = uni;var _default =
 uni$1;exports.default = _default;
 
 /***/ }),
-/* 2 */
+
+/***/ 10:
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    if (!options.components) {
+      options.components = {}
+    }
+    var hasOwn = Object.prototype.hasOwnProperty
+    for (var name in components) {
+      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
+        options.components[name] = components[name]
+      }
+    }
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+
+/***/ 113:
+/*!*****************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/static/face.png ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/static/face.png";
+
+/***/ }),
+
+/***/ 17:
+/*!******************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/common.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.toast = toast;exports.checkPhone = checkPhone;exports.checkPwd = checkPwd;exports.checkCode = checkCode;function toast(title) {
+  uni.showToast({
+    icon: 'none',
+    title: title });
+
+}
+/**
+   * 手机验证
+   */
+function checkPhone(value) {
+  if (!value) {
+    uni.showToast({ title: '请输入手机号', icon: 'none' });
+    return true;
+  }
+  if (!/^[1][3,4,5,7,8,9][0-9]{9}$/.test(value)) {
+    uni.showToast({ title: '请输入正确手机号', icon: 'none' });
+    return true;
+  }
+  return false;
+}
+/**
+   * 密码验证
+   */
+function checkPwd(value) {
+  if (!value) {
+    uni.showToast({ title: '请输入密码', icon: 'none' });
+    return true;
+  }
+  if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/.test(value)) {
+    uni.showToast({ title: '密码需同时含有数字和字母，且长度要在8-16位之间', icon: 'none' });
+    return true;
+  }
+  return false;
+}
+/**
+   * 验证码验证
+   */
+function checkCode(value) {
+  if (value.length == 4) {
+    return false;
+  }
+  toast('验证码必须是4位数字');
+  return true;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 2:
 /*!******************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js ***!
   \******************************************************************************************/
@@ -7839,7 +8041,8 @@ internalMixin(Vue);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 3)))
 
 /***/ }),
-/* 3 */
+
+/***/ 3:
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
   \***********************************/
@@ -7869,205 +8072,1371 @@ module.exports = g;
 
 
 /***/ }),
-/* 4 */
-/*!*******************************************************!*\
-  !*** C:/Users/Lenovo/Desktop/uni/daocloud/pages.json ***!
-  \*******************************************************/
+
+/***/ 4:
+/*!************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/pages.json ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */
-/*!*************************************************************!*\
-  !*** C:/Users/Lenovo/Desktop/uni/daocloud/common/common.js ***!
-  \*************************************************************/
+/***/ 72:
+/*!*************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/qrcode.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.toast = toast;exports.checkPhone = checkPhone;exports.checkPwd = checkPwd;exports.checkCode = checkCode;function toast(title) {
-  uni.showToast({
-    icon: 'none',
-    title: title });
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _frame = _interopRequireDefault(__webpack_require__(/*! ./frame.js */ 73));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
 
-}
-/**
-   * 手机验证
-   */
-function checkPhone(value) {
-  if (!value) {
-    uni.showToast({ title: '请输入手机号', icon: 'none' });
-    return true;
-  }
-  if (!/^[1][3,4,5,7,8,9][0-9]{9}$/.test(value)) {
-    uni.showToast({ title: '请输入正确手机号', icon: 'none' });
-    return true;
-  }
-  return false;
-}
-/**
-   * 密码验证
-   */
-function checkPwd(value) {
-  if (value.length >= 6) {
-    return true;
-  }
-  toast('密码必须大于6位');
-  return false;
-}
-/**
-   * 验证码验证
-   */
-function checkCode(value) {
-  if (value.length == 6) {
-    return true;
-  }
-  toast('验证码必须是6位数字');
-  return false;
-}
+Qrcode = /*#__PURE__*/function () {
+  function Qrcode(params) {_classCallCheck(this, Qrcode);
+    this.qrious = {
+      'foreground': '#000000', //填充颜色
+      'foregroundAlpha': 1, //透明度
+      'level': 'L', //纠错级别“L”“M”“Q”“H”
+      'padding': null,
+      'size': 100 };
+
+    if (params) {
+      this.qrious = _objectSpread(_objectSpread({}, this.qrious), params);
+    }
+  }_createClass(Qrcode, [{ key: "draw", value: function draw(
+
+    canvasId, value) {
+      var frame = new _frame.default({
+        level: this.qrious.level,
+        value: value });
+
+
+      var i, j;
+      var moduleSize = this._getModuleSize(frame);
+      var offset = this._getOffset(frame);
+      //console.log(offset,frame.width,moduleSize)
+      this.ctx = uni.createCanvasContext(canvasId);
+      this.ctx.setFillStyle(this.qrious.foreground);
+      this.ctx.setGlobalAlpha(this.qrious.foregroundAlpha);
+
+      for (i = 0; i < frame.width; i++) {
+        for (j = 0; j < frame.width; j++) {
+          if (frame.buffer[j * frame.width + i]) {
+            this.ctx.fillRect(moduleSize * i + offset, moduleSize * j + offset, moduleSize, moduleSize);
+          }
+        }
+      }
+      this.ctx.draw();
+    } }, { key: "_getOffset", value: function _getOffset(
+
+    frame) {
+      var qrious = this.qrious;
+      var padding = qrious.padding;
+
+      if (padding != null) {
+        return padding;
+      }
+
+      var moduleSize = this._getModuleSize(frame);
+      var offset = Math.floor((qrious.size - moduleSize * frame.width) / 2);
+
+      return Math.max(0, offset);
+    } }, { key: "_getModuleSize", value: function _getModuleSize(
+
+    frame) {
+      var qrious = this.qrious;
+      var padding = qrious.padding || 0;
+      var pixels = Math.floor((qrious.size - padding * 2) / frame.width);
+      return Math.max(1, pixels);
+    } }, { key: "clear", value: function clear()
+
+    {
+      this.ctx.clearRect(0, 0);
+    } }]);return Qrcode;}();var _default =
+
+
+Qrcode;exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
+/***/ }),
+
+/***/ 73:
+/*!************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/frame.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _correction = _interopRequireDefault(__webpack_require__(/*! ./correction.js */ 74));
+var _alignment = _interopRequireDefault(__webpack_require__(/*! ./alignment.js */ 75));
+var _galois = _interopRequireDefault(__webpack_require__(/*! ./galois.js */ 76));
+var _version = _interopRequireDefault(__webpack_require__(/*! ./version.js */ 77));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
+
+Frame = /*#__PURE__*/function () {_createClass(Frame, [{ key: "_addAlignment", value: function _addAlignment(
+
+    x, y) {
+      var i;
+      var buffer = this.buffer;
+      var width = this.width;
+
+      buffer[x + width * y] = 1;
+
+      for (i = -2; i < 2; i++) {
+        buffer[x + i + width * (y - 2)] = 1;
+        buffer[x - 2 + width * (y + i + 1)] = 1;
+        buffer[x + 2 + width * (y + i)] = 1;
+        buffer[x + i + 1 + width * (y + 2)] = 1;
+      }
+
+      for (i = 0; i < 2; i++) {
+        this._setMask(x - 1, y + i);
+        this._setMask(x + 1, y - i);
+        this._setMask(x - i, y - 1);
+        this._setMask(x + i, y + 1);
+      }
+    } }, { key: "_appendData", value: function _appendData(
+
+    data, dataLength, ecc, eccLength) {
+      var bit, i, j;
+      var polynomial = this._polynomial;
+      var stringBuffer = this._stringBuffer;
+
+      for (i = 0; i < eccLength; i++) {
+        stringBuffer[ecc + i] = 0;
+      }
+
+      for (i = 0; i < dataLength; i++) {
+        bit = _galois.default.LOG[stringBuffer[data + i] ^ stringBuffer[ecc]];
+
+        if (bit !== 255) {
+          for (j = 1; j < eccLength; j++) {
+            stringBuffer[ecc + j - 1] = stringBuffer[ecc + j] ^
+            _galois.default.EXPONENT[this._modN(bit + polynomial[eccLength - j])];
+          }
+        } else {
+          for (j = ecc; j < ecc + eccLength; j++) {
+            stringBuffer[j] = stringBuffer[j + 1];
+          }
+        }
+
+        stringBuffer[ecc + eccLength - 1] = bit === 255 ? 0 : _galois.default.EXPONENT[this._modN(bit + polynomial[0])];
+      }
+    } }, { key: "_appendEccToData", value: function _appendEccToData()
+
+    {
+      var i;
+      var data = 0;
+      var dataBlock = this._dataBlock;
+      var ecc = this._calculateMaxLength();
+      var eccBlock = this._eccBlock;
+
+      for (i = 0; i < this._neccBlock1; i++) {
+        this._appendData(data, dataBlock, ecc, eccBlock);
+
+        data += dataBlock;
+        ecc += eccBlock;
+      }
+
+      for (i = 0; i < this._neccBlock2; i++) {
+        this._appendData(data, dataBlock + 1, ecc, eccBlock);
+
+        data += dataBlock + 1;
+        ecc += eccBlock;
+      }
+    } }, { key: "_applyMask", value: function _applyMask(
+
+    mask) {
+      var r3x, r3y, x, y;
+      var buffer = this.buffer;
+      var width = this.width;
+
+      switch (mask) {
+        case 0:
+          for (y = 0; y < width; y++) {
+            for (x = 0; x < width; x++) {
+              if (!(x + y & 1) && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 1:
+          for (y = 0; y < width; y++) {
+            for (x = 0; x < width; x++) {
+              if (!(y & 1) && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 2:
+          for (y = 0; y < width; y++) {
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!r3x && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 3:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
+            }
+
+            for (r3x = r3y, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!r3x && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 4:
+          for (y = 0; y < width; y++) {
+            for (r3x = 0, r3y = y >> 1 & 1, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+                r3y = !r3y;
+              }
+
+              if (!r3y && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 5:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
+            }
+
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!((x & y & 1) + !(!r3x | !r3y)) && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 6:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
+            }
+
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!((x & y & 1) + (r3x && r3x === r3y) & 1) && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 7:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
+            }
+
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!((r3x && r3x === r3y) + (x + y & 1) & 1) && !this._isMasked(x, y)) {
+                buffer[x + y * width] ^= 1;
+              }
+            }
+          }
+
+          break;}
+
+    } }, { key: "_calculateMaxLength", value: function _calculateMaxLength()
+
+    {
+      return this._dataBlock * (this._neccBlock1 + this._neccBlock2) + this._neccBlock2;
+    } }, { key: "_calculatePolynomial", value: function _calculatePolynomial()
+
+    {
+      var i, j;
+      var eccBlock = this._eccBlock;
+      var polynomial = this._polynomial;
+
+      polynomial[0] = 1;
+
+      for (i = 0; i < eccBlock; i++) {
+        polynomial[i + 1] = 1;
+
+        for (j = i; j > 0; j--) {
+          polynomial[j] = polynomial[j] ? polynomial[j - 1] ^
+          _galois.default.EXPONENT[this._modN(_galois.default.LOG[polynomial[j]] + i)] : polynomial[j - 1];
+        }
+
+        polynomial[0] = _galois.default.EXPONENT[this._modN(_galois.default.LOG[polynomial[0]] + i)];
+      }
+
+      // Use logs for generator polynomial to save calculation step.
+      for (i = 0; i <= eccBlock; i++) {
+        polynomial[i] = _galois.default.LOG[polynomial[i]];
+      }
+    } }, { key: "_checkBadness", value: function _checkBadness()
+
+    {
+      var b, b1, h, x, y;
+      var bad = 0;
+      var badness = this._badness;
+      var buffer = this.buffer;
+      var width = this.width;
+
+      // Blocks of same colour.
+      for (y = 0; y < width - 1; y++) {
+        for (x = 0; x < width - 1; x++) {
+          // All foreground colour.
+          if (buffer[x + width * y] &&
+          buffer[x + 1 + width * y] &&
+          buffer[x + width * (y + 1)] &&
+          buffer[x + 1 + width * (y + 1)] ||
+          // All background colour.
+          !(buffer[x + width * y] ||
+          buffer[x + 1 + width * y] ||
+          buffer[x + width * (y + 1)] ||
+          buffer[x + 1 + width * (y + 1)])) {
+            bad += this.N2;
+          }
+        }
+      }
+
+      var bw = 0;
+
+      // X runs.
+      for (y = 0; y < width; y++) {
+        h = 0;
+
+        badness[0] = 0;
+
+        for (b = 0, x = 0; x < width; x++) {
+          b1 = buffer[x + width * y];
+
+          if (b === b1) {
+            badness[h]++;
+          } else {
+            badness[++h] = 1;
+          }
+
+          b = b1;
+          bw += b ? 1 : -1;
+        }
+
+        bad += this._getBadness(h);
+      }
+
+      if (bw < 0) {
+        bw = -bw;
+      }
+
+      var count = 0;
+      var big = bw;
+      big += big << 2;
+      big <<= 1;
+
+      while (big > width * width) {
+        big -= width * width;
+        count++;
+      }
+
+      bad += count * this.N4;
+
+      // Y runs.
+      for (x = 0; x < width; x++) {
+        h = 0;
+
+        badness[0] = 0;
+
+        for (b = 0, y = 0; y < width; y++) {
+          b1 = buffer[x + width * y];
+
+          if (b === b1) {
+            badness[h]++;
+          } else {
+            badness[++h] = 1;
+          }
+
+          b = b1;
+        }
+
+        bad += this._getBadness(h);
+      }
+
+      return bad;
+    } }, { key: "_convertBitStream", value: function _convertBitStream(
+
+    length) {
+      var bit, i;
+      var ecc = this._ecc;
+      var version = this._version;
+
+      // Convert string to bit stream. 8-bit data to QR-coded 8-bit data (numeric, alphanumeric, or kanji not supported).
+      for (i = 0; i < length; i++) {
+        ecc[i] = this._value.charCodeAt(i);
+      }
+
+      var stringBuffer = this._stringBuffer = ecc.slice();
+      var maxLength = this._calculateMaxLength();
+
+      if (length >= maxLength - 2) {
+        length = maxLength - 2;
+
+        if (version > 9) {
+          length--;
+        }
+      }
+
+      // Shift and re-pack to insert length prefix.
+      var index = length;
+
+      if (version > 9) {
+        stringBuffer[index + 2] = 0;
+        stringBuffer[index + 3] = 0;
+
+        while (index--) {
+          bit = stringBuffer[index];
+
+          stringBuffer[index + 3] |= 255 & bit << 4;
+          stringBuffer[index + 2] = bit >> 4;
+        }
+
+        stringBuffer[2] |= 255 & length << 4;
+        stringBuffer[1] = length >> 4;
+        stringBuffer[0] = 0x40 | length >> 12;
+      } else {
+        stringBuffer[index + 1] = 0;
+        stringBuffer[index + 2] = 0;
+
+        while (index--) {
+          bit = stringBuffer[index];
+
+          stringBuffer[index + 2] |= 255 & bit << 4;
+          stringBuffer[index + 1] = bit >> 4;
+        }
+
+        stringBuffer[1] |= 255 & length << 4;
+        stringBuffer[0] = 0x40 | length >> 4;
+      }
+
+      // Fill to end with pad pattern.
+      index = length + 3 - (version < 10);
+
+      while (index < maxLength) {
+        stringBuffer[index++] = 0xec;
+        stringBuffer[index++] = 0x11;
+      }
+    } }, { key: "_getBadness", value: function _getBadness(
+
+    length) {
+      var i;
+      var badRuns = 0;
+      var badness = this._badness;
+
+      for (i = 0; i <= length; i++) {
+        if (badness[i] >= 5) {
+          badRuns += this.N1 + badness[i] - 5;
+        }
+      }
+
+      // FBFFFBF as in finder.
+      for (i = 3; i < length - 1; i += 2) {
+        if (badness[i - 2] === badness[i + 2] &&
+        badness[i + 2] === badness[i - 1] &&
+        badness[i - 1] === badness[i + 1] &&
+        badness[i - 1] * 3 === badness[i] && (
+        // Background around the foreground pattern? Not part of the specs.
+        badness[i - 3] === 0 || i + 3 > length ||
+        badness[i - 3] * 3 >= badness[i] * 4 ||
+        badness[i + 3] * 3 >= badness[i] * 4)) {
+          badRuns += this.N3;
+        }
+      }
+
+      return badRuns;
+    } }, { key: "_finish", value: function _finish()
+
+    {
+      // Save pre-mask copy of frame.
+      this._stringBuffer = this.buffer.slice();
+
+      var currentMask, i;
+      var bit = 0;
+      var mask = 30000;
+
+      /*
+                         * Using for instead of while since in original Arduino code if an early mask was "good enough" it wouldn't try for
+                         * a better one since they get more complex and take longer.
+                         */
+      for (i = 0; i < 8; i++) {
+        // Returns foreground-background imbalance.
+        this._applyMask(i);
+
+        currentMask = this._checkBadness();
+
+        // Is current mask better than previous best?
+        if (currentMask < mask) {
+          mask = currentMask;
+          bit = i;
+        }
+
+        // Don't increment "i" to a void redoing mask.
+        if (bit === 7) {
+          break;
+        }
+
+        // Reset for next pass.
+        this.buffer = this._stringBuffer.slice();
+      }
+
+      // Redo best mask as none were "good enough" (i.e. last wasn't bit).
+      if (bit !== i) {
+        this._applyMask(bit);
+      }
+
+      // Add in final mask/ECC level bytes.
+      mask = _correction.default.FINAL_FORMAT[bit + (this._level - 1 << 3)];
+
+      var buffer = this.buffer;
+      var width = this.width;
+
+      // Low byte.
+      for (i = 0; i < 8; i++, mask >>= 1) {
+        if (mask & 1) {
+          buffer[width - 1 - i + width * 8] = 1;
+
+          if (i < 6) {
+            buffer[8 + width * i] = 1;
+          } else {
+            buffer[8 + width * (i + 1)] = 1;
+          }
+        }
+      }
+
+      // High byte.
+      for (i = 0; i < 7; i++, mask >>= 1) {
+        if (mask & 1) {
+          buffer[8 + width * (width - 7 + i)] = 1;
+
+          if (i) {
+            buffer[6 - i + width * 8] = 1;
+          } else {
+            buffer[7 + width * 8] = 1;
+          }
+        }
+      }
+    } }, { key: "_interleaveBlocks", value: function _interleaveBlocks()
+
+    {
+      var i, j;
+      var dataBlock = this._dataBlock;
+      var ecc = this._ecc;
+      var eccBlock = this._eccBlock;
+      var k = 0;
+      var maxLength = this._calculateMaxLength();
+      var neccBlock1 = this._neccBlock1;
+      var neccBlock2 = this._neccBlock2;
+      var stringBuffer = this._stringBuffer;
+
+      for (i = 0; i < dataBlock; i++) {
+        for (j = 0; j < neccBlock1; j++) {
+          ecc[k++] = stringBuffer[i + j * dataBlock];
+        }
+
+        for (j = 0; j < neccBlock2; j++) {
+          ecc[k++] = stringBuffer[neccBlock1 * dataBlock + i + j * (dataBlock + 1)];
+        }
+      }
+
+      for (j = 0; j < neccBlock2; j++) {
+        ecc[k++] = stringBuffer[neccBlock1 * dataBlock + i + j * (dataBlock + 1)];
+      }
+
+      for (i = 0; i < eccBlock; i++) {
+        for (j = 0; j < neccBlock1 + neccBlock2; j++) {
+          ecc[k++] = stringBuffer[maxLength + i + j * eccBlock];
+        }
+      }
+
+      this._stringBuffer = ecc;
+    } }, { key: "_insertAlignments", value: function _insertAlignments()
+
+    {
+      var i, x, y;
+      var version = this._version;
+      var width = this.width;
+
+      if (version > 1) {
+        i = _alignment.default.BLOCK[version];
+        y = width - 7;
+
+        for (;;) {
+          x = width - 7;
+
+          while (x > i - 3) {
+            this._addAlignment(x, y);
+
+            if (x < i) {
+              break;
+            }
+
+            x -= i;
+          }
+
+          if (y <= i + 9) {
+            break;
+          }
+
+          y -= i;
+
+          this._addAlignment(6, y);
+          this._addAlignment(y, 6);
+        }
+      }
+    } }, { key: "_insertFinders", value: function _insertFinders()
+
+    {
+      var i, j, x, y;
+      var buffer = this.buffer;
+      var width = this.width;
+
+      for (i = 0; i < 3; i++) {
+        j = 0;
+        y = 0;
+
+        if (i === 1) {
+          j = width - 7;
+        }
+        if (i === 2) {
+          y = width - 7;
+        }
+
+        buffer[y + 3 + width * (j + 3)] = 1;
+
+        for (x = 0; x < 6; x++) {
+          buffer[y + x + width * j] = 1;
+          buffer[y + width * (j + x + 1)] = 1;
+          buffer[y + 6 + width * (j + x)] = 1;
+          buffer[y + x + 1 + width * (j + 6)] = 1;
+        }
+
+        for (x = 1; x < 5; x++) {
+          this._setMask(y + x, j + 1);
+          this._setMask(y + 1, j + x + 1);
+          this._setMask(y + 5, j + x);
+          this._setMask(y + x + 1, j + 5);
+        }
+
+        for (x = 2; x < 4; x++) {
+          buffer[y + x + width * (j + 2)] = 1;
+          buffer[y + 2 + width * (j + x + 1)] = 1;
+          buffer[y + 4 + width * (j + x)] = 1;
+          buffer[y + x + 1 + width * (j + 4)] = 1;
+        }
+      }
+    } }, { key: "_insertTimingGap", value: function _insertTimingGap()
+
+    {
+      var x, y;
+      var width = this.width;
+
+      for (y = 0; y < 7; y++) {
+        this._setMask(7, y);
+        this._setMask(width - 8, y);
+        this._setMask(7, y + width - 7);
+      }
+
+      for (x = 0; x < 8; x++) {
+        this._setMask(x, 7);
+        this._setMask(x + width - 8, 7);
+        this._setMask(x, width - 8);
+      }
+    } }, { key: "_insertTimingRowAndColumn", value: function _insertTimingRowAndColumn()
+
+    {
+      var x;
+      var buffer = this.buffer;
+      var width = this.width;
+
+      for (x = 0; x < width - 14; x++) {
+        if (x & 1) {
+          this._setMask(8 + x, 6);
+          this._setMask(6, 8 + x);
+        } else {
+          buffer[8 + x + width * 6] = 1;
+          buffer[6 + width * (8 + x)] = 1;
+        }
+      }
+    } }, { key: "_insertVersion", value: function _insertVersion()
+
+    {
+      var i, j, x, y;
+      var buffer = this.buffer;
+      var version = this._version;
+      var width = this.width;
+
+      if (version > 6) {
+        i = _version.default.BLOCK[version - 7];
+        j = 17;
+
+        for (x = 0; x < 6; x++) {
+          for (y = 0; y < 3; y++, j--) {
+            if (1 & (j > 11 ? version >> j - 12 : i >> j)) {
+              buffer[5 - x + width * (2 - y + width - 11)] = 1;
+              buffer[2 - y + width - 11 + width * (5 - x)] = 1;
+            } else {
+              this._setMask(5 - x, 2 - y + width - 11);
+              this._setMask(2 - y + width - 11, 5 - x);
+            }
+          }
+        }
+      }
+    } }, { key: "_isMasked", value: function _isMasked(
+
+    x, y) {
+      var bit = this._getMaskBit(x, y);
+
+      return this._mask[bit] === 1;
+    } }, { key: "_pack", value: function _pack()
+
+    {
+      var bit, i, j;
+      var k = 1;
+      var v = 1;
+      var width = this.width;
+      var x = width - 1;
+      var y = width - 1;
+
+      // Interleaved data and ECC codes.
+      var length = (this._dataBlock + this._eccBlock) * (this._neccBlock1 + this._neccBlock2) + this._neccBlock2;
+
+      for (i = 0; i < length; i++) {
+        bit = this._stringBuffer[i];
+
+        for (j = 0; j < 8; j++, bit <<= 1) {
+          if (0x80 & bit) {
+            this.buffer[x + width * y] = 1;
+          }
+
+          // Find next fill position.
+          do {
+            if (v) {
+              x--;
+            } else {
+              x++;
+
+              if (k) {
+                if (y !== 0) {
+                  y--;
+                } else {
+                  x -= 2;
+                  k = !k;
+
+                  if (x === 6) {
+                    x--;
+                    y = 9;
+                  }
+                }
+              } else if (y !== width - 1) {
+                y++;
+              } else {
+                x -= 2;
+                k = !k;
+
+                if (x === 6) {
+                  x--;
+                  y -= 8;
+                }
+              }
+            }
+
+            v = !v;
+          } while (this._isMasked(x, y));
+        }
+      }
+    } }, { key: "_reverseMask", value: function _reverseMask()
+
+    {
+      var x, y;
+      var width = this.width;
+
+      for (x = 0; x < 9; x++) {
+        this._setMask(x, 8);
+      }
+
+      for (x = 0; x < 8; x++) {
+        this._setMask(x + width - 8, 8);
+        this._setMask(8, x);
+      }
+
+      for (y = 0; y < 7; y++) {
+        this._setMask(8, y + width - 7);
+      }
+    } }, { key: "_setMask", value: function _setMask(
+
+    x, y) {
+      var bit = this._getMaskBit(x, y);
+
+      this._mask[bit] = 1;
+    } }, { key: "_syncMask", value: function _syncMask()
+
+    {
+      var x, y;
+      var width = this.width;
+
+      for (y = 0; y < width; y++) {
+        for (x = 0; x <= y; x++) {
+          if (this.buffer[x + width * y]) {
+            this._setMask(x, y);
+          }
+        }
+      }
+    } }, { key: "_createArray", value: function _createArray(
+
+    length) {
+      var i;
+      var array = [];
+
+      for (i = 0; i < length; i++) {
+        array[i] = 0;
+      }
+
+      return array;
+    } }, { key: "_getMaskBit", value: function _getMaskBit(
+
+    x, y) {
+      var bit;
+
+      if (x > y) {
+        bit = x;
+        x = y;
+        y = bit;
+      }
+
+      bit = y;
+      bit += y * y;
+      bit >>= 1;
+      bit += x;
+
+      return bit;
+    } }, { key: "_modN", value: function _modN(
+
+    x) {
+      while (x >= 255) {
+        x -= 255;
+        x = (x >> 8) + (x & 255);
+      }
+
+      return x;
+    }
+
+    // *Badness* coefficients.
+  }]);
+
+
+
+
+
+  function Frame(options) {_classCallCheck(this, Frame);_defineProperty(this, "N1", 3);_defineProperty(this, "N2", 3);_defineProperty(this, "N3", 40);_defineProperty(this, "N4", 10);
+    var dataBlock, eccBlock, index, neccBlock1, neccBlock2;
+    var valueLength = options.value.length;
+
+    this._badness = [];
+    this._level = _correction.default.LEVELS[options.level];
+    this._polynomial = [];
+    this._value = options.value;
+    this._version = 0;
+    this._stringBuffer = [];
+
+    while (this._version < 40) {
+      this._version++;
+
+      index = (this._level - 1) * 4 + (this._version - 1) * 16;
+
+      neccBlock1 = _correction.default.BLOCKS[index++];
+      neccBlock2 = _correction.default.BLOCKS[index++];
+      dataBlock = _correction.default.BLOCKS[index++];
+      eccBlock = _correction.default.BLOCKS[index];
+
+      index = dataBlock * (neccBlock1 + neccBlock2) + neccBlock2 - 3 + (this._version <= 9);
+
+      if (valueLength <= index) {
+        break;
+      }
+    }
+
+    this._dataBlock = dataBlock;
+    this._eccBlock = eccBlock;
+    this._neccBlock1 = neccBlock1;
+    this._neccBlock2 = neccBlock2;
+
+    /**
+                                    * The data width is based on version.
+                                    *
+                                    * @public
+                                    * @type {number}
+                                    * @memberof Frame#
+                                    */
+    // FIXME: Ensure that it fits instead of being truncated.
+    var width = this.width = 17 + 4 * this._version;
+
+    /**
+                                                      * The image buffer.
+                                                      *
+                                                      * @public
+                                                      * @type {number[]}
+                                                      * @memberof Frame#
+                                                      */
+    this.buffer = this._createArray(width * width);
+
+    this._ecc = this._createArray(dataBlock + (dataBlock + eccBlock) * (neccBlock1 + neccBlock2) + neccBlock2);
+    this._mask = this._createArray((width * (width + 1) + 1) / 2);
+
+    this._insertFinders();
+    this._insertAlignments();
+
+    // Insert single foreground cell.
+    this.buffer[8 + width * (width - 8)] = 1;
+
+    this._insertTimingGap();
+    this._reverseMask();
+    this._insertTimingRowAndColumn();
+    this._insertVersion();
+    this._syncMask();
+    this._convertBitStream(valueLength);
+    this._calculatePolynomial();
+    this._appendEccToData();
+    this._interleaveBlocks();
+    this._pack();
+    this._finish();
+
+  }return Frame;}();var _default =
+
+
+Frame;exports.default = _default;
+
+/***/ }),
+
+/***/ 74:
+/*!*****************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/correction.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * The error correction blocks.
+                                                                                                                      *
+                                                                                                                      * There are four elements per version. The first two indicate the number of blocks, then the data width, and finally
+                                                                                                                      * the ECC width.
+                                                                                                                      *
+                                                                                                                      * @public
+                                                                                                                      * @static
+                                                                                                                      * @type {number[]}
+                                                                                                                      * @memberof ErrorCorrection
+                                                                                                                      */
+  BLOCKS: [
+  1, 0, 19, 7, 1, 0, 16, 10, 1, 0, 13, 13, 1, 0, 9, 17,
+  1, 0, 34, 10, 1, 0, 28, 16, 1, 0, 22, 22, 1, 0, 16, 28,
+  1, 0, 55, 15, 1, 0, 44, 26, 2, 0, 17, 18, 2, 0, 13, 22,
+  1, 0, 80, 20, 2, 0, 32, 18, 2, 0, 24, 26, 4, 0, 9, 16,
+  1, 0, 108, 26, 2, 0, 43, 24, 2, 2, 15, 18, 2, 2, 11, 22,
+  2, 0, 68, 18, 4, 0, 27, 16, 4, 0, 19, 24, 4, 0, 15, 28,
+  2, 0, 78, 20, 4, 0, 31, 18, 2, 4, 14, 18, 4, 1, 13, 26,
+  2, 0, 97, 24, 2, 2, 38, 22, 4, 2, 18, 22, 4, 2, 14, 26,
+  2, 0, 116, 30, 3, 2, 36, 22, 4, 4, 16, 20, 4, 4, 12, 24,
+  2, 2, 68, 18, 4, 1, 43, 26, 6, 2, 19, 24, 6, 2, 15, 28,
+  4, 0, 81, 20, 1, 4, 50, 30, 4, 4, 22, 28, 3, 8, 12, 24,
+  2, 2, 92, 24, 6, 2, 36, 22, 4, 6, 20, 26, 7, 4, 14, 28,
+  4, 0, 107, 26, 8, 1, 37, 22, 8, 4, 20, 24, 12, 4, 11, 22,
+  3, 1, 115, 30, 4, 5, 40, 24, 11, 5, 16, 20, 11, 5, 12, 24,
+  5, 1, 87, 22, 5, 5, 41, 24, 5, 7, 24, 30, 11, 7, 12, 24,
+  5, 1, 98, 24, 7, 3, 45, 28, 15, 2, 19, 24, 3, 13, 15, 30,
+  1, 5, 107, 28, 10, 1, 46, 28, 1, 15, 22, 28, 2, 17, 14, 28,
+  5, 1, 120, 30, 9, 4, 43, 26, 17, 1, 22, 28, 2, 19, 14, 28,
+  3, 4, 113, 28, 3, 11, 44, 26, 17, 4, 21, 26, 9, 16, 13, 26,
+  3, 5, 107, 28, 3, 13, 41, 26, 15, 5, 24, 30, 15, 10, 15, 28,
+  4, 4, 116, 28, 17, 0, 42, 26, 17, 6, 22, 28, 19, 6, 16, 30,
+  2, 7, 111, 28, 17, 0, 46, 28, 7, 16, 24, 30, 34, 0, 13, 24,
+  4, 5, 121, 30, 4, 14, 47, 28, 11, 14, 24, 30, 16, 14, 15, 30,
+  6, 4, 117, 30, 6, 14, 45, 28, 11, 16, 24, 30, 30, 2, 16, 30,
+  8, 4, 106, 26, 8, 13, 47, 28, 7, 22, 24, 30, 22, 13, 15, 30,
+  10, 2, 114, 28, 19, 4, 46, 28, 28, 6, 22, 28, 33, 4, 16, 30,
+  8, 4, 122, 30, 22, 3, 45, 28, 8, 26, 23, 30, 12, 28, 15, 30,
+  3, 10, 117, 30, 3, 23, 45, 28, 4, 31, 24, 30, 11, 31, 15, 30,
+  7, 7, 116, 30, 21, 7, 45, 28, 1, 37, 23, 30, 19, 26, 15, 30,
+  5, 10, 115, 30, 19, 10, 47, 28, 15, 25, 24, 30, 23, 25, 15, 30,
+  13, 3, 115, 30, 2, 29, 46, 28, 42, 1, 24, 30, 23, 28, 15, 30,
+  17, 0, 115, 30, 10, 23, 46, 28, 10, 35, 24, 30, 19, 35, 15, 30,
+  17, 1, 115, 30, 14, 21, 46, 28, 29, 19, 24, 30, 11, 46, 15, 30,
+  13, 6, 115, 30, 14, 23, 46, 28, 44, 7, 24, 30, 59, 1, 16, 30,
+  12, 7, 121, 30, 12, 26, 47, 28, 39, 14, 24, 30, 22, 41, 15, 30,
+  6, 14, 121, 30, 6, 34, 47, 28, 46, 10, 24, 30, 2, 64, 15, 30,
+  17, 4, 122, 30, 29, 14, 46, 28, 49, 10, 24, 30, 24, 46, 15, 30,
+  4, 18, 122, 30, 13, 32, 46, 28, 48, 14, 24, 30, 42, 32, 15, 30,
+  20, 4, 117, 30, 40, 7, 47, 28, 43, 22, 24, 30, 10, 67, 15, 30,
+  19, 6, 118, 30, 18, 31, 47, 28, 34, 34, 24, 30, 20, 61, 15, 30],
+
+
+  /**
+                                                                    * The final format bits with mask (level << 3 | mask).
+                                                                    *
+                                                                    * @public
+                                                                    * @static
+                                                                    * @type {number[]}
+                                                                    * @memberof ErrorCorrection
+                                                                    */
+  FINAL_FORMAT: [
+  // L
+  0x77c4, 0x72f3, 0x7daa, 0x789d, 0x662f, 0x6318, 0x6c41, 0x6976,
+  // M
+  0x5412, 0x5125, 0x5e7c, 0x5b4b, 0x45f9, 0x40ce, 0x4f97, 0x4aa0,
+  // Q
+  0x355f, 0x3068, 0x3f31, 0x3a06, 0x24b4, 0x2183, 0x2eda, 0x2bed,
+  // H
+  0x1689, 0x13be, 0x1ce7, 0x19d0, 0x0762, 0x0255, 0x0d0c, 0x083b],
+
+
+  /**
+                                                                    * A map of human-readable ECC levels.
+                                                                    *
+                                                                    * @public
+                                                                    * @static
+                                                                    * @type {Object.<string, number>}
+                                                                    * @memberof ErrorCorrection
+                                                                    */
+  LEVELS: {
+    L: 1,
+    M: 2,
+    Q: 3,
+    H: 4 } };exports.default = _default;
+
+/***/ }),
+
+/***/ 75:
+/*!****************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/alignment.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * The alignment pattern block.
+                                                                                                                      *
+                                                                                                                      * @public
+                                                                                                                      * @static
+                                                                                                                      * @type {number[]}
+                                                                                                                      * @memberof Alignment
+                                                                                                                      */
+  BLOCK: [
+  0, 11, 15, 19, 23, 27, 31,
+  16, 18, 20, 22, 24, 26, 28, 20, 22, 24, 24, 26, 28, 28, 22, 24, 24,
+  26, 26, 28, 28, 24, 24, 26, 26, 26, 28, 28, 24, 26, 26, 26, 28, 28] };exports.default = _default;
+
+/***/ }),
+
+/***/ 76:
+/*!*************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/galois.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * The Galois field exponent table.
+                                                                                                                      *
+                                                                                                                      * @public
+                                                                                                                      * @static
+                                                                                                                      * @type {number[]}
+                                                                                                                      * @memberof Galois
+                                                                                                                      */
+  EXPONENT: [
+  0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1d, 0x3a, 0x74, 0xe8, 0xcd, 0x87, 0x13, 0x26,
+  0x4c, 0x98, 0x2d, 0x5a, 0xb4, 0x75, 0xea, 0xc9, 0x8f, 0x03, 0x06, 0x0c, 0x18, 0x30, 0x60, 0xc0,
+  0x9d, 0x27, 0x4e, 0x9c, 0x25, 0x4a, 0x94, 0x35, 0x6a, 0xd4, 0xb5, 0x77, 0xee, 0xc1, 0x9f, 0x23,
+  0x46, 0x8c, 0x05, 0x0a, 0x14, 0x28, 0x50, 0xa0, 0x5d, 0xba, 0x69, 0xd2, 0xb9, 0x6f, 0xde, 0xa1,
+  0x5f, 0xbe, 0x61, 0xc2, 0x99, 0x2f, 0x5e, 0xbc, 0x65, 0xca, 0x89, 0x0f, 0x1e, 0x3c, 0x78, 0xf0,
+  0xfd, 0xe7, 0xd3, 0xbb, 0x6b, 0xd6, 0xb1, 0x7f, 0xfe, 0xe1, 0xdf, 0xa3, 0x5b, 0xb6, 0x71, 0xe2,
+  0xd9, 0xaf, 0x43, 0x86, 0x11, 0x22, 0x44, 0x88, 0x0d, 0x1a, 0x34, 0x68, 0xd0, 0xbd, 0x67, 0xce,
+  0x81, 0x1f, 0x3e, 0x7c, 0xf8, 0xed, 0xc7, 0x93, 0x3b, 0x76, 0xec, 0xc5, 0x97, 0x33, 0x66, 0xcc,
+  0x85, 0x17, 0x2e, 0x5c, 0xb8, 0x6d, 0xda, 0xa9, 0x4f, 0x9e, 0x21, 0x42, 0x84, 0x15, 0x2a, 0x54,
+  0xa8, 0x4d, 0x9a, 0x29, 0x52, 0xa4, 0x55, 0xaa, 0x49, 0x92, 0x39, 0x72, 0xe4, 0xd5, 0xb7, 0x73,
+  0xe6, 0xd1, 0xbf, 0x63, 0xc6, 0x91, 0x3f, 0x7e, 0xfc, 0xe5, 0xd7, 0xb3, 0x7b, 0xf6, 0xf1, 0xff,
+  0xe3, 0xdb, 0xab, 0x4b, 0x96, 0x31, 0x62, 0xc4, 0x95, 0x37, 0x6e, 0xdc, 0xa5, 0x57, 0xae, 0x41,
+  0x82, 0x19, 0x32, 0x64, 0xc8, 0x8d, 0x07, 0x0e, 0x1c, 0x38, 0x70, 0xe0, 0xdd, 0xa7, 0x53, 0xa6,
+  0x51, 0xa2, 0x59, 0xb2, 0x79, 0xf2, 0xf9, 0xef, 0xc3, 0x9b, 0x2b, 0x56, 0xac, 0x45, 0x8a, 0x09,
+  0x12, 0x24, 0x48, 0x90, 0x3d, 0x7a, 0xf4, 0xf5, 0xf7, 0xf3, 0xfb, 0xeb, 0xcb, 0x8b, 0x0b, 0x16,
+  0x2c, 0x58, 0xb0, 0x7d, 0xfa, 0xe9, 0xcf, 0x83, 0x1b, 0x36, 0x6c, 0xd8, 0xad, 0x47, 0x8e, 0x00],
+
+
+  /**
+                                                                                                    * The Galois field log table.
+                                                                                                    *
+                                                                                                    * @public
+                                                                                                    * @static
+                                                                                                    * @type {number[]}
+                                                                                                    * @memberof Galois
+                                                                                                    */
+  LOG: [
+  0xff, 0x00, 0x01, 0x19, 0x02, 0x32, 0x1a, 0xc6, 0x03, 0xdf, 0x33, 0xee, 0x1b, 0x68, 0xc7, 0x4b,
+  0x04, 0x64, 0xe0, 0x0e, 0x34, 0x8d, 0xef, 0x81, 0x1c, 0xc1, 0x69, 0xf8, 0xc8, 0x08, 0x4c, 0x71,
+  0x05, 0x8a, 0x65, 0x2f, 0xe1, 0x24, 0x0f, 0x21, 0x35, 0x93, 0x8e, 0xda, 0xf0, 0x12, 0x82, 0x45,
+  0x1d, 0xb5, 0xc2, 0x7d, 0x6a, 0x27, 0xf9, 0xb9, 0xc9, 0x9a, 0x09, 0x78, 0x4d, 0xe4, 0x72, 0xa6,
+  0x06, 0xbf, 0x8b, 0x62, 0x66, 0xdd, 0x30, 0xfd, 0xe2, 0x98, 0x25, 0xb3, 0x10, 0x91, 0x22, 0x88,
+  0x36, 0xd0, 0x94, 0xce, 0x8f, 0x96, 0xdb, 0xbd, 0xf1, 0xd2, 0x13, 0x5c, 0x83, 0x38, 0x46, 0x40,
+  0x1e, 0x42, 0xb6, 0xa3, 0xc3, 0x48, 0x7e, 0x6e, 0x6b, 0x3a, 0x28, 0x54, 0xfa, 0x85, 0xba, 0x3d,
+  0xca, 0x5e, 0x9b, 0x9f, 0x0a, 0x15, 0x79, 0x2b, 0x4e, 0xd4, 0xe5, 0xac, 0x73, 0xf3, 0xa7, 0x57,
+  0x07, 0x70, 0xc0, 0xf7, 0x8c, 0x80, 0x63, 0x0d, 0x67, 0x4a, 0xde, 0xed, 0x31, 0xc5, 0xfe, 0x18,
+  0xe3, 0xa5, 0x99, 0x77, 0x26, 0xb8, 0xb4, 0x7c, 0x11, 0x44, 0x92, 0xd9, 0x23, 0x20, 0x89, 0x2e,
+  0x37, 0x3f, 0xd1, 0x5b, 0x95, 0xbc, 0xcf, 0xcd, 0x90, 0x87, 0x97, 0xb2, 0xdc, 0xfc, 0xbe, 0x61,
+  0xf2, 0x56, 0xd3, 0xab, 0x14, 0x2a, 0x5d, 0x9e, 0x84, 0x3c, 0x39, 0x53, 0x47, 0x6d, 0x41, 0xa2,
+  0x1f, 0x2d, 0x43, 0xd8, 0xb7, 0x7b, 0xa4, 0x76, 0xc4, 0x17, 0x49, 0xec, 0x7f, 0x0c, 0x6f, 0xf6,
+  0x6c, 0xa1, 0x3b, 0x52, 0x29, 0x9d, 0x55, 0xaa, 0xfb, 0x60, 0x86, 0xb1, 0xbb, 0xcc, 0x3e, 0x5a,
+  0xcb, 0x59, 0x5f, 0xb0, 0x9c, 0xa9, 0xa0, 0x51, 0x0b, 0xf5, 0x16, 0xeb, 0x7a, 0x75, 0x2c, 0xd7,
+  0x4f, 0xae, 0xd5, 0xe9, 0xe6, 0xe7, 0xad, 0xe8, 0x74, 0xd6, 0xf4, 0xea, 0xa8, 0x50, 0x58, 0xaf] };exports.default = _default;
+
+/***/ }),
+
+/***/ 77:
+/*!**************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/version.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * The version pattern block.
+                                                                                                                      *
+                                                                                                                      * @public
+                                                                                                                      * @static
+                                                                                                                      * @type {number[]}
+                                                                                                                      * @memberof Version
+                                                                                                                      */
+  BLOCK: [
+  0xc94, 0x5bc, 0xa99, 0x4d3, 0xbf6, 0x762, 0x847, 0x60d, 0x928, 0xb78, 0x45d, 0xa17, 0x532,
+  0x9a6, 0x683, 0x8c9, 0x7ec, 0xec4, 0x1e1, 0xfab, 0x08e, 0xc1a, 0x33f, 0xd75, 0x250, 0x9d5,
+  0x6f0, 0x8ba, 0x79f, 0xb0b, 0x42e, 0xa64, 0x541, 0xc69] };exports.default = _default;
+
+/***/ }),
+
+/***/ 92:
+/*!****************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/util.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function formatTime(time) {
+  if (typeof time !== 'number' || time < 0) {
+    return time;
+  }
+
+  var hour = parseInt(time / 3600);
+  time = time % 3600;
+  var minute = parseInt(time / 60);
+  time = time % 60;
+  var second = time;
+
+  return [hour, minute, second].map(function (n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n;
+  }).join(':');
+}
+
+function formatLocation(longitude, latitude) {
+  if (typeof longitude === 'string' && typeof latitude === 'string') {
+    longitude = parseFloat(longitude);
+    latitude = parseFloat(latitude);
+  }
+
+  longitude = longitude.toFixed(2);
+  latitude = latitude.toFixed(2);
+
+  return {
+    longitude: longitude.toString().split('.'),
+    latitude: latitude.toString().split('.') };
+
+}
+var dateUtils = {
+  UNITS: {
+    '年': 31557600000,
+    '月': 2629800000,
+    '天': 86400000,
+    '小时': 3600000,
+    '分钟': 60000,
+    '秒': 1000 },
+
+  humanize: function humanize(milliseconds) {
+    var humanize = '';
+    for (var key in this.UNITS) {
+      if (milliseconds >= this.UNITS[key]) {
+        humanize = Math.floor(milliseconds / this.UNITS[key]) + key + '前';
+        break;
+      }
+    }
+    return humanize || '刚刚';
+  },
+  format: function format(dateStr) {
+    var date = this.parse(dateStr);
+    var diff = Date.now() - date.getTime();
+    if (diff < this.UNITS['天']) {
+      return this.humanize(diff);
+    }
+    var _format = function _format(number) {
+      return number < 10 ? '0' + number : number;
+    };
+    return date.getFullYear() + '/' + _format(date.getMonth() + 1) + '/' + _format(date.getDay()) + '-' +
+    _format(date.getHours()) + ':' + _format(date.getMinutes());
+  },
+  parse: function parse(str) {//将"yyyy-mm-dd HH:MM:ss"格式的字符串，转化为一个Date对象
+    var a = str.split(/[^0-9]/);
+    return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
+  } };
+
+
+/**
+        * 格式化日期
+        * @param {Object} datetime
+        * @param {Object} type
+        */
+function formateDate(datetime, type) {
+  var year = datetime.getFullYear(),
+  month = ("0" + (datetime.getMonth() + 1)).slice(-2),
+  date = ("0" + datetime.getDate()).slice(-2),
+  hour = ("0" + datetime.getHours()).slice(-2),
+  minute = ("0" + datetime.getMinutes()).slice(-2),
+  second = ("0" + datetime.getSeconds()).slice(-2);
+  if (type === "Y-M-D h:min:s") {
+    var result = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+  } else if (type === "Y-M-D") {
+    var result = year + "-" + month + "-" + date;
+  }
+  if (type === "h:min:s") {
+    var result = hour + ":" + minute + ":" + second;
+  }
+  return result;
+}
+
+function deteleObject(obj) {
+  var uniques = [];
+  var stringify = {};
+  for (var i = 0; i < obj.length; i++) {
+    var keys = Object.keys(obj[i]);
+    keys.sort(function (a, b) {
+      return Number(a) - Number(b);
+    });
+    var str = '';
+    for (var j = 0; j < keys.length; j++) {
+      str += JSON.stringify(keys[j]);
+      str += JSON.stringify(obj[i][keys[j]]);
+    }
+    if (!stringify.hasOwnProperty(str)) {
+      uniques.push(obj[i]);
+      stringify[str] = true;
+    }
+  }
+  uniques = uniques;
+  return uniques;
+}
+
+function formateDate(datetime, type) {
+  var year = datetime.getFullYear(),
+  month = ("0" + (datetime.getMonth() + 1)).slice(-2),
+  date = ("0" + datetime.getDate()).slice(-2),
+  hour = ("0" + datetime.getHours()).slice(-2),
+  minute = ("0" + datetime.getMinutes()).slice(-2),
+  second = ("0" + datetime.getSeconds()).slice(-2);
+  if (type === "Y-M-D h:min:s") {
+    var result = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+  } else if (type === "Y-M-D") {
+    var result = year + "-" + month + "-" + date;
+  }
+  if (type === "h:min:s") {
+    var result = hour + ":" + minute + ":" + second;
+  } else if (type === "h") {
+    var result = hour;
+  } else if (type === "min") {
+    var result = minute;
+  }
+  return result;
+}
+//生成从minNum到maxNum的随机数
+function randomNum(minNum, maxNum) {
+  switch (arguments.length) {
+    case 1:
+      return parseInt(Math.random() * minNum + 1, 10);
+      break;
+    case 2:
+      return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+      break;
+    default:
+      return 0;
+      break;}
+
+}
+
+function pointInsideCircle(point, circle, r) {
+  if (r === 0) return false;
+  var dx = circle[0] - point[0];
+  var dy = circle[1] - point[1];
+  return dx * dx + dy * dy <= r * r;
+}
+
+// 判断是否是一天
+function isSameDay(timeStampA) {
+  var dateA = new Date(timeStampA);
+  var dateB = new Date();
+  return dateA.setHours(0, 0, 0, 0) == dateB.setHours(0, 0, 0, 0);
+}
+module.exports = {
+  formatTime: formatTime,
+  formatLocation: formatLocation,
+  dateUtils: dateUtils,
+  formateDate: formateDate,
+  deteleObject: deteleObject,
+  randomNum: randomNum,
+  pointInsideCircle: pointInsideCircle,
+  isSameDay: isSameDay };
+
 /***/ })
-]]);
+
+}]);
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

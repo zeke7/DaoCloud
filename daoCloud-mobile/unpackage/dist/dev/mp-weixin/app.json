@@ -1,10 +1,16 @@
 {
   "pages": [
-    "pages/home/home",
     "pages/login/login",
-    "pages/register/register",
+    "pages/login/register",
+    "pages/login/forget-password",
+    "pages/home/home",
+    "pages/home/mine",
     "pages/index/index",
-    "pages/forget-password/forget-password"
+    "pages/test/test",
+    "pages/class/creat",
+    "pages/class/suc-creat",
+    "pages/class/join",
+    "pages/signin/signin"
   ],
   "subPackages": [],
   "window": {
@@ -31,7 +37,7 @@
         "selectedIconPath": "static/eye1.png"
       },
       {
-        "pagePath": "pages/home/home",
+        "pagePath": "pages/home/mine",
         "text": "我的",
         "iconPath": "static/cc-card.png",
         "selectedIconPath": "static/cc-card1.png"

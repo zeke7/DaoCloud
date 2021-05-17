@@ -5,36 +5,39 @@
 		<image class="img-b" src="@/static/3.png"></image>
 		<!-- 标题 -->
 		
-		<image  src="@/static/class.png"></image>
-		<!-- <view class="t-b">{{ title }}</view> -->
+		<image  src="@/static/class.png" ></image>
 		<view class="login_header_title">
 			<text :class="[cur ? 'choose1':'choose2']" @click="onChoose()"> 短信登录</text>
 			<text  :class="[!cur ? 'choose3':'choose4']"  @click="onChoose()">密码登录</text>			
 		</view>
 		<view >
+			<!-- 输入手机号获取验证码登录 -->
 			<view class="t-a" v-if="!cur">
-				<image src="@/static/phone.png"></image>
-				<input type="number" name="phone" placeholder="请输入手机号" maxlength="11" v-model="phone" />
+				<image src="@/static/phone.png" style="width: 60upx;"></image>
+				<input type="number" name="phone" placeholder="请输入手机号" maxlength="11" v-model="userphone" />
 			</view>
 			<view class="t-a" v-if="!cur">
-				<image src="@/static/code.png"></image>
+				<image src="@/static/code.png"  style="width: 60upx;"></image>
 				<input type="number" name="code" maxlength="6" placeholder="请输入验证码" v-model="code" />
 				<view v-if="showText" class="t-c" @tap="getCode()">发送验证码</view>
 				<view v-else class="t-c" style="background-color: #A7A7A7;">重新发送({{ second }})</view>
 			</view>
+			<!-- 输入用户名及密码登录 -->
 			<view class="t-a" v-if="cur">
-				<image src="@/static/user.png"></image>
-				<input type="number" name="user" placeholder="请输入用户名" maxlength="11" v-model="user" />
+				<image src="@/static/user.png"  style="width: 60upx;"></image>
+				<input type="number" name="username" placeholder="请输入用户名" maxlength="11" v-model="username" />
 			</view>
 			<view class="t-a" v-if="cur">
-				<image src="@/static/password.png"></image>
-				<input type="number" name="password" maxlength="6" placeholder="请输入密码" v-model="password" :password="true"/>
+				<image src="@/static/password.png"  style="width: 60upx;"></image>
+				<input  name="password"  placeholder="请输入密码" v-model="password" :password="true"/>
 			</view>
+			<!-- 注册账号及忘记密码 -->
 			<view class="t-bottom">
 				<text class="t-l" @click="go_register">注册账号</text>
 				<text class="t-r" @click="go_forgetpassword">忘记密码</text>
 			</view>
-			<button @tap="login_code1()" v-if="!cur">登 录</button>
+			<!-- 两种验证方式 -->
+			<button @tap="login_code()" v-if="!cur">登录/快速注册</button>
 			<button @tap="login_password()" v-if="cur">登 录</button>
 		</view>
 		
@@ -46,12 +49,13 @@
 	export default {
 		data() {
 			return {
-				title: '欢迎回来！', 
+				cur:false,  //当前登录方式
 				second: 60, //默认60秒
 				showText: true, //判断短信是否发送
-				phone: '', //手机号码
-				code: '', //验证码
-				cur:false  //当前登录方式
+				userphone: '', //手机号码
+				code: '', //验证码			
+				username:'', //用户名
+				password:''//登录密码
 			}
 		},
 		methods: {
@@ -62,48 +66,23 @@
 			//注册账号
 			go_register(){
 				uni.navigateTo({
-					url:"../register/register"
+					url:"register"
 				})
 			},
 			//忘记密码
 			go_forgetpassword(){
 				uni.navigateTo({
-					url:"../forget-password/forget-password"
+					url:"forget-password"
 				})
 			},
-			//短信登录
-			login_code1(){
-				uni.navigateTo({
-					url:"../home/home"
-				})
-			},
-			login_code() {			
-				if (checkPhone(this.phone)) {
-				    return
-				}
-				if (!this.code) {
-					uni.showToast({ title: '请输入验证码', icon: 'none' });
-					return;
-				}
-				//....此处省略，这里需要调用后台验证一下验证码是否正确，根据您的需求来
-				uni.showToast({ title: '登录成功！', icon: 'none' });
-			},
-			//密码登录
-			login_password() {
-				var that = this;
-				if (checkPhone(this.phone)) {
-				    return
-				}
-				if (!that.yzm) {
-					uni.showToast({ title: '请输入验证码', icon: 'none' });
-					return;
-				}
-				//....此处省略，这里需要调用后台验证一下验证码是否正确，根据您的需求来
-				uni.showToast({ title: '登录成功！', icon: 'none' });
+			test(){
+				console.log(this.username,this.password)
 			},
 			//获取短信验证码
-			getCode() { 
-				if (checkPhone(this.phone)) {
+			getCode() { 			
+				var that=this
+				console.log(that.userphone)
+				if (checkPhone(this.userphone)) {
 				    return
 				}
 				var interval = setInterval(() => {
@@ -111,7 +90,6 @@
 					var times = this.second - 1;
 					//that.second = times<10?'0'+times:times ;//小于10秒补 0
 					this.second = times;
-					console.log(times);
 				}, 1000);
 				setTimeout(() => {
 					clearInterval(interval);
@@ -119,8 +97,86 @@
 					this.showText = true;
 				}, 60000);
 				//这里请求后台获取短信验证码
-				uni.showToast({
-					duration:2000
+				uni.request({
+					url:'http://112.74.55.61:8081/verifiedcodes'+'?userPhone='+that.userphone,
+					success(res) {
+						uni.showToast({
+							title:"验证码已发送",
+							icon:"none",
+							duration:2000					
+						})
+						console.log(res)
+					},
+					fail() {
+						console.log('链接失败')
+					}					
+				})
+			},
+			//短信验证码登录(快速注册)
+			login_code() {
+				var that=this
+				// if(checkPwd(this.password)){
+				// 	return
+				// };
+				//验证验证码是否正确
+				uni.request({
+					url:'http://112.74.55.61:8081/loginbysms',
+					method:'POST',
+					data:{
+						userphone:that.userphone,
+						username:that.userphone,
+						codefromuser:that.code,
+						mobiledevice:'MOBILEDEVICE'
+					},
+					success(res){
+						console.log(res.data)
+						console.log(that.userphone)
+						// //验证码输入错误
+						if(res.data.data!=='failed'){
+							console.log("登录成功")
+							console.log(res.data)
+							uni.switchTab({
+								url:"../home/home"
+							})
+						}
+						else{
+							uni.showToast({ title: '验证码错误', icon: 'none' });
+						}
+					},
+					fail(){
+						console.log('链接失败')
+					}
+				})
+			},
+			//用户名及登录
+			login_password() {
+				var that=this
+				// if (checkPhone(this.user)) {
+				//     return
+				// }
+						
+				uni.request({ 
+					url:'http://112.74.55.61:8081/login',
+					method:'POST',
+					data:{
+						username:that.username,
+						password:that.password
+					},				
+					success:(res)=>{
+						console.log(res.data);
+						if(res.data.data!=='LoginFailed'){
+							console.log("登录成功")
+							uni.switchTab({
+								url:"../home/home"
+							})
+						}
+						else{
+							uni.showToast({ title: '用户名或密码错误！', icon: 'none' });
+						}
+					},
+					fail: (res) => {
+						console.log("连接失败")
+					}
 				})
 			}
 		}
