@@ -11,22 +11,16 @@
         @keyup.enter.native="dataFormSubmit()"
         label-width="120px"
     >
-      <el-form-item label="学校名称" prop="schoolName">
-        <el-input
-            v-model="dataForm.schoolName"
-            placeholder="学校名称"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="院系名称" prop="departmentName">
-        <el-input
-            v-model="dataForm.departmentName"
-            placeholder="院系名称"
-        ></el-input>
-      </el-form-item>
       <el-form-item label="课程名称" prop="className">
         <el-input
             v-model="dataForm.className"
             placeholder="课程名称"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="创建者机号" prop="userPhone">
+        <el-input
+            v-model="dataForm.userPhone"
+            placeholder="手机号"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程编号" prop="classCode">
@@ -34,9 +28,6 @@
             v-model="dataForm.classCode"
             placeholder="课程编号"
         ></el-input>
-      </el-form-item>
-      <el-form-item label="任课老师" prop="teacher">
-        <el-input v-model="dataForm.teacher" placeholder="任课老师"></el-input>
       </el-form-item>
       <el-form-item label="学生数量" prop="num">
           <el-input v-model="dataForm.num" placeholder="学生数量"></el-input>
@@ -61,63 +52,47 @@ export default {
     return {
       visible: false,
       dataForm: {
-        schoolName: '',
-        departmentName: '',
         className: '',
         classCode: '',
-        teacher: '',
         num: '',
         classId: '',
-        semester: ''
+        semester: '',
+        userPhone: ''
       },
-      userPhone: '',
       dataRule: {
-        schoolName: [
-          { required: true, message: '学校名称不能为空', trigger: 'blur' }
-        ],
-        departmentName: [
-          { required: true, message: '院系名称不能为空', trigger: 'blur' }
-        ],
         className: [
           { required: true, message: '课程名称不能为空', trigger: 'blur' }
         ],
         classCode: [
           { required: true, message: '课程编号不能为空', trigger: 'blur' }
         ],
-        teacher: [
-          { required: true, message: '老师名称不能为空', trigger: 'blur' }
-        ],
         num: [
           { required: true, message: '学生数量不能为空', trigger: 'blur' }
         ],
         semester: [
           { required: true, message: '课程学期不能为空', trigger: 'blur' }
+        ],
+        userPhone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
     init (row = {}, userName) {
-      this.userPhone = userName
       this.dataForm.classId = row.classId === undefined ? '' : row.classId
-      console.log(this.dataForm.classId)
       this.visible = true
       this.$nextTick(() => {
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate()
         }
-        if (
-            this.dataForm.classId !== undefined &&
-            this.dataForm.classId !== null
-        ) {
-          this.dataForm.schoolName = row.userSchool
+        if (this.dataForm.classId !== '') {
           this.dataForm.className = row.className
-          this.dataForm.departmentName = row.userDepartment
           this.dataForm.classCode = row.classCode
-          this.dataForm.teacher = row.userName
           this.dataForm.num = row.classNum
           this.dataForm.classId = row.classId
           this.dataForm.semester = row.classSemester
+          this.dataForm.userPhone = userName
         } else {
           this.dataForm = {
             className: '',
@@ -125,7 +100,8 @@ export default {
             departmentName: '',
             teacher: '',
             num: '',
-            classId: ''
+            classId: '',
+            userPhone: ''
           }
         }
       })
@@ -135,10 +111,10 @@ export default {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           let token = this.$cookie.get('token')
-          let method = this.dataForm.classId === undefined ? 'post' : 'put'
+          let method = this.dataForm.classId === '' ? 'post' : 'put'
           let data = {
             classname: this.dataForm.className,
-            userPhone: this.userPhone,
+            userphone: this.dataForm.userPhone,
             classmembers: this.dataForm.num,
             classsemester: this.dataForm.semester,
             classcode: this.dataForm.classCode

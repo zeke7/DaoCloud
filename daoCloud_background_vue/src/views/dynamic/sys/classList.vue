@@ -20,7 +20,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList(dataForm.classCode)">查询</el-button>
+        <el-button @click="getDataList()">查询</el-button>
         <el-button
             v-if="haveAuth('sys:user:save')"
             type="primary"
@@ -114,7 +114,7 @@
           <el-button
               type="text"
               size="small"
-              @click="deleteHandle(scope.row.classId)"
+              @click="deleteHandle(scope.row.classId, scope.row.classCode)"
           >删除
           </el-button
           >
@@ -159,12 +159,15 @@
 </template>
 
 <script>
+import {delClass, getClassByCode} from "../../../http/modules/classConfig";
+
 var _index;
 import {isAuth} from '../../../utils'
 import {mapState} from "vuex";
 import AddOrUpdate from "./classList-add-or-update";
 
 export default {
+  inject:['reload'],
   data() {
     return {
       dataForm: {
@@ -261,22 +264,17 @@ export default {
         }
       })
     },
-    getDataList(classCode) {
-      let data = {
-        classcode: classCode
-      }
+    getDataList() {
       let token = this.$cookie.get('token')
-      this.$http.classConfig.classCurd('get', data, token).then(res => {
+      this.$http.classConfig.getClassByCode(this.dataForm.classCode, token).then(res => {
         if (res) {
           console.log(res.data.data)
+          this.dataList = []
+          this.dataList = res.data.data
           this.$message({
             message: '操作成功',
             type: 'success',
             duration: 1500,
-            onClose: () => {
-              this.dataList = []
-              this.dataList = res.data.data
-            }
           })
         }
       })
@@ -305,18 +303,24 @@ export default {
       })
     },
     // 删除
-    deleteHandle(id) {
+    deleteHandle(id, classCode) {
       this.$confirm(`确定对[id=${id}]进行删除操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         let token = this.$cookie.get('token')
-        this.$http.classConfig.classCurd('delete', null, token).then(res => {
-          console.log(res)
+        this.$http.classConfig.delClass(classCode, token).then(res => {
+          if (res) {
+            this.reload()
+            this.$message({
+              message: '删除成功',
+              type: 'success',
+              duration: 1500,
+            })
+          }
         })
-      })
-          .catch(() => {
+      }).catch(() => {
           })
     },
     haveAuth(auth) {

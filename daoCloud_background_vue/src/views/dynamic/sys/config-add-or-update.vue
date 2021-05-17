@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-      :title="dataForm.sysId === null ? '新增' : '修改'"
+      :title="dataForm.sysId === '' ? '新增' : '修改'"
       :close-on-click-modal="false"
       :visible.sync="visible"
   >
@@ -43,7 +43,7 @@ export default {
     return {
       visible: false,
       dataForm: {
-        sysId: null,
+        sysId: '',
         sysName: '',
         sysParameter: '',
         remark: '',
@@ -61,15 +61,16 @@ export default {
   },
   methods: {
     init(row = {}) {
-      this.dataForm.sysId = row.sysId == undefined ? null : row.sysId
+      console.log(row.sysId)
+      this.dataForm.sysId = row.sysId === undefined ? '' : row.sysId
       this.visible = true
       this.$nextTick(() => {
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate()
         }
         if (
-            this.dataForm.sysId != undefined &&
-            this.dataForm.sysId != null
+            this.dataForm.sysId !== '' ||
+            this.dataForm.sysId !== null
         ) {
           this.dataForm.sysName = row.sysName
           this.dataForm.sysParameter = row.sysParameter
@@ -77,7 +78,7 @@ export default {
           this.dataForm.remark = row.remark
         } else {
           this.dataForm = {
-            sysId: null,
+            sysId: '',
             sysName: '',
             sysParameter: '',
             remark: '',
@@ -85,25 +86,24 @@ export default {
           }
         }
       })
-      console.log(this.dataForm.sysId)
     },
     // 表单提交
     dataFormSubmit() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           let token = this.$cookie.get('token')
-          let method = this.dataForm.sysId == undefined ? 'post' : 'put'
+          let method = this.dataForm.sysId === '' ? 'post' : 'put'
           let data = {}
-          if (this.dataForm.sysId == undefined) {
+          if (this.dataForm.sysId === '') {
             data = {
-              sysname: this.dataForm.sysName,
-              sysvalue: this.dataForm.sysParameter
+              sysName: this.dataForm.sysName,
+              sysValue: this.dataForm.sysParameter
             }
           } else {
             data = {
-              sysname: this.dataForm.sysName,
-              sysvalue: this.dataForm.sysParameter,
-              sysid: this.dataForm.sysId
+              sysName: this.dataForm.sysName,
+              sysValue: this.dataForm.sysParameter,
+              sysId: this.dataForm.sysId
             }
           }
           console.log(data)
@@ -120,21 +120,6 @@ export default {
               })
             } else {
               this.$message.error(res.msg)
-            }
-          })
-          this.$http.commonUser.systemCurd({}).then(({data}) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.visible = false
-                  this.$emit('refreshDataList')
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
             }
           })
         }

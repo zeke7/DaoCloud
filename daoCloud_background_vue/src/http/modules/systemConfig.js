@@ -21,3 +21,13 @@ export function systemCurd(method, data, token) {
         data: data
     })
 }
+
+export function delConfig(sid, token) {
+    return http({
+        url: '/systemparamters', params:{sid},
+        method: 'delete',
+        headers: {
+            Authorization: token
+        },
+    })
+}

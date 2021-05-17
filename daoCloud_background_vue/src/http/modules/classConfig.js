@@ -1,6 +1,6 @@
 import http from "../httpRequest"
 
-export function getClassInfo(userphone, token) {
+export function getClassInfo(token) {
     return http({
         url: '/allclassesdto',
         method: 'get',
@@ -18,5 +18,26 @@ export function classCurd(method, data, token) {
             Authorization: token
         },
         data: data
+    })
+}
+
+export function delClass(classCode, token) {
+    return http({
+        url: '/classes', params:{classCode},
+        method: 'delete',
+        headers: {
+            Authorization: token
+        },
+    })
+}
+
+export function getClassByCode(classCode, token) {
+    return http({
+        url: '/codeClasses',params:{classCode},
+        method: 'get',
+        headers: {
+            Authorization: token
+        },
+        // data: classCode
     })
 }

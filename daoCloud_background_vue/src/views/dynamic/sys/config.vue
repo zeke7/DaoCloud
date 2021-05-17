@@ -84,6 +84,7 @@
 import AddOrUpdate from './config-add-or-update'
 
 export default {
+  inject:['reload'],
   data() {
     return {
       dataForm: {
@@ -151,24 +152,20 @@ export default {
     // 删除
     deleteHandle(id) {
       let token = this.$cookie.get('token')
-      let data = {
-        sid: id
-      }
       this.$confirm(`确定对id=${id}进行删除操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http.systemConfig.systemCurd('delete', data, token).then(res => {
-          console.log(res)
+        this.$http.systemConfig.delConfig(id, token).then(res => {
+
           if (res) {
+            console.log(res)
+            this.reload()
             this.$message({
               message: '操作成功',
               type: 'success',
               duration: 1500,
-              onClose: () => {
-                this.getDataList()
-              }
             })
           }
           // else {
