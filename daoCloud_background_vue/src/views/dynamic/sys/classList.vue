@@ -16,7 +16,7 @@
         <el-input
             v-model="dataForm.classCode"
             placeholder="课程编号"
-            clearable
+            clearable @clear="getList()"
         ></el-input>
       </el-form-item>
       <el-form-item>
@@ -202,37 +202,38 @@ export default {
         console.log(res.data)
         let temp = []
         let data = res.data.data
+        let total_len = 0
         for (let i = 0; i < data.length; i++) {
-          let course = res.data.data[i].classes
+          let course = data[i].classes
           if (course.length >= 1) {
-            for (let j = 0; j < course.length; j++) {
+            let last_len = 0;
+            if (i === 0) {
+              last_len = 0
+            }else {
+              last_len = data[i - 1].classes.length
+            }
+            let now_len = course.length
+            total_len = total_len + now_len
+            let t = 0;
+            for (let j = last_len; j < total_len; j++) {
               temp[j] = {}
               temp[j].userSchool = data[i].userSchool
               temp[j].userDepartment = data[i].userDepartment
               temp[j].userName = data[i].userName
-              temp[j].className = course[j].className
-              temp[j].classCode = course[j].classCode
-              temp[j].classNum = course[j].classMember
-              temp[j].classId = course[j].classId
-              if (course[j].classSemester === null) {
+              temp[j].className = course[t].className
+              temp[j].classCode = course[t].classCode
+              temp[j].classNum = course[t].classMember
+              temp[j].classId = course[t].classId
+              if (course[t].classSemester === null) {
                 temp[j].classSemester = '暂无'
               }else {
-                temp[j].classSemester = course[j].classSemester
+                temp[j].classSemester = course[t].classSemester
               }
+              t++
             }
-            // for (let i = 0; i < dataLen; i++) {
-            //   if (res.data.data[i].classes.length >= 1){
-            //     let courseLen = res.data.data[i].classes.length;
-            //     for (let j = 0; j < courseLen; j++) {
-            //       this.dataList[j].course = res.data.data[i].classes[j].className
-            //       this.dataList[j].classNum = res.data.data[i].classes[j].classMember
-            //     }
-            //   }
-            // }
           }
         }
         this.dataList = temp
-        // this.dataList = res.data.data
       }
     }).catch((err) => {
       console.log(err)
@@ -264,19 +265,41 @@ export default {
         }
       })
     },
+    getList() {
+      this.reload()
+    },
     getDataList() {
       let token = this.$cookie.get('token')
       this.$http.classConfig.getClassByCode(this.dataForm.classCode, token).then(res => {
         if (res) {
-          console.log(res.data.data)
-          this.dataList = []
-          this.dataList = res.data.data
-          this.$message({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-          })
+          console.log(res.data)
+          let ans = []
+          console.log(res.data.data.classCode)
+          for (let i = 0; i < this.dataList.length; i++) {
+            console.log(this.dataList[i].classCode)
+            if (this.dataList[i].classCode === res.data.data.classCode) {
+              console.log(this.dataList[i])
+              ans[0] = {}
+              ans[0] = this.dataList[i]
+              this.dataList = []
+            }
+          }
+          if (ans !== null) {
+            this.dataList = ans
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+            })
+          }
         }
+      }).catch(() => {
+        this.$message({
+          message: "无此记录",
+          type: 'info',
+          duration: 1500
+        })
+        this.dataList = []
       })
     },
     // 每页数

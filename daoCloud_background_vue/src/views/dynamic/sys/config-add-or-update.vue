@@ -39,6 +39,7 @@
 
 <script>
 export default {
+  inject:['reload'],
   data() {
     return {
       visible: false,
@@ -109,14 +110,11 @@ export default {
           console.log(data)
           this.$http.systemConfig.systemCurd(method, data, token).then(res => {
             if (res) {
+              this.reload()
               this.$message({
                 message: '操作成功',
                 type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.visible = false
-                  this.$emit('refreshDataList')
-                }
+                duration: 1500
               })
             } else {
               this.$message.error(res.msg)

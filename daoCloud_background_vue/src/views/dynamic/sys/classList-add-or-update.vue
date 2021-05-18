@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-      :title="dataForm.classId === undefined ? '新增' : '修改'"
+      :title="dataForm.classId === '' ? '新增' : '修改'"
       :close-on-click-modal="false"
       :visible.sync="visible"
   >
@@ -80,7 +80,9 @@ export default {
   },
   methods: {
     init (row = {}, userName) {
+      console.log(row.classId)
       this.dataForm.classId = row.classId === undefined ? '' : row.classId
+      console.log(this.dataForm.classId)
       this.visible = true
       this.$nextTick(() => {
         if (this.$refs['dataForm']) {
