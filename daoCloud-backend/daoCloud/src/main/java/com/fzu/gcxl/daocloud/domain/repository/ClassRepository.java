@@ -10,13 +10,13 @@ import java.util.List;
 @Repository
 public interface ClassRepository extends IRepository<Class>{
 
-    int deleteByPrimaryKey(String classCode);
+    int deleteByPrimaryKey(String classcode);
 
     int insert(Class record);
 
     int insertSelective(Class record);
 
-    Class selectByPrimaryKey(String classCode);
+    Class selectByPrimaryKey(String classcode);
 
     int updateByPrimaryKeySelective(Class record);
 

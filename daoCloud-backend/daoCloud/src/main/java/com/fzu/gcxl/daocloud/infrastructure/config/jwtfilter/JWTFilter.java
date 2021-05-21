@@ -3,11 +3,12 @@ package com.fzu.gcxl.daocloud.infrastructure.config.jwtfilter;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fzu.gcxl.daocloud.infrastructure.util.JsonConvertUtil;
-import com.fzu.gcxl.daocloud.domain.exception.CustomException;
+import com.fzu.gcxl.daocloud.domain.exception.UserFriendException;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -20,6 +21,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         if (this.isLoginAttempt(request, response)) {
+            System.out.println("有携带Token");
             try {
                 this.executeLogin(request, response);
                 return true;
@@ -45,6 +47,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 return false;
             }
         } else {
+            System.out.println("没有携带Token");
             // 没有携带Token
             HttpServletRequest httpServletRequest = WebUtils.toHttp(request);
             // 获取当前请求类型
@@ -52,14 +55,14 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             // 获取当前请求URI
             String requestURI = httpServletRequest.getRequestURI();
             //logger.info("当前请求 {} Authorization属性(Token)为空 请求类型 {}", requestURI, httpMethod);
-            // mustLoginFlag = true 开启任何请求必须登录才可访问
+//             mustLoginFlag = true; //开启任何请求必须登录才可访问
             final boolean mustLoginFlag = false;
-            if (mustLoginFlag) {
-                this.response401(response, "请先登录");
-                return false;
-            }
+//            if (mustLoginFlag) {
+            this.response401(response, "请先登录");
+            return false;
+//            }
         }
-        return true;
+//        return true;
     }
 
     @Override
@@ -78,6 +81,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         // 拿到当前Header中Authorization的AccessToken(Shiro中getAuthzHeader方法已经实现)
+        System.out.println("拿到当前Header中Authorization的AccessToken(Shiro中getAuthzHeader方法已经实现)");
         JwtToken token = new JwtToken(this.getAuthzHeader(request));
         // 提交给UserRealm进行认证，如果错误他会抛出异常并被捕获
         this.getSubject(request, response).login(token);
@@ -87,15 +91,15 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-//        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-//        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-//        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
-//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-//        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
-//        if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
-//            httpServletResponse.setStatus(HttpStatus.OK.value());
-//            return false;
-//        }
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+        if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
+            httpServletResponse.setStatus(HttpStatus.OK.value());
+            return false;
+        }
         return super.preHandle(request, response);
     }
 
@@ -112,7 +116,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             out.append(data);
         } catch (IOException e) {
             //logger.error("直接返回Response信息出现IOException异常:{}", e.getMessage());
-            throw new CustomException("直接返回Response信息出现IOException异常:" + e.getMessage());
+            throw new UserFriendException("直接返回Response信息出现IOException异常:" + e.getMessage());
         }
     }
 }

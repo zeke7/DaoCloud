@@ -1,5 +1,7 @@
 package com.fzu.gcxl.daocloud.domain.entity;
 
+import java.util.Date;
+
 public class Dictionary {
     private String dicCode;
 
@@ -9,13 +11,15 @@ public class Dictionary {
 
     private String dicDiscription;
 
-    private String dicDetailcode;
-
-    private String dicDetailname;
-
-    private String dicDetaildescription;
-
     private String dicValue;
+
+    private String createBy;
+
+    private Date createTime;
+
+    private String updateBy;
+
+    private Date updateTime;
 
     public String getDicCode() {
         return dicCode;
@@ -49,35 +53,43 @@ public class Dictionary {
         this.dicDiscription = dicDiscription == null ? null : dicDiscription.trim();
     }
 
-    public String getDicDetailcode() {
-        return dicDetailcode;
-    }
-
-    public void setDicDetailcode(String dicDetailcode) {
-        this.dicDetailcode = dicDetailcode == null ? null : dicDetailcode.trim();
-    }
-
-    public String getDicDetailname() {
-        return dicDetailname;
-    }
-
-    public void setDicDetailname(String dicDetailname) {
-        this.dicDetailname = dicDetailname == null ? null : dicDetailname.trim();
-    }
-
-    public String getDicDetaildescription() {
-        return dicDetaildescription;
-    }
-
-    public void setDicDetaildescription(String dicDetaildescription) {
-        this.dicDetaildescription = dicDetaildescription == null ? null : dicDetaildescription.trim();
-    }
-
     public String getDicValue() {
         return dicValue;
     }
 
     public void setDicValue(String dicValue) {
         this.dicValue = dicValue == null ? null : dicValue.trim();
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy == null ? null : createBy.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy == null ? null : updateBy.trim();
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

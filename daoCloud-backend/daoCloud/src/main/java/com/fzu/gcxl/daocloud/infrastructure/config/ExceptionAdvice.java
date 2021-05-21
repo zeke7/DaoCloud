@@ -1,6 +1,6 @@
 package com.fzu.gcxl.daocloud.infrastructure.config;
 
-import com.fzu.gcxl.daocloud.domain.exception.CustomException;
+import com.fzu.gcxl.daocloud.domain.exception.UserFriendException;
 import com.fzu.gcxl.daocloud.domain.exception.CustomUnauthorizedException;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
 import org.apache.shiro.ShiroException;
@@ -108,8 +108,8 @@ public class ExceptionAdvice {
      * @return
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(CustomException.class)
-    public BaseResponse handle(CustomException e) {
+    @ExceptionHandler(UserFriendException.class)
+    public BaseResponse handle(UserFriendException e) {
         return new BaseResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
     }
 

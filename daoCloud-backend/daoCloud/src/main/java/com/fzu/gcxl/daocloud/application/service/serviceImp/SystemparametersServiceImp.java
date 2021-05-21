@@ -17,8 +17,8 @@ public class SystemparametersServiceImp implements SystemparametersService {
     SystemParameterRepository systemParameterRepository;
 
     public BaseResponse createNewSysParams(JSONObject sysparameter){
-        String sysname = sysparameter.getString("sysname");
-        String sysvalue = sysparameter.getString("sysvalue");
+        String sysname = sysparameter.getString("sysName");
+        String sysvalue = sysparameter.getString("sysValue");
 
         SystemParameter systemParameter = new SystemParameter();
         systemParameter.setSysName(sysname);
@@ -39,6 +39,7 @@ public class SystemparametersServiceImp implements SystemparametersService {
 
     public BaseResponse getSysParamsByName(String sysname){
         SystemParameter systemParameter = systemParameterRepository.selectBysname(sysname);
+        System.out.println(systemParameter);
         return new BaseResponse(HttpStatus.OK.value(), "当前系统参数", systemParameter);
     }
 
@@ -50,9 +51,9 @@ public class SystemparametersServiceImp implements SystemparametersService {
     }
 
     public BaseResponse updateSysParamsByCode(JSONObject sysparameter){
-        Integer sid = sysparameter.getInteger("sysid");
-        String sysname = sysparameter.getString("sysname");
-        String sysvalue = sysparameter.getString("sysvalue");
+        Integer sid = sysparameter.getInteger("sysId");
+        String sysname = sysparameter.getString("sysName");
+        String sysvalue = sysparameter.getString("sysValue");
 
         SystemParameter systemParameter = new SystemParameter();
         systemParameter.setSysParameter(sysvalue);

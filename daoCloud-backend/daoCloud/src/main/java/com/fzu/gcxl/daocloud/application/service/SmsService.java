@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface SmsService {
 
     // 发送验证码 并存储在redis中
-    public BaseResponse sendSms(String phone);
+    public BaseResponse sendSms(@RequestBody JSONObject usersms);
 
     // 对验证码进行验证
     public BaseResponse verifySms(@RequestBody JSONObject usersignup);

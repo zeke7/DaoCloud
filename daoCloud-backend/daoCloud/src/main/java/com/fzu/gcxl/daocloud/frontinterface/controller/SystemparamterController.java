@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.fzu.gcxl.daocloud.application.service.ClassService;
 import com.fzu.gcxl.daocloud.application.service.SystemparametersService;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+//@RequiresRoles("admin")
 public class SystemparamterController {
     @Autowired
     SystemparametersService systemparametersService;

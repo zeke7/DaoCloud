@@ -37,4 +37,7 @@ public interface ClassService {
     public BaseResponse selectAllClasses();
 
     public BaseResponse selectAllClassesInfo(String userphone);
+
+    public BaseResponse selectAllInfo();
+
 }

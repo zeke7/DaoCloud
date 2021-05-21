@@ -37,14 +37,16 @@ public class SmsServiceImp implements SmsService {
     String smsSign = "爱曲爱斯的摸鱼教室"; // NOTE: 签名参数使用的是`签名内容`，而不是`签名ID`。这里的签名"腾讯云"只是示例，真实的签名需要在短信控制台申请
 
     @Override
-    public BaseResponse sendSms(String phone) {
-        String vcode = redisTemplate.opsForValue().get(phone);
+    public BaseResponse sendSms(@RequestBody JSONObject usersms) {
+        String phone = usersms.getString("userphone");
+        String type = usersms.getString("type");
+
+        String vcode = redisTemplate.opsForValue().get(phone+type);
+        System.out.println("获取到的data:"+phone+type);
         System.out.println(vcode);
         if (!StringUtils.isEmpty(vcode)){
             return new BaseResponse(200, "验证码已存在，还未过期", "");
         }else {
-
-
             try {
                 String[] phoneNumbers = {phone};
                 String str="0123456789";
@@ -54,13 +56,13 @@ public class SmsServiceImp implements SmsService {
                     char ch=str.charAt(new Random().nextInt(str.length()));
                     verifycode.append(ch);
                 }
-                String[] params = { verifycode.toString(), "2"};
+                String[] params = { verifycode.toString(), "5"};
                 SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
                 SmsSingleSenderResult result = ssender.sendWithParam("86", phoneNumbers[0],
                         templateId, params, smsSign, "", "");
                 // {"result":0,"errmsg":"OK","ext":"","sid":"2019:5422519775373183868","fee":1,"isocode":"CN"}
                 if (result.result == 0){
-                    redisTemplate.opsForValue().set(phone, verifycode.toString(), 2*60, TimeUnit.SECONDS);
+                    redisTemplate.opsForValue().set(phone+type, verifycode.toString(), 600*60, TimeUnit.SECONDS);
                     System.out.println(result);
                     return new BaseResponse(result.result, result.errMsg, "");
                 }else {
@@ -84,8 +86,12 @@ public class SmsServiceImp implements SmsService {
     public BaseResponse verifySms(@RequestBody JSONObject userverified) {
         String phone = userverified.getString("userphone");
         String codefromuser = userverified.getString("codefromuser");
+        String type = userverified.getString("type");
 
-        String vcode = redisTemplate.opsForValue().get(phone);
+        // type: "L0""S1""R2" -> "登陆""注册""忘记密码"
+        String vcode = redisTemplate.opsForValue().get(phone+type);
+        System.out.println(phone+type);
+        System.out.println(vcode);
         // null -> true
         if (!StringUtils.isEmpty(vcode)){
             if (codefromuser.equals(vcode))

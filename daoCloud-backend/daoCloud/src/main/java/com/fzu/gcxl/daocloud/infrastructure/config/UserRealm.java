@@ -1,5 +1,6 @@
 package com.fzu.gcxl.daocloud.infrastructure.config;
 
+import com.fzu.gcxl.daocloud.domain.repository.UserRepository;
 import com.fzu.gcxl.daocloud.infrastructure.util.JwtUtil;
 import com.fzu.gcxl.daocloud.infrastructure.util.StringUtil;
 import com.fzu.gcxl.daocloud.infrastructure.config.jwtfilter.JwtToken;
@@ -19,13 +20,18 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class UserRealm extends AuthorizingRealm {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -38,11 +44,13 @@ public class UserRealm extends AuthorizingRealm {
     //授权
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        User currentUser = (User) SecurityUtils.getSubject().getPrincipal();
 
-        Integer user_role_id = currentUser.getRoleId();
+        Account currentUser = (Account) SecurityUtils.getSubject().getPrincipal();
+        User cuser = userRepository.findUserByPhone(currentUser.getLoginPhone());
+        Integer user_role_id = cuser.getRoleId();
         Role user_role = roleRepository.findRoleById(user_role_id);
+        System.out.println("用户角色："+user_role.getRoleName());
+        System.out.println("用户权限："+user_role.getRolePerm());
         // 查询数据库，获取用户的角色信息
         Set<String> roles = new HashSet<String>() {
             {
@@ -55,10 +63,9 @@ public class UserRealm extends AuthorizingRealm {
                 add(user_role.getRolePerm());
             };
         };
-
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
         info.setStringPermissions(perms);
-
         return info;
     }
 
@@ -77,7 +84,7 @@ public class UserRealm extends AuthorizingRealm {
             throw new AuthenticationException("该帐号不存在(The account does not exist.)");
         }
         if (JwtUtil.verify(token)) {
-            return new SimpleAuthenticationInfo(token, token, "userRealm");
+            return new SimpleAuthenticationInfo(account, token, "userRealm");
         }
         throw new AuthenticationException("Token已过期(Token expired or incorrect.)");
     }

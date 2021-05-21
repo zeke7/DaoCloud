@@ -6,14 +6,15 @@
     <result column="dic_id" jdbcType="INTEGER" property="dicId" />
     <result column="dic_name" jdbcType="VARCHAR" property="dicName" />
     <result column="dic_discription" jdbcType="VARCHAR" property="dicDiscription" />
-    <result column="dic_detailcode" jdbcType="VARCHAR" property="dicDetailcode" />
-    <result column="dic_detailname" jdbcType="VARCHAR" property="dicDetailname" />
-    <result column="dic_detaildescription" jdbcType="VARCHAR" property="dicDetaildescription" />
     <result column="dic_value" jdbcType="VARCHAR" property="dicValue" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    dic_code, dic_id, dic_name, dic_discription, dic_detailcode, dic_detailname, dic_detaildescription, 
-    dic_value
+    dic_code, dic_id, dic_name, dic_discription, dic_value, create_by, create_time, update_by, 
+    update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -21,31 +22,19 @@
     from dictionary
     where dic_code = #{dicCode,jdbcType=VARCHAR}
   </select>
-
-  <select id="selectByDetailCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from dictionary
-    where dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR} and dic_code = #{dicCode,jdbcType=VARCHAR}
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from dictionary
     where dic_code = #{dicCode,jdbcType=VARCHAR}
   </delete>
-
-  <delete id="deleteByDetailCode" parameterType="java.lang.String">
-    delete from dictionary
-    where dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR} and dic_code = #{dicCode,jdbcType=VARCHAR}
-  </delete>
-
   <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
     insert into dictionary (dic_code, dic_id, dic_name, 
-      dic_discription, dic_detailcode, dic_detailname, 
-      dic_detaildescription, dic_value)
+      dic_discription, dic_value, create_by, 
+      create_time, update_by, update_time
+      )
     values (#{dicCode,jdbcType=VARCHAR}, #{dicId,jdbcType=INTEGER}, #{dicName,jdbcType=VARCHAR}, 
-      #{dicDiscription,jdbcType=VARCHAR}, #{dicDetailcode,jdbcType=VARCHAR}, #{dicDetailname,jdbcType=VARCHAR}, 
-      #{dicDetaildescription,jdbcType=VARCHAR}, #{dicValue,jdbcType=VARCHAR})
+      #{dicDiscription,jdbcType=VARCHAR}, #{dicValue,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionary">
     insert into dictionary
@@ -62,17 +51,20 @@
       <if test="dicDiscription != null">
         dic_discription,
       </if>
-      <if test="dicDetailcode != null">
-        dic_detailcode,
-      </if>
-      <if test="dicDetailname != null">
-        dic_detailname,
-      </if>
-      <if test="dicDetaildescription != null">
-        dic_detaildescription,
-      </if>
       <if test="dicValue != null">
         dic_value,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -88,17 +80,20 @@
       <if test="dicDiscription != null">
         #{dicDiscription,jdbcType=VARCHAR},
       </if>
-      <if test="dicDetailcode != null">
-        #{dicDetailcode,jdbcType=VARCHAR},
-      </if>
-      <if test="dicDetailname != null">
-        #{dicDetailname,jdbcType=VARCHAR},
-      </if>
-      <if test="dicDetaildescription != null">
-        #{dicDetaildescription,jdbcType=VARCHAR},
-      </if>
       <if test="dicValue != null">
         #{dicValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -114,17 +109,20 @@
       <if test="dicDiscription != null">
         dic_discription = #{dicDiscription,jdbcType=VARCHAR},
       </if>
-      <if test="dicDetailcode != null">
-        dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR},
-      </if>
-      <if test="dicDetailname != null">
-        dic_detailname = #{dicDetailname,jdbcType=VARCHAR},
-      </if>
-      <if test="dicDetaildescription != null">
-        dic_detaildescription = #{dicDetaildescription,jdbcType=VARCHAR},
-      </if>
       <if test="dicValue != null">
         dic_value = #{dicValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where dic_code = #{dicCode,jdbcType=VARCHAR}
@@ -134,17 +132,18 @@
     set dic_id = #{dicId,jdbcType=INTEGER},
       dic_name = #{dicName,jdbcType=VARCHAR},
       dic_discription = #{dicDiscription,jdbcType=VARCHAR},
-      dic_detailcode = #{dicDetailcode,jdbcType=VARCHAR},
-      dic_detailname = #{dicDetailname,jdbcType=VARCHAR},
-      dic_detaildescription = #{dicDetaildescription,jdbcType=VARCHAR},
-      dic_value = #{dicValue,jdbcType=VARCHAR}
+      dic_value = #{dicValue,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where dic_code = #{dicCode,jdbcType=VARCHAR}
   </update>
-
 
   <select id="selectAllDictionaries" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from dictionary
   </select>
+
 </mapper>

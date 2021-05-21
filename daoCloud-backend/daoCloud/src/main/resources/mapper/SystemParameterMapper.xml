@@ -76,4 +76,11 @@
     from system_parameter
   </select>
 
+  <select id="selectBysname" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from system_parameter
+    where sys_name = #{sysName,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

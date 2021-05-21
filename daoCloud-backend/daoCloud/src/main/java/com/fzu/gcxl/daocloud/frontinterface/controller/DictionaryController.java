@@ -2,15 +2,15 @@ package com.fzu.gcxl.daocloud.frontinterface.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fzu.gcxl.daocloud.application.service.DictionaryService;
-import com.fzu.gcxl.daocloud.domain.entity.Dictionary;
-import com.fzu.gcxl.daocloud.domain.repository.DictionaryRespository;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
-import com.fzu.gcxl.daocloud.domain.entity.response.DBResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
+//@RequiresRoles("admin")
 public class DictionaryController {
 
     @Autowired
@@ -42,8 +42,8 @@ public class DictionaryController {
     }
 
     @DeleteMapping(path = "/dictionarydetails")
-    public BaseResponse deldetails(String diccode, String detailcode){
-        return dictionaryService.deleteDictionaryDetailsByCode(diccode, detailcode);
+    public BaseResponse deldetails(String detailcode){
+        return dictionaryService.deleteDictionaryDetailsByCode(detailcode);
     }
 
 
@@ -53,13 +53,18 @@ public class DictionaryController {
     }
 
     @GetMapping(path = "/dictionarydetails")
-    public BaseResponse finddetails(String diccode, String detailcode){
-        return dictionaryService.selectDictionaryDetailsByCode(diccode, detailcode);
+    public BaseResponse finddetails(String detailcode){
+        return dictionaryService.selectDictionaryDetailsByCode(detailcode);
+    }
+
+    @GetMapping(path = "/alldictionaries")
+    public BaseResponse getalldics(){
+        return dictionaryService.selectAllDictionaries();
     }
 
     @GetMapping(path = "/alldictionarydetails")
-    public BaseResponse getalldics(){
-        return dictionaryService.selectAllDictionaries();
+    public BaseResponse getalldicdetails(String diccode){
+        return dictionaryService.selectAllDictionaryDetails(diccode);
     }
 
 
