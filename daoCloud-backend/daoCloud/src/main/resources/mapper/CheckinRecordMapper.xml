@@ -116,6 +116,12 @@
     where checkin_id = #{checkinId,jdbcType=INTEGER}
   </update>
 
+  <select id="selectByCodeandDateSingle" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checkin_record
+    where  class_code = #{classCode,jdbcType=VARCHAR} and user_id = #{userId,jdbcType=VARCHAR} and checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+  </select>
 
 
   <select id="selectByCodeandDate" resultMap="BaseResultMap">
@@ -137,7 +143,7 @@
     select
     <include refid="Base_Column_List" />
     from checkin_record
-    where  class_code = #{classCode,jdbcType=VARCHAR},checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+    where  class_code = #{classCode,jdbcType=VARCHAR} and checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
         and teacher_id = #{teacherId,jdbcType=VARCHAR}
   </select>
 
@@ -145,7 +151,7 @@
     select
     <include refid="Base_Column_List" />
     from checkin_record
-    where  class_code = #{classCode,jdbcType=VARCHAR},checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
+    where  class_code = #{classCode,jdbcType=VARCHAR} and checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
     and user_id = #{studentId,jdbcType=VARCHAR}
   </select>
 

@@ -15,12 +15,13 @@ public class SmsController {
     private SmsService smsService;
 
 
-    @GetMapping("/verifiedcodes")
-    public BaseResponse getcode(String userPhone){
-        return  smsService.sendSms(userPhone);
+    // type: "L0""S1""R2" -> "登陆""注册""忘记密码"
+    @PostMapping("/verifiedcodes")
+    public BaseResponse getcode(@RequestBody JSONObject usersms){
+        return  smsService.sendSms(usersms);
     }
 
-    @PostMapping("/verifiedcodes")
+    @PostMapping("/verifiedcodesfromuser")
     public BaseResponse vefifycode(@RequestBody JSONObject usersignup){
         return smsService.verifySms(usersignup);
     }

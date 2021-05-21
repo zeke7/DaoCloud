@@ -6,14 +6,14 @@ import com.fzu.gcxl.daocloud.application.service.SmsService;
 import com.fzu.gcxl.daocloud.domain.entity.Account;
 import com.fzu.gcxl.daocloud.domain.entity.User;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
-import com.fzu.gcxl.daocloud.domain.exception.CustomException;
-import com.fzu.gcxl.daocloud.domain.exception.CustomUnauthorizedException;
+import com.fzu.gcxl.daocloud.domain.exception.UserFriendException;
 import com.fzu.gcxl.daocloud.domain.repository.AccountRepository;
 import com.fzu.gcxl.daocloud.domain.repository.UserRepository;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class AccountServiceImp implements AccountService {
@@ -53,14 +53,17 @@ public class AccountServiceImp implements AccountService {
         String password = usersignup.getString("password");
         String username = usersignup.getString("username");
 
-        String userschoool = usersignup.getString("userschoool");
+        String userschoool = usersignup.getString("userschool");
         String usersno = usersignup.getString("usersno");
         String userdepartment = usersignup.getString("userdepartment");
         String roleid = usersignup.getString("userole");
 
         String mobile = usersignup.getString("mobiledevice");
 
-        if (smsService.verifySms(usersignup).getData().equals("success") || mobile.equals("MOBILEDEVICE")) {
+        System.out.println(usersignup);
+        System.out.println("注册");
+
+        if (mobile.equals("MOBILEDEVICE")) {
 
             Account accountInDatabase = accountRepository.findAccountByPhone(userphone);
             User userInDatabase = userRepository.findUserByName(userphone);
@@ -73,7 +76,10 @@ public class AccountServiceImp implements AccountService {
             // 如果手机号不重复
             if (accountInDatabase == null){
                 newAccount.setLoginPhone(userphone);
-                newAccount.setLoginPassword(password);
+                ByteSource salt = ByteSource.Util.bytes(userphone);
+                String newPsd = new SimpleHash("MD5", password, salt, 3).toHex();
+                newAccount.setLoginPassword(newPsd);
+                System.out.println(newPsd);
                 accountExist = false;
             }
 
@@ -86,8 +92,10 @@ public class AccountServiceImp implements AccountService {
                 newUser.setUserPhone(userphone);
                 // userrole - 1=>student 2=>teacher
                 if (roleid.equals("student")){
-                    newUser.setRoleId(2);
+                    newUser.setRoleId(3);
                 }else if (roleid.equals("teacher")){
+                    newUser.setRoleId(2);
+                }else if(roleid.equals("admin")){
                     newUser.setRoleId(1);
                 }
                 userExist = false;
@@ -102,9 +110,61 @@ public class AccountServiceImp implements AccountService {
                 accountRepository.createNewAccount(newAccount);
                 return new BaseResponse(HttpStatus.OK.value(), "添加成功", "");
             }
-        }else {
-            return new BaseResponse(HttpStatus.OK.value(), "验证码错误", "");
         }
+
+        if(mobile.equals("BACKEND"))
+        {
+            if (smsService.verifySms(usersignup).getData().equals("success")){
+                Account accountInDatabase = accountRepository.findAccountByPhone(userphone);
+                User userInDatabase = userRepository.findUserByName(userphone);
+                boolean accountExist = true;
+                boolean userExist = true;
+                Account newAccount = new Account();
+                User newUser = new User();
+
+
+                // 如果手机号不重复
+                if (accountInDatabase == null){
+                    newAccount.setLoginPhone(userphone);
+                    ByteSource salt = ByteSource.Util.bytes(userphone);
+                    String newPsd = new SimpleHash("MD5", password, salt, 3).toHex();
+                    newAccount.setLoginPassword(newPsd);
+                    accountExist = false;
+                }
+
+                // 用户名不重复
+                if (userInDatabase == null){
+                    newUser.setUserName(username);
+                    newUser.setUserSchool(userschoool);
+                    newUser.setUserDepartment(userdepartment);
+                    newUser.setUserSno(usersno);
+                    newUser.setUserPhone(userphone);
+                    // userrole - 1=>student 2=>teacher
+                    if (roleid.equals("student")){
+                        newUser.setRoleId(3);
+                    }else if (roleid.equals("teacher")){
+                        newUser.setRoleId(2);
+                    }else if(roleid.equals("admin")){
+                        newUser.setRoleId(1);
+                    }
+                    userExist = false;
+                }
+
+                if(accountExist){
+                    return new BaseResponse(HttpStatus.OK.value(), "账户已经存在", "");
+                }else if (userExist){
+                    return new BaseResponse(HttpStatus.OK.value(), "用户名已经存在", "");
+                }else{
+                    userRepository.createNewUser(newUser);
+                    accountRepository.createNewAccount(newAccount);
+                    return new BaseResponse(HttpStatus.OK.value(), "添加成功", "");
+                }
+            }else {
+                return new BaseResponse(HttpStatus.OK.value(), "验证码错误", "");
+            }
+        }
+        return new BaseResponse(HttpStatus.OK.value(), "注册失败", "");
+
     }
 
     public BaseResponse resetPassword(JSONObject usertomodfiypwd){
@@ -115,7 +175,9 @@ public class AccountServiceImp implements AccountService {
         if (oldPassword.equals(accountRepository.findAccountByPhone(username).getLoginPassword())){
             Account modPwd = new Account();
             modPwd.setLoginPhone(username);
-            modPwd.setLoginPassword(newPassword);
+            ByteSource salt = ByteSource.Util.bytes(username);
+            String newPsd = new SimpleHash("MD5", newPassword, salt, 3).toHex();
+            modPwd.setLoginPassword(newPsd);
 
             if (accountRepository.updateAccountPassword(modPwd) != 0){
                 return new BaseResponse(HttpStatus.OK.value(), "密码修改成功", "ModifyPasswordSuccess");
@@ -130,20 +192,23 @@ public class AccountServiceImp implements AccountService {
     }
 
     public BaseResponse backPassword(JSONObject usertomodfiypwd){
-        String username = usertomodfiypwd.getString("username");
+        String username = usertomodfiypwd.getString("userphone");
+
         String newPassword = usertomodfiypwd.getString("newpassword");
         Account account = accountService.findAccountByPhone(username);
 
         if (account == null) {
-            throw new CustomException("该帐号不存在");
+            throw new UserFriendException("该帐号不存在");
         }
-
-        if (smsService.verifySms(usertomodfiypwd).getData().equals("success")){
+        boolean issuccess = smsService.verifySms(usertomodfiypwd).getData().equals("success");
+        if (issuccess){
             Account modPwd = new Account();
             modPwd.setLoginPhone(username);
-            modPwd.setLoginPassword(newPassword);
-
-            if (accountRepository.updateAccountPassword(modPwd) != 0){
+            ByteSource salt = ByteSource.Util.bytes(username);
+            String newPsd = new SimpleHash("MD5", newPassword, salt, 3).toHex();
+            modPwd.setLoginPassword(newPsd);
+            int res = accountRepository.updateAccountPassword(modPwd);
+            if (res != -1){
                 return new BaseResponse(HttpStatus.OK.value(), "密码修改成功", "ModifyPasswordSuccess");
             }else{
                 return new BaseResponse(HttpStatus.OK.value(), "密码找回失败", "ModifyPasswordFailed");

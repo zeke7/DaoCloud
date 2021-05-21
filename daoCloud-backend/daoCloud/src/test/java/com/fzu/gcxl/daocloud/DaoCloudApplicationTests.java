@@ -25,8 +25,6 @@ class DaoCloudApplicationTests {
     void contextLoads() {
 //        String result1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis()));
 //        System.out.println(new Date(System.currentTimeMillis()));
-
-        System.out.println(classInfoRepository.selectUserByphonecode("cs110","110").getUserName());
     }
 
 

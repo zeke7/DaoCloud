@@ -1,10 +1,13 @@
 package com.fzu.gcxl.daocloud.domain.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class Checkin {
     private Integer checkinId;
 
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date checkinDate;
 
     private Integer duration;
@@ -17,8 +20,10 @@ public class Checkin {
 
     private String classCode;
 
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     private String checkinLocation;

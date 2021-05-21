@@ -12,13 +12,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassInfoDTO implements Serializable {
+public class ClassInfoDto implements Serializable {
 
     private String userSchool;
 
     private String userDepartment;
 
     private String userName;
+
+//    private String ;
 
     private List<Class> classes;
 }

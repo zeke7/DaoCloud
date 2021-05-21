@@ -1,6 +1,7 @@
 package com.fzu.gcxl.daocloud.application.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,11 @@ public interface CheckinService {
 
     // 学生 获取签到记录
     public BaseResponse recordCheckinstudent(@RequestBody JSONObject tcheckin);
+
+    // 教师修改签到记录
+    public BaseResponse recordModifiedByTeacher(@RequestBody JSONObject tcheckin);
+
+    // 教师修改签到记录
+    public BaseResponse stuexp(@RequestBody JSONObject tcheckin);
 
 }

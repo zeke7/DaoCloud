@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.DictionarydetailRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.Dictionarydetail">
+    <id column="dicdetail_code" jdbcType="VARCHAR" property="dicdetailCode" />
+    <result column="dictionarydetail_id" jdbcType="INTEGER" property="dictionarydetailId" />
+    <result column="dicdetail_name" jdbcType="VARCHAR" property="dicdetailName" />
+    <result column="dicdetail_description" jdbcType="VARCHAR" property="dicdetailDescription" />
+    <result column="dicdetail_value" jdbcType="VARCHAR" property="dicdetailValue" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="dic_code" jdbcType="VARCHAR" property="dicCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dicdetail_code, dictionarydetail_id, dicdetail_name, dicdetail_description, dicdetail_value, 
+    create_by, create_time, update_by, update_time, dic_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dictionarydetail
+    where dicdetail_code = #{dicdetailCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from dictionarydetail
+    where dicdetail_code = #{dicdetailCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionarydetail">
+    insert into dictionarydetail (dicdetail_code, dictionarydetail_id, 
+      dicdetail_name, dicdetail_description, dicdetail_value, 
+      create_by, create_time, update_by, 
+      update_time, dic_code)
+    values (#{dicdetailCode,jdbcType=VARCHAR}, #{dictionarydetailId,jdbcType=INTEGER}, 
+      #{dicdetailName,jdbcType=VARCHAR}, #{dicdetailDescription,jdbcType=VARCHAR}, #{dicdetailValue,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{dicCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionarydetail">
+    insert into dictionarydetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dicdetailCode != null">
+        dicdetail_code,
+      </if>
+      <if test="dictionarydetailId != null">
+        dictionarydetail_id,
+      </if>
+      <if test="dicdetailName != null">
+        dicdetail_name,
+      </if>
+      <if test="dicdetailDescription != null">
+        dicdetail_description,
+      </if>
+      <if test="dicdetailValue != null">
+        dicdetail_value,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="dicCode != null">
+        dic_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dicdetailCode != null">
+        #{dicdetailCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionarydetailId != null">
+        #{dictionarydetailId,jdbcType=INTEGER},
+      </if>
+      <if test="dicdetailName != null">
+        #{dicdetailName,jdbcType=VARCHAR},
+      </if>
+      <if test="dicdetailDescription != null">
+        #{dicdetailDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="dicdetailValue != null">
+        #{dicdetailValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dicCode != null">
+        #{dicCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionarydetail">
+    update dictionarydetail
+    <set>
+      <if test="dictionarydetailId != null">
+        dictionarydetail_id = #{dictionarydetailId,jdbcType=INTEGER},
+      </if>
+      <if test="dicdetailName != null">
+        dicdetail_name = #{dicdetailName,jdbcType=VARCHAR},
+      </if>
+      <if test="dicdetailDescription != null">
+        dicdetail_description = #{dicdetailDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="dicdetailValue != null">
+        dicdetail_value = #{dicdetailValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dicCode != null">
+        dic_code = #{dicCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dicdetail_code = #{dicdetailCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.Dictionarydetail">
+    update dictionarydetail
+    set dictionarydetail_id = #{dictionarydetailId,jdbcType=INTEGER},
+      dicdetail_name = #{dicdetailName,jdbcType=VARCHAR},
+      dicdetail_description = #{dicdetailDescription,jdbcType=VARCHAR},
+      dicdetail_value = #{dicdetailValue,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      dic_code = #{dicCode,jdbcType=VARCHAR}
+    where dicdetail_code = #{dicdetailCode,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectDetialsbyDicCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionarydetail
+    where dic_code = #{dicCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByDicAndDetialCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionarydetail
+    where dic_code = #{dicCode,jdbcType=VARCHAR} and dicdetail_code = #{dicdetailCode,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

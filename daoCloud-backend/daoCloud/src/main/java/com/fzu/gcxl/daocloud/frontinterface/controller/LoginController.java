@@ -14,21 +14,26 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 // 登陆控制器
-@RestController
+//@RestController
+@Controller
 public class LoginController {
 
     @Autowired
     LoginService loginService;
 
+    @RequestMapping("/toLogin")
+    public String toLogin(){
+        return "loginpage";
+    }
+
     @CrossOrigin
+    @ResponseBody
     @PostMapping(value = "/login")
     public BaseResponse userLogin(@RequestBody JSONObject usertologin, HttpServletResponse httpServletResponse) {
         // 将用户名和密码封装成 UsernamePasswordToken 对象
@@ -36,6 +41,7 @@ public class LoginController {
     }
 
     @CrossOrigin
+    @ResponseBody
     @PostMapping(value = "/loginbysms")
     public BaseResponse userLoginbySms(@RequestBody JSONObject usertologin, HttpServletResponse httpServletResponse) {
         return loginService.loginsms(usertologin, httpServletResponse);

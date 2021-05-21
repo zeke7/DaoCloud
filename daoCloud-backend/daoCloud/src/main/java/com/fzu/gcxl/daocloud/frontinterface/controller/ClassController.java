@@ -5,6 +5,7 @@ import com.fzu.gcxl.daocloud.application.service.ClassService;
 import com.fzu.gcxl.daocloud.domain.entity.Class;
 import com.fzu.gcxl.daocloud.domain.repository.ClassRepository;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+//@RequiresRoles("teacher")
 public class ClassController {
 
     @Autowired
@@ -49,8 +51,8 @@ public class ClassController {
 
     @CrossOrigin
     @GetMapping("/codeClasses")
-    public BaseResponse getClassByCode(String classcode){
-        return classService.getClassesByCode(classcode);
+    public BaseResponse getClassByCode(String classCode){
+        return classService.getClassesByCode(classCode);
     }
 
     @CrossOrigin
@@ -67,10 +69,22 @@ public class ClassController {
 
     @CrossOrigin
     @GetMapping("/classesdto")
-    public BaseResponse getallClassesDto(String userphone){
-        System.out.println(userphone);
+    public BaseResponse getClassesDto(String userphone){
         return classService.selectAllClassesInfo(userphone);
     }
+
+    @CrossOrigin
+    @GetMapping("/allclassesdto")
+    public BaseResponse getallClassesDto(){
+        return classService.selectAllInfo();
+    }
+
+//    @CrossOrigin
+//    @GetMapping("/classesdtobynums")
+//    public BaseResponse getallClassesDto(String userphone, Integer counts){
+//        return classService.selectAllClassesInfo(userphone);
+//    }
+
 
 
 

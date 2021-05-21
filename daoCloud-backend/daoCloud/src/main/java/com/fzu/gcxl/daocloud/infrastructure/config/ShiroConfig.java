@@ -27,7 +27,8 @@ public class ShiroConfig {
         Map<String, Filter> filterMap = new LinkedHashMap<>(16);
         filterMap.put("jwt", new JWTFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
-        //shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
+//        shiroFilterFactoryBean.setLoginUrl("/toLogin");
         shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
         //shiroFilterFactoryBean.setLoginUrl("/toLogin");//登录的页面
         //shiroFilterFactoryBean.setSuccessUrl("/index");//登录成功的页面
@@ -37,8 +38,11 @@ public class ShiroConfig {
             authc表示用户必须认证过才能访问
 //         */
         filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/loginbysms", "anon");
         filterChainDefinitionMap.put("/signup", "anon");
-        filterChainDefinitionMap.put("/**", "anon");
+        filterChainDefinitionMap.put("/verifiedcodes", "anon");
+        filterChainDefinitionMap.put("/verifiedcodesfromuser", "anon");
+        filterChainDefinitionMap.put("/backpassword", "anon");
 
         //放行Swagger接口
         filterChainDefinitionMap.put("/v2/api-docs","anon");
@@ -52,9 +56,10 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/signup", "anon");
 //        filterChainDefinitionMap.put("/toSignup", "anon");
 //        filterChainDefinitionMap.put("/logout", "logout");//登出url，登出操作shiro已经写好，只需要在前端跳转到该url
-        //filterChainDefinitionMap.put("/**", "authc"); //剩下的所有页面都需要认证过才能访问。这一行必须放在最后，放在前面所有的资源都被拦截了
-//        filterChainDefinitionMap.put("/**", "anon");
+//        filterChainDefinitionMap.put("/**", "authc"); //剩下的所有页面都需要认证过才能访问。这一行必须放在最后，放在前面所有的资源都被拦截了
+        filterChainDefinitionMap.put("/**", "anon");
         //shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+//        filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }

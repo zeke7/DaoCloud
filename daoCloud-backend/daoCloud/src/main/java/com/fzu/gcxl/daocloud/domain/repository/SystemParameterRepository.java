@@ -22,7 +22,7 @@ public interface SystemParameterRepository extends IRepository<SystemParameter> 
 
     int updateByPrimaryKey(SystemParameter record);
 
-    SystemParameter selectBysname(String sname);
+    SystemParameter selectBysname(String sysName);
 
     List<SystemParameter> getAllSysParams();
 }

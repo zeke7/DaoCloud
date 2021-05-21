@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: ni12wo34
-    url: jdbc:mysql://localhost:3306/daocloud?useSSL=false&autoReconnect=true&failOverReadOnly=false
+    url: jdbc:mysql://localhost:3306/daocloud?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 mybatis:
