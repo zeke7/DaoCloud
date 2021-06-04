@@ -4,11 +4,11 @@ import VueRouter from 'vue-router'
 import {
 	getToken
 } from '@/http/auth.js'
-import http from '@/http/http.js'
+import http from '../http/http.js'
 import {
 	isURL,
 	isDynamicRoutes
-} from '@/utils/validate.js'
+} from '../utils/validate.js'
 
 Vue.use(VueRouter)
 
@@ -32,93 +32,71 @@ const routes = [
 	{
 		path: '/404',
 		name: '404',
-		component: () => import('@/views/common/404.vue')
+		component: () => import('../views/common/404.vue')
 	},
 	{
 		path: '/403',
 		name: '403',
-		component: () => import('@/views/common/403.vue')
+		component: () => import('../views/common/403.vue')
 	},
 	{
 		path: '/500',
 		name: '500',
-		component: () => import('@/views/common/500.vue')
+		component: () => import('../views/common/500.vue')
 	},
 	{
 		path: '/Login',
 		name: 'Login',
-		component: () => import('@/views/common/Login.vue')
+		component: () => import('../views/common/Login.vue')
 	},
 	{
 		path: '/loginByCode',
 		name: 'Login',
-		component: () => import('@/views/common/loginByCode.vue')
+		component: () => import('../views/common/loginByCode.vue')
 	},
 	{
 		path: '/register',
 		name: 'register',
-		component: () => import('@/views/common/register.vue')
+		component: () => import('../views/common/register.vue')
 	},
 	{
 		path: '/forgetPassword',
 		name: 'forgetPassword',
-		component: () => import('@/views/common/forgetPassWord.vue')
+		component: () => import('../views/common/forgetPassWord')
 	},
 	{
 		path: '/classList',
 		name: 'classList',
-		component: () => import('@/views/dynamic/sys/classList.vue')
+		component: () => import('../views/dynamic/sys/classList')
 	},
 	{
 		path: '/config',
 		name: 'config',
-		component: () => import('@/views/dynamic/sys/config.vue')
+		component: () => import('../views/dynamic/sys/config.vue')
 	},
 	{
 		path: '/dictionary',
 		name: 'dictionary',
-		component: () => import('@/views/dynamic/dictionary/dictionarylist.vue')
+		component: () => import('../views/dynamic/dictionary/dictionarylist.vue'),
+	},
+	{
+		path: '/detailDictionary',
+		name: 'detailDictionary',
+		component: () => import('../views/dynamic/dictionary/detailDic')
 	},
 	{
 		path: '/Home',
 		name: 'Home',
-		component: () => import('@/views/Home.vue'),
+		component: () => import('../views/Home.vue'),
 		redirect: {
 			name: 'HomePage'
 		},
 		children: [{
 				path: '/Home/Page',
 				name: 'HomePage',
-				component: () => import('@/views/menu/HomePage.vue'),
+				component: () => import('../views/menu/HomePage.vue'),
 				meta: {
 					isRouter: true
-				}
-			},
-			{
-				path: '/Home/Demo/Echarts',
-				name: 'Echarts',
-				component: () => import('@/views/menu/Echarts.vue'),
-				meta: {
-					isRouter: true,
-					isTab: true
-				}
-			},
-			{
-				path: '/Home/Demo/Ueditor',
-				name: 'Ueditor',
-				component: () => import('@/views/menu/Ueditor.vue'),
-				meta: {
-					isRouter: true,
-					isTab: true
-				}
-			},
-			{
-				path: '/Home/Demo/Baidu',
-				name: 'Baidu',
-				meta: {
-					isRouter: true,
-					isTab: true,
-					iframeUrl: '@/test.html'
 				}
 			},
 			// 路由匹配失败时，跳转到 404 页面
@@ -162,31 +140,62 @@ router.beforeEach((to, from, next) => {
 		}else {
 			// token 存在时，判断是否已经获取过 动态菜单，未获取，即 false 时，需要获取
 			if (!router.options.isAddDynamicMenuRoutes) {
-				http.menu.getMenus().then((response => {
-					// 数据返回成功时
-					if (response && response.data.code === 200) {
-						// 设置动态菜单为 true，表示不用再次获取
-						router.options.isAddDynamicMenuRoutes = true
-						// 获取动态菜单数据
-						let results = fnAddDynamicMenuRoutes(response.data.data)
-						// 如果动态菜单数据存在，对其进行处理
-						if (results && results.length > 0) {
-							// 遍历第一层数据
-							results.map(value => {
-								// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
-								if (!value.path) {
-									value.path = `/DynamicRoutes-${value.meta.menuId}`
-									value.name = `DynamicHome-${value.meta.menuId}`
-									value.component = () => import('@/views/Home.vue')
-								}
-							})
+				let identity = Vue.cookie.get("identity")
+				console.log(identity)
+				if (identity === 'admin'){
+					http.adminMenu.getMenus().then((response => {
+						// 数据返回成功时
+						if (response && response.data.code === 200) {
+							console.log(response)
+							// 设置动态菜单为 true，表示不用再次获取
+							router.options.isAddDynamicMenuRoutes = true
+							// 获取动态菜单数据
+							let results = fnAddDynamicMenuRoutes(response.data.data)
+							// 如果动态菜单数据存在，对其进行处理
+							if (results && results.length > 0) {
+								// 遍历第一层数据
+								results.map(value => {
+									// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
+									if (!value.path) {
+										value.path = `/DynamicRoutes-${value.meta.menuId}`
+										value.name = `DynamicHome-${value.meta.menuId}`
+										value.component = () => import('../views/Home.vue')
+									}
+								})
+							}
+							// 使用 vuex 管理动态路由数据
+							router.app.$options.store.dispatch('common/updateDynamicRoutes', results)
+							// 使用 router 实例的 addRoutes 方法，给当前 router 实例添加一个动态路由
+							router.addRoutes(results)
 						}
-						// 使用 vuex 管理动态路由数据
-						router.app.$options.store.dispatch('common/updateDynamicRoutes', results)
-						// 使用 router 实例的 addRoutes 方法，给当前 router 实例添加一个动态路由
-						router.addRoutes(results)
-					}
-				}))
+					}))
+				}else if (identity === 'teacher'){
+					http.teacherMenu.getMenus1().then((response => {
+						// 数据返回成功时
+						if (response && response.data.code === 200) {
+							// 设置动态菜单为 true，表示不用再次获取
+							router.options.isAddDynamicMenuRoutes = true
+							// 获取动态菜单数据
+							let results = fnAddDynamicMenuRoutes(response.data.data)
+							// 如果动态菜单数据存在，对其进行处理
+							if (results && results.length > 0) {
+								// 遍历第一层数据
+								results.map(value => {
+									// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
+									if (!value.path) {
+										value.path = `/DynamicRoutes-${value.meta.menuId}`
+										value.name = `DynamicHome-${value.meta.menuId}`
+										value.component = () => import('../views/Home.vue')
+									}
+								})
+							}
+							// 使用 vuex 管理动态路由数据
+							router.app.$options.store.dispatch('common/updateDynamicRoutes', results)
+							// 使用 router 实例的 addRoutes 方法，给当前 router 实例添加一个动态路由
+							router.addRoutes(results)
+						}
+					}))
+				}
 			}
 		}
 	}

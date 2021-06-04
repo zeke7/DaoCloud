@@ -99,6 +99,7 @@ export default {
               })
               // 保存 token
               this.$cookie.set('token', response.headers.authorization,1)
+              this.$cookie.set('identity', "admin",1)
               this.updateName(this.dataForm.userPhone)
               this.$router.push({
                 name: 'Home'

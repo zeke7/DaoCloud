@@ -107,6 +107,7 @@
 			// 退出登录，回到登录界面
 			logout() {
 			  Vue.cookie.delete('token')
+			  Vue.cookie.delete('identity')
         router.options.isAddDynamicMenuRoutes = false
 				this.$router.push({
 					name: "Login"

@@ -158,7 +158,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http.systemConfig.delConfig(id, token).then(res => {
-
           if (res) {
             console.log(res)
             this.reload()

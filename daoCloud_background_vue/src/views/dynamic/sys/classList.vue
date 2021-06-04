@@ -5,13 +5,6 @@
         :model="dataForm"
         @keyup.enter.native="getDataList()"
     >
-      <!--      <el-form-item>-->
-      <!--        <el-input-->
-      <!--          v-model="dataForm.roleName"-->
-      <!--          placeholder="班课Id"-->
-      <!--          clearable-->
-      <!--        ></el-input>-->
-      <!--      </el-form-item>-->
       <el-form-item>
         <el-input
             v-model="dataForm.classCode"
