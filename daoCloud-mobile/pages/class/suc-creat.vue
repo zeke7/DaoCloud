@@ -7,15 +7,19 @@
 				<dd>创建成功</dd>
 			</dl>
 
-			<view class="qrcode-body" style="margin-top: 50rpx;">
+		<!-- 	<view class="qrcode-body" style="margin-top: 50rpx;">
 				 <view class="qrcode">
 					  <canvas canvas-id="myCanvas"/>
 				 </view> 
+			</view> -->
+			
+			<view class="box">
+				<image class="se" :src = "img"></image>
 			</view>
 			
 			<view class="sharbuttn">
-				<view class="btn" @click="save">保存二维码</view>
-				<navigator class="btn" url="../home/home">返回首页</navigator>
+				<view class="btn" @click="save(img)">保存二维码</view>
+				<view class="btn" @click="go_home()">返回首页</view>
 			</view>
 		</view>
 	</view>
@@ -26,7 +30,8 @@
 	export default {
 		data() {
 			return {
-
+				img:"",
+				kr:"2333333"
 			}
 		},
 
@@ -34,33 +39,45 @@
 			console.log('show')
 		},
 		onLoad() {
-			let qrcode = new Qrcode({
-			        'level': 'Q',
-			        'size': 200,
-					'foreground':'#6495ED'
-			      });
-			      qrcode.draw('myCanvas', 'https://riyugo.com/i/2021/04/20/z0lark.jpg');
+			// let qrcode = new Qrcode({
+			//         'level': 'Q',
+			//         'size': 200,
+			// 		'foreground':'#6495ED'
+			//       });
+			var str1 = this.kr.replace(' ','+')		
+			//将创建成功的班课号生成二维码
+			this.img='https://tool.oschina.net/action/qrcode/generate?data='+str1+'&output=image%2Fgif&error=L&type=0&margin=0&size=4&1621760013581'		 
 		},
 		methods: {
 			//保存图片到相册
-			save(){
-				uni.showActionSheet({
-					itemList:['保存图片到相册'],
-					success: () => {
-						plus.gallery.save('http://pds.jyt123.com/wxtest/logo.png', function() {
-							uni.showToast({
-								title:'保存成功',
-								icon:'none'
-							})
-						}, function() {
-							uni.showToast({
-								title:'保存失败，请重试！',
-								icon:'none'
-							})
-						});
+			save(url){
+				const that = this;
+				uni.downloadFile({
+					url,
+					success: res => {
+						if (res.statusCode === 200) {
+							uni.saveImageToPhotosAlbum({
+								filePath: res.tempFilePath,
+								success: function() {
+									this.tools.toast('保存成功');
+								},
+								fail: function() {
+									this.tools.toast('保存失败，请稍后重试');
+								}
+							});
+						} else {
+							this.tools.toast('保存失败，请稍后重试');
+						}
 					}
-				})
+				});				
 			},
+			//返回首页
+			go_home(){
+				uni.switchTab({
+					url:'../home/home'
+				})
+				
+			}
 		},
 	}
 </script>
@@ -125,5 +142,15 @@
 	  .content{
 	  	width: 100%;
 	  	background-color: #ffffff;
+	  }
+	  .box{
+	  	width: 100%;
+	  	height: 450rpx;  	
+	  	text-align: center;  
+	  }
+	  .se{
+	  	margin-top:20rpx;
+	  	width:450rpx;
+	  	height:100%;
 	  }
 </style>

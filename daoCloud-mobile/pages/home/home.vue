@@ -15,7 +15,7 @@
 						</view> 
 						<view class="text-blue" style="padding: 15upx 0upx;">
 							<navigator url="../class/join">
-									使用班课号加入班课	
+									加入班课	
 							</navigator>							
 						</view>
 						<view class="text-blue" @tap="hideModal" style="padding: 15upx 0upx;">
@@ -49,7 +49,7 @@
 						<view class="text-black text-bold">2</view>
 						<view class=" text-sm flex">
 							<view >池芝标</view> 
-							<view class="text-gray" style="margin-left: 20upx;">2020-1</view>
+							<view class="text-gray" style="margin-left: 20upx;">2021-1</view>
 						</view> 
 					</view>
 					<view class="action">
@@ -66,7 +66,7 @@
 					<view class="text-black text-bold">{{item.name}}</view>
 					<view class=" text-sm flex">
 						<view >{{item.teacher}}</view> 
-						<view class="text-gray" style="margin-left: 20upx;">2020-1</view>
+						<view class="text-gray" style="margin-left: 20upx;">2021-1</view>
 					</view>
 					<view class="choose" >
 						<view><text class="cuIcon-focus" @click="go_signin"></text>签到</view>
@@ -74,8 +74,8 @@
 						<view><text class="cuIcon-mark"></text>抢答</view>
 					</view>
 				</view>
-				<view class="action">
-					<text class="cuIcon-right text-gray" ></text>
+				<view class="action" >
+					<text class="cuIcon-right text-gray" @click="go_class()" ></text>
 				</view>
 			</view>
 		</view>
@@ -95,6 +95,37 @@
 				joinClass:[{name:'工程训练',teacher:'池芝标'},{name:'工程英语',teacher:'陈勃'}],//加入的班课
 			}
 		},
+		// onLoad() {
+		// 	var that=this;
+		// 	uni.getStorage({
+		// 		key:'join_class',
+		// 		success: function (res) {
+		// 			console.log(res.data)
+		// 			that.joinClass=res.data
+		// 		},				
+		// 	})
+		// },
+		onShow() {
+			var that=this;
+			uni.getStorage({
+				key:'join_class',
+				success: function (res) {
+					//console.log(res.data)
+					that.joinClass=res.data
+				},				
+			})			
+		},
+		onHide() {
+			var that=this
+			uni.setStorage({
+				key:'join_class',			
+				data:that.joinClass,
+				success: function () {
+					console.log('success');
+				}
+			})
+			this.modalName = null
+		},
 		methods: {
 			//切换操作条  我创建的/我加入的
 			tabSelect(e) {
@@ -107,6 +138,12 @@
 			},
 			hideModal(e) {
 				this.modalName = null
+			},
+			//班课详情
+			go_class(){
+				uni.navigateTo({
+					url:'../class/class'
+				})
 			},
 			//创建班课
 			go_addclass(){

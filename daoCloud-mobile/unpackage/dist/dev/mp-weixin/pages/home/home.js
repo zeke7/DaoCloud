@@ -227,6 +227,37 @@ var _default =
       joinClass: [{ name: '工程训练', teacher: '池芝标' }, { name: '工程英语', teacher: '陈勃' }] //加入的班课
     };
   },
+  // onLoad() {
+  // 	var that=this;
+  // 	uni.getStorage({
+  // 		key:'join_class',
+  // 		success: function (res) {
+  // 			console.log(res.data)
+  // 			that.joinClass=res.data
+  // 		},				
+  // 	})
+  // },
+  onShow: function onShow() {
+    var that = this;
+    uni.getStorage({
+      key: 'join_class',
+      success: function success(res) {
+        //console.log(res.data)
+        that.joinClass = res.data;
+      } });
+
+  },
+  onHide: function onHide() {
+    var that = this;
+    uni.setStorage({
+      key: 'join_class',
+      data: that.joinClass,
+      success: function success() {
+        console.log('success');
+      } });
+
+    this.modalName = null;
+  },
   methods: {
     //切换操作条  我创建的/我加入的
     tabSelect: function tabSelect(e) {
@@ -239,6 +270,12 @@ var _default =
     },
     hideModal: function hideModal(e) {
       this.modalName = null;
+    },
+    //班课详情
+    go_class: function go_class() {
+      uni.navigateTo({
+        url: '../class/class' });
+
     },
     //创建班课
     go_addclass: function go_addclass() {

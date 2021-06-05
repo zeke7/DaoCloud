@@ -5,6 +5,7 @@
     "pages/login/forget-password",
     "pages/home/home",
     "pages/home/mine",
+    "pages/class/class",
     "pages/index/index",
     "pages/test/test",
     "pages/class/creat",
@@ -44,5 +45,6 @@
       }
     ]
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
 }

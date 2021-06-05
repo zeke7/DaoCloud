@@ -61,9 +61,9 @@
           "pathName": "pages/class/suc-creat"
         },
         {
-          "name": "qiandao",
+          "name": "class",
           "id": 7,
-          "pathName": "pages/signin/signin"
+          "pathName": "pages/class/class"
         }
       ]
     }

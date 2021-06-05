@@ -19,20 +19,41 @@
 		<view>
 			<view style="color: gray; margin: 10upx 30upx;">班课信息</view>
 			<view class="cu-form-group" style="margin-top: 10upx;">
-				<view class="title">班级</view>
-				<input ></input>
-			</view>
-			<view class="cu-form-group">
-				<view class="title">课程</view>
+				<view class="title">班课名称</view>
 				<input v-model="className"></input>
 			</view>
 			<view class="cu-form-group">
-				<view class="title">学期</view>
-				<view class="text-gray">2020-1</view>
+				<view class="title">教师姓名</view>
+				<input v-model="teacherName"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">班课学生人数</view>
+				<input v-model="classmember"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">课程学期</view>
+				<picker @change="PickerChange" :value="index" :range="picker">
+					<view class="picker">
+						{{index>-1?picker[index]:'去选择'}}
+					</view>
+				</picker>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">班课编号</view>
+				<input v-model="classcode"></input>
 			</view>
 		</view>
-		<!--	类型   	-->
+		<!--	创建人信息  	-->
 		<view>
+			<view style="color: gray; margin: 10upx 30upx;">创建者信息</view>
+			<view class="cu-form-group" style="margin-top: 10upx;">
+				<view class="title">创建者手机号</view>
+				<input v-model="userPhone"></input>
+			</view>
+		</view>
+		
+		<!--	类型   	-->
+		<!-- <view>
 			<view style="color: gray; margin: 20upx 30upx;">类别</view>
 			<view class="cu-form-group" style="margin-top: 10upx;">
 				<view class="title">学校课表班课</view>
@@ -47,17 +68,18 @@
 					</view>
 				</picker>
 			</view>
-		</view>
+		</view> -->
 		<!--	展开设置学校、院系详情   	-->
-		<view>
+		<!-- <view>
 			<view style="color: gray; margin: 20upx 10upx;">展开设置学校、院系详情</view>
 			<view>
 				<text style="font-size: 30upx;margin: 20upx 10upx;">设置班课详情</text>
 				<text class="cuIcon-refresharrow" ></text>
 			</view>			
-		</view>
+		</view> -->
+		
 		<!--	创建班课完成   	-->
-		<button class="button bg-blue"  @click="go_home()">创建班课</button>
+		<button class="button bg-blue"  @click="suc_cre()">创建班课</button>
 	</view>
 </template>
 
@@ -65,11 +87,14 @@
 	export default {
 		data() {
 			return {
-				imgList: [],//班课封面
-				switchA: false,//是否为学校课表班课
-				index: -1,//云教材初始index
-				picker: ['C++', 'java', 'python'],//云教材选择
-				className:null,
+				imgList: [],//班课封面				
+				className:null,//班课名称
+				teacherName:null,
+				classmember:null,//班课学生人数
+				semester:null,//班课学期
+				picker:['2020-1','2020-2','2021-1','2021-2'],//选择班课学期
+				index:-1,//默认下标为-1,
+				userPhone:13055766787 //创建者手机号
 			}
 		},
 		methods: {
@@ -113,23 +138,26 @@
 			SwitchA(e) {
 				this.switchA = e.detail.value
 			},
-			//选择云教材
+			//选择课程学期
 			PickerChange(e) {
-				this.index = e.detail.value
+				var that=this;
+				that.index = e.detail.value,
+				that.semester=that.picker[that.index]
 			},
-			go_home(){
-				uni.switchTab({
-					url:'../home/home',
-				})				
+			suc_cre(){
+				uni.navigateTo({
+					url:'suc-creat'
+				})		
 			},
-			handleQuery(){
-				this.$router.push({
-					path:'../home/home',
-					query:{
-						className:11,
-					}
-				});
-			}
+			
+			// handleQuery(){
+			// 	this.$router.push({
+			// 		path:'../home/home',
+			// 		query:{
+			// 			className:11,
+			// 		}
+			// 	});
+			// }
 		}
 	}
 </script>

@@ -1,1 +1,1 @@
-<view><view class="cu-form-group"><view class="title">角色</view><picker value="{{index}}" range="{{picker}}" data-event-opts="{{[['change',[['PickerChange',['$event']]]]]}}" bindchange="__e"><view class="picker">{{''+(index>-1?picker[index]:'请选择')+''}}</view></picker></view><view>{{index}}</view><view>{{userole}}</view></view>
+<view class="_div"></view>

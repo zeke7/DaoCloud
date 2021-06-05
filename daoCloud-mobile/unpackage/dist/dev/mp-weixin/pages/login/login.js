@@ -255,7 +255,7 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
       // if(checkPwd(this.password)){
       // 	return
       // };
-      //验证验证码是否正确
+      //账号存在，正常登录
       uni.request({
         url: 'http://112.74.55.61:8081/loginbysms',
         method: 'POST',
@@ -284,6 +284,7 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
           console.log('链接失败');
         } });
 
+
     },
     //用户名及登录
     login_password: function login_password() {
@@ -301,7 +302,7 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
 
         success: function success(res) {
           console.log(res.data);
-          if (res.data.data !== 'LoginFailed') {
+          if (res.data.data === '201') {
             console.log("登录成功");
             uni.switchTab({
               url: "../home/home" });

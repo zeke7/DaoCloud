@@ -1927,14 +1927,184 @@ function normalizeComponent (
 
 /***/ }),
 
-/***/ 113:
-/*!*****************************************************************!*\
-  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/static/face.png ***!
-  \*****************************************************************/
+/***/ 111:
+/*!****************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/util.js ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/static/face.png";
+function formatTime(time) {
+  if (typeof time !== 'number' || time < 0) {
+    return time;
+  }
+
+  var hour = parseInt(time / 3600);
+  time = time % 3600;
+  var minute = parseInt(time / 60);
+  time = time % 60;
+  var second = time;
+
+  return [hour, minute, second].map(function (n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n;
+  }).join(':');
+}
+
+function formatLocation(longitude, latitude) {
+  if (typeof longitude === 'string' && typeof latitude === 'string') {
+    longitude = parseFloat(longitude);
+    latitude = parseFloat(latitude);
+  }
+
+  longitude = longitude.toFixed(2);
+  latitude = latitude.toFixed(2);
+
+  return {
+    longitude: longitude.toString().split('.'),
+    latitude: latitude.toString().split('.') };
+
+}
+var dateUtils = {
+  UNITS: {
+    '年': 31557600000,
+    '月': 2629800000,
+    '天': 86400000,
+    '小时': 3600000,
+    '分钟': 60000,
+    '秒': 1000 },
+
+  humanize: function humanize(milliseconds) {
+    var humanize = '';
+    for (var key in this.UNITS) {
+      if (milliseconds >= this.UNITS[key]) {
+        humanize = Math.floor(milliseconds / this.UNITS[key]) + key + '前';
+        break;
+      }
+    }
+    return humanize || '刚刚';
+  },
+  format: function format(dateStr) {
+    var date = this.parse(dateStr);
+    var diff = Date.now() - date.getTime();
+    if (diff < this.UNITS['天']) {
+      return this.humanize(diff);
+    }
+    var _format = function _format(number) {
+      return number < 10 ? '0' + number : number;
+    };
+    return date.getFullYear() + '/' + _format(date.getMonth() + 1) + '/' + _format(date.getDay()) + '-' +
+    _format(date.getHours()) + ':' + _format(date.getMinutes());
+  },
+  parse: function parse(str) {//将"yyyy-mm-dd HH:MM:ss"格式的字符串，转化为一个Date对象
+    var a = str.split(/[^0-9]/);
+    return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
+  } };
+
+
+/**
+        * 格式化日期
+        * @param {Object} datetime
+        * @param {Object} type
+        */
+function formateDate(datetime, type) {
+  var year = datetime.getFullYear(),
+  month = ("0" + (datetime.getMonth() + 1)).slice(-2),
+  date = ("0" + datetime.getDate()).slice(-2),
+  hour = ("0" + datetime.getHours()).slice(-2),
+  minute = ("0" + datetime.getMinutes()).slice(-2),
+  second = ("0" + datetime.getSeconds()).slice(-2);
+  if (type === "Y-M-D h:min:s") {
+    var result = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+  } else if (type === "Y-M-D") {
+    var result = year + "-" + month + "-" + date;
+  }
+  if (type === "h:min:s") {
+    var result = hour + ":" + minute + ":" + second;
+  }
+  return result;
+}
+
+function deteleObject(obj) {
+  var uniques = [];
+  var stringify = {};
+  for (var i = 0; i < obj.length; i++) {
+    var keys = Object.keys(obj[i]);
+    keys.sort(function (a, b) {
+      return Number(a) - Number(b);
+    });
+    var str = '';
+    for (var j = 0; j < keys.length; j++) {
+      str += JSON.stringify(keys[j]);
+      str += JSON.stringify(obj[i][keys[j]]);
+    }
+    if (!stringify.hasOwnProperty(str)) {
+      uniques.push(obj[i]);
+      stringify[str] = true;
+    }
+  }
+  uniques = uniques;
+  return uniques;
+}
+
+function formateDate(datetime, type) {
+  var year = datetime.getFullYear(),
+  month = ("0" + (datetime.getMonth() + 1)).slice(-2),
+  date = ("0" + datetime.getDate()).slice(-2),
+  hour = ("0" + datetime.getHours()).slice(-2),
+  minute = ("0" + datetime.getMinutes()).slice(-2),
+  second = ("0" + datetime.getSeconds()).slice(-2);
+  if (type === "Y-M-D h:min:s") {
+    var result = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+  } else if (type === "Y-M-D") {
+    var result = year + "-" + month + "-" + date;
+  }
+  if (type === "h:min:s") {
+    var result = hour + ":" + minute + ":" + second;
+  } else if (type === "h") {
+    var result = hour;
+  } else if (type === "min") {
+    var result = minute;
+  }
+  return result;
+}
+//生成从minNum到maxNum的随机数
+function randomNum(minNum, maxNum) {
+  switch (arguments.length) {
+    case 1:
+      return parseInt(Math.random() * minNum + 1, 10);
+      break;
+    case 2:
+      return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+      break;
+    default:
+      return 0;
+      break;}
+
+}
+
+function pointInsideCircle(point, circle, r) {
+  if (r === 0) return false;
+  var dx = circle[0] - point[0];
+  var dy = circle[1] - point[1];
+  return dx * dx + dy * dy <= r * r;
+}
+
+// 判断是否是一天
+function isSameDay(timeStampA) {
+  var dateA = new Date(timeStampA);
+  var dateB = new Date();
+  return dateA.setHours(0, 0, 0, 0) == dateB.setHours(0, 0, 0, 0);
+}
+module.exports = {
+  formatTime: formatTime,
+  formatLocation: formatLocation,
+  dateUtils: dateUtils,
+  formateDate: formateDate,
+  deteleObject: deteleObject,
+  randomNum: randomNum,
+  pointInsideCircle: pointInsideCircle,
+  isSameDay: isSameDay };
 
 /***/ }),
 
@@ -8084,7 +8254,18 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 72:
+/***/ 48:
+/*!*****************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/static/face.png ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/static/face.png";
+
+/***/ }),
+
+/***/ 91:
 /*!*************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/qrcode.js ***!
   \*************************************************************************/
@@ -8092,7 +8273,7 @@ module.exports = g;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _frame = _interopRequireDefault(__webpack_require__(/*! ./frame.js */ 73));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _frame = _interopRequireDefault(__webpack_require__(/*! ./frame.js */ 92));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
 
 Qrcode = /*#__PURE__*/function () {
   function Qrcode(params) {_classCallCheck(this, Qrcode);
@@ -8163,7 +8344,7 @@ Qrcode;exports.default = _default;
 
 /***/ }),
 
-/***/ 73:
+/***/ 92:
 /*!************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/frame.js ***!
   \************************************************************************/
@@ -8171,10 +8352,10 @@ Qrcode;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _correction = _interopRequireDefault(__webpack_require__(/*! ./correction.js */ 74));
-var _alignment = _interopRequireDefault(__webpack_require__(/*! ./alignment.js */ 75));
-var _galois = _interopRequireDefault(__webpack_require__(/*! ./galois.js */ 76));
-var _version = _interopRequireDefault(__webpack_require__(/*! ./version.js */ 77));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _correction = _interopRequireDefault(__webpack_require__(/*! ./correction.js */ 93));
+var _alignment = _interopRequireDefault(__webpack_require__(/*! ./alignment.js */ 94));
+var _galois = _interopRequireDefault(__webpack_require__(/*! ./galois.js */ 95));
+var _version = _interopRequireDefault(__webpack_require__(/*! ./version.js */ 96));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
 
 Frame = /*#__PURE__*/function () {_createClass(Frame, [{ key: "_addAlignment", value: function _addAlignment(
 
@@ -9047,7 +9228,7 @@ Frame;exports.default = _default;
 
 /***/ }),
 
-/***/ 74:
+/***/ 93:
 /*!*****************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/correction.js ***!
   \*****************************************************************************/
@@ -9145,7 +9326,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 75:
+/***/ 94:
 /*!****************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/alignment.js ***!
   \****************************************************************************/
@@ -9169,7 +9350,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 76:
+/***/ 95:
 /*!*************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/galois.js ***!
   \*************************************************************************/
@@ -9233,7 +9414,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 77:
+/***/ 96:
 /*!**************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/version.js ***!
   \**************************************************************************/
@@ -9254,187 +9435,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   0xc94, 0x5bc, 0xa99, 0x4d3, 0xbf6, 0x762, 0x847, 0x60d, 0x928, 0xb78, 0x45d, 0xa17, 0x532,
   0x9a6, 0x683, 0x8c9, 0x7ec, 0xec4, 0x1e1, 0xfab, 0x08e, 0xc1a, 0x33f, 0xd75, 0x250, 0x9d5,
   0x6f0, 0x8ba, 0x79f, 0xb0b, 0x42e, 0xa64, 0x541, 0xc69] };exports.default = _default;
-
-/***/ }),
-
-/***/ 92:
-/*!****************************************************************!*\
-  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/util.js ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function formatTime(time) {
-  if (typeof time !== 'number' || time < 0) {
-    return time;
-  }
-
-  var hour = parseInt(time / 3600);
-  time = time % 3600;
-  var minute = parseInt(time / 60);
-  time = time % 60;
-  var second = time;
-
-  return [hour, minute, second].map(function (n) {
-    n = n.toString();
-    return n[1] ? n : '0' + n;
-  }).join(':');
-}
-
-function formatLocation(longitude, latitude) {
-  if (typeof longitude === 'string' && typeof latitude === 'string') {
-    longitude = parseFloat(longitude);
-    latitude = parseFloat(latitude);
-  }
-
-  longitude = longitude.toFixed(2);
-  latitude = latitude.toFixed(2);
-
-  return {
-    longitude: longitude.toString().split('.'),
-    latitude: latitude.toString().split('.') };
-
-}
-var dateUtils = {
-  UNITS: {
-    '年': 31557600000,
-    '月': 2629800000,
-    '天': 86400000,
-    '小时': 3600000,
-    '分钟': 60000,
-    '秒': 1000 },
-
-  humanize: function humanize(milliseconds) {
-    var humanize = '';
-    for (var key in this.UNITS) {
-      if (milliseconds >= this.UNITS[key]) {
-        humanize = Math.floor(milliseconds / this.UNITS[key]) + key + '前';
-        break;
-      }
-    }
-    return humanize || '刚刚';
-  },
-  format: function format(dateStr) {
-    var date = this.parse(dateStr);
-    var diff = Date.now() - date.getTime();
-    if (diff < this.UNITS['天']) {
-      return this.humanize(diff);
-    }
-    var _format = function _format(number) {
-      return number < 10 ? '0' + number : number;
-    };
-    return date.getFullYear() + '/' + _format(date.getMonth() + 1) + '/' + _format(date.getDay()) + '-' +
-    _format(date.getHours()) + ':' + _format(date.getMinutes());
-  },
-  parse: function parse(str) {//将"yyyy-mm-dd HH:MM:ss"格式的字符串，转化为一个Date对象
-    var a = str.split(/[^0-9]/);
-    return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
-  } };
-
-
-/**
-        * 格式化日期
-        * @param {Object} datetime
-        * @param {Object} type
-        */
-function formateDate(datetime, type) {
-  var year = datetime.getFullYear(),
-  month = ("0" + (datetime.getMonth() + 1)).slice(-2),
-  date = ("0" + datetime.getDate()).slice(-2),
-  hour = ("0" + datetime.getHours()).slice(-2),
-  minute = ("0" + datetime.getMinutes()).slice(-2),
-  second = ("0" + datetime.getSeconds()).slice(-2);
-  if (type === "Y-M-D h:min:s") {
-    var result = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
-  } else if (type === "Y-M-D") {
-    var result = year + "-" + month + "-" + date;
-  }
-  if (type === "h:min:s") {
-    var result = hour + ":" + minute + ":" + second;
-  }
-  return result;
-}
-
-function deteleObject(obj) {
-  var uniques = [];
-  var stringify = {};
-  for (var i = 0; i < obj.length; i++) {
-    var keys = Object.keys(obj[i]);
-    keys.sort(function (a, b) {
-      return Number(a) - Number(b);
-    });
-    var str = '';
-    for (var j = 0; j < keys.length; j++) {
-      str += JSON.stringify(keys[j]);
-      str += JSON.stringify(obj[i][keys[j]]);
-    }
-    if (!stringify.hasOwnProperty(str)) {
-      uniques.push(obj[i]);
-      stringify[str] = true;
-    }
-  }
-  uniques = uniques;
-  return uniques;
-}
-
-function formateDate(datetime, type) {
-  var year = datetime.getFullYear(),
-  month = ("0" + (datetime.getMonth() + 1)).slice(-2),
-  date = ("0" + datetime.getDate()).slice(-2),
-  hour = ("0" + datetime.getHours()).slice(-2),
-  minute = ("0" + datetime.getMinutes()).slice(-2),
-  second = ("0" + datetime.getSeconds()).slice(-2);
-  if (type === "Y-M-D h:min:s") {
-    var result = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
-  } else if (type === "Y-M-D") {
-    var result = year + "-" + month + "-" + date;
-  }
-  if (type === "h:min:s") {
-    var result = hour + ":" + minute + ":" + second;
-  } else if (type === "h") {
-    var result = hour;
-  } else if (type === "min") {
-    var result = minute;
-  }
-  return result;
-}
-//生成从minNum到maxNum的随机数
-function randomNum(minNum, maxNum) {
-  switch (arguments.length) {
-    case 1:
-      return parseInt(Math.random() * minNum + 1, 10);
-      break;
-    case 2:
-      return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
-      break;
-    default:
-      return 0;
-      break;}
-
-}
-
-function pointInsideCircle(point, circle, r) {
-  if (r === 0) return false;
-  var dx = circle[0] - point[0];
-  var dy = circle[1] - point[1];
-  return dx * dx + dy * dy <= r * r;
-}
-
-// 判断是否是一天
-function isSameDay(timeStampA) {
-  var dateA = new Date(timeStampA);
-  var dateB = new Date();
-  return dateA.setHours(0, 0, 0, 0) == dateB.setHours(0, 0, 0, 0);
-}
-module.exports = {
-  formatTime: formatTime,
-  formatLocation: formatLocation,
-  dateUtils: dateUtils,
-  formateDate: formateDate,
-  deteleObject: deteleObject,
-  randomNum: randomNum,
-  pointInsideCircle: pointInsideCircle,
-  isSameDay: isSameDay };
 
 /***/ })
 
