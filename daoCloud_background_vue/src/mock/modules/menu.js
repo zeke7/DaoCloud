@@ -39,7 +39,7 @@ var menuList = [{
             'menuId': 4,
             'parentId': 1,
             'name_zh': '用户管理',
-            'url': 'sys/MenuControl',
+            'url': 'sys/UserList',
             'type': 1,
             'icon': 'el-icon-menu',
             'orderNum': 3,

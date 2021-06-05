@@ -1,4 +1,4 @@
-import http from '@/http/httpRequest.js'
+import http from '../httpRequest'
 
 export function getMenus() {
     return http({

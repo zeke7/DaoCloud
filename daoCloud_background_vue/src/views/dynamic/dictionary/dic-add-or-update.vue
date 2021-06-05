@@ -11,22 +11,30 @@
         @keyup.enter.native="dataFormSubmit()"
         label-width="120px"
     >
+      <el-form-item label="编码" prop="dicCode">
+        <el-input
+            v-model="dataForm.dicCode"
+            placeholder="编码"
+            :disabled="disable"
+        ></el-input>
+      </el-form-item>
       <el-form-item label="名称" prop="dicName">
         <el-input
             v-model="dataForm.dicName"
-            placeholder="每次签到经验"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="value" prop="dicValue">
-        <el-input
-            v-model="dataForm.dicValue"
-            placeholder="值"
+            placeholder="名称"
         ></el-input>
       </el-form-item>
       <el-form-item label="描述" prop="dicDiscription">
         <el-input
             v-model="dataForm.dicDiscription"
             placeholder="描述"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="数据类型" prop="dicDetailType">
+        <el-input
+            v-model="dataForm.dicDetailType"
+            placeholder="数据类型"
+            :disabled="disable"
         ></el-input>
       </el-form-item>
     </el-form>
@@ -39,23 +47,27 @@
 
 <script>
 export default {
+  inject:['reload'],
   data () {
     return {
       visible: false,
+      disable: true,
       dataForm: {
         dicId: null,
+        dicCode: '',
         dicName: '',
-        dicValue: '',
+        dicDetailType: '',
         dicDiscription: '',
-        remark: '',
-        status: '1'
       },
       dataRule: {
+        dicCode: [
+          { required: true, message: '数据类型不能为空', trigger: 'blur' }
+        ],
         dicName: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
-        dicValue: [
-          { required: true, message: '值不能为空', trigger: 'blur' }
+        dicDetailType: [
+          { required: true, message: '数据类型不能为空', trigger: 'blur' }
         ],
         dicDiscription: [
           { required: true, message: '描述不能为空', trigger: 'blur' }
@@ -65,57 +77,59 @@ export default {
   },
   methods: {
     init (row = {}) {
-      this.dataForm.sysId = row.dicId == undefined ? null : row.dicId
+      this.dataForm.dicId = row.dicId === undefined ? null : row.dicId
       this.visible = true
       this.$nextTick(() => {
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate()
         }
         if (
-            this.dataForm.dicId != undefined &&
-            this.dataForm.dicId != null
+            this.dataForm.dicId !== undefined &&
+            this.dataForm.dicId !== null
         ) {
+          this.dataRule.dicCode[0].required = false
+          this.dataRule.dicDetailType[0].required = false
+          this.disable = true
+          this.dataForm.dicCode = row.dicCode
           this.dataForm.dicName = row.dicName
-          this.dataForm.dicValue = row.dicValue
+          this.dataForm.dicDetailType = row.dicDetailType
           this.dataForm.dicDiscription = row.dicDiscription
-          this.dataForm.status = '1'
-          this.dataForm.remark = row.remark
         } else {
+          this.dataRule.dicCode[0].required = true
+          this.dataRule.dicDetailType[0].required = true
+          this.disable = false
           this.dataForm = {
             dicId: null,
+            dicCode: '',
             dicName: '',
-            dicValue: '',
+            dicDetailType: '',
             dicDiscription: '',
-            remark: '',
-            status: '1'
           }
         }
       })
-      console.log(row)
     },
     // 表单提交
     dataFormSubmit () {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          let method =
-              this.dataForm.sysSettingsId == undefined ? 'post' : 'put'
-          this.$http({
-            url: this.$http.adornUrl(`syssettings/settings`),
-            method: method,
-            data: this.$http.adornData(this.dataForm)
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
+          let token = this.$cookie.get('token')
+          let method = this.dataForm.dicId === null ? 'post' : 'put'
+          let data = {
+            dictionarycode: this.dataForm.dicCode,
+            dicname: this.dataForm.dicName,
+            dicdiscp: this.dataForm.dicDiscription,
+            dicdetailvalue: this.dataForm.dicDetailType
+          }
+          this.$http.dicConfig.dicCurd(method, data, token).then(res => {
+            if (res) {
+              this.reload()
               this.$message({
                 message: '操作成功',
                 type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.visible = false
-                  this.$emit('refreshDataList')
-                }
+                duration: 1500
               })
             } else {
-              this.$message.error(data.msg)
+              this.$message.error(res.msg)
             }
           })
         }
