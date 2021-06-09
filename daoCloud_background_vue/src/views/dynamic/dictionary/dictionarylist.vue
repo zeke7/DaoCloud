@@ -48,33 +48,31 @@
       >
         <el-table-column type="selection" width="55"></el-table-column>
 
-        <el-table-column align="center" label="ID">
-          <template slot-scope="scope">
-            <span>{{ scope.row.dicId }}</span>
-          </template>
-        </el-table-column>
 
-        <el-table-column align="center" label="Code">
-          <template slot-scope="scope">
-            <span>{{ scope.row.dicCode }}</span>
-          </template>
-        </el-table-column>
 
         <el-table-column align="center" label="名称">
           <template slot-scope="scope">
             <span>{{ scope.row.dicName }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column align="center" label="数据类型">
+        <el-table-column align="center" label="关键字">
           <template slot-scope="scope">
-            <span>{{ scope.row.dicDetailType }}</span>
+            <span>{{ scope.row.dicCode }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column align="center" label="描述">
+        <el-table-column align="center" label="value">
           <template slot-scope="scope">
-            <span>{{ scope.row.dicDiscription }}</span>
+            <span>{{ scope.row.dicDetailName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="数值">
+          <template slot-scope="scope">
+            <span>{{ scope.row.num }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="默认值">
+          <template slot-scope="scope">
+            <span>{{ scope.row.dicKey }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="字典详情">
@@ -166,25 +164,6 @@ export default {
     };
   },
   computed: {
-    // 用computed监听tables，使用filter过滤数组中包含被搜索的关键词，将匹配到含有关键词的数据筛选出来
-    // 返回给tables，此时tables就是一个新的数组
-    // toLowerCase是转换小写的，因为有大小写的话some方法会失效
-    // 模糊搜索
-    tables() {
-      const listQueryname = this.listQueryname;
-      if (listQueryname) {
-        return this.list.filter(data => {
-          return Object.keys(data).some(key => {
-            return (
-                String(data[key])
-                    .toLowerCase()
-                    .indexOf(listQueryname) > -1
-            );
-          });
-        });
-      }
-      return this.list;
-    }
   },
   created() {
     this.getType();
@@ -199,17 +178,52 @@ export default {
       let token = this.$cookie.get('token')
       this.$http.dicConfig.getDictionary(token).then(res => {
         if (res) {
-          console.log(res)
+        //   let data = res.data.data
+        //   console.log(data)
+        //   this.list = data
+        //   console.log(this.list)
+        //   for (let i = 0; i < data.length; i++) {
+        //     this.list[i].dicDetailType = ''
+        //     if (data[i].detailist.length === 0) {
+        //       this.list[i].dicDetailType = '字符串'
+        //     } else {
+        //       this.list[i].dicDetailType = data[i].detailist[0].dicdetailDescription
+        //     }
+        //   }
+        // console.log(this.list)
+          let temp = []
           let data = res.data.data
-          this.list = data
+          console.log(data)
+          let total_len = 0
+          let w = 0
           for (let i = 0; i < data.length; i++) {
-            this.list[i].dicDetailType = ''
-            if (data[i].detailist.length === 0) {
-              this.list[i].dicDetailType = '字符串'
-            } else {
-              this.list[i].dicDetailType = data[i].detailist[0].dicdetailDescription
+            let detailList = data[i].detailist
+            if (detailList.length >= 1) {
+              let last_len = 0;
+              if (i === 0) {
+                last_len = 0
+              }else {
+                last_len = data[i - 1].detailist.length
+              }
+              let now_len = detailList.length
+              total_len = total_len + now_len
+              let t = 0;
+              for (let j = w; j < total_len; j++) {
+                temp[j] = {}
+                temp[j].dicCode = data[i].dicCode
+                temp[j].dicId = data[i].dicId
+                temp[j].dicName = data[i].dicName
+                temp[j].num = detailList[t].dicdetailValue
+                temp[j].dicDetailName = detailList[t].dicdetailName
+                temp[j].dicKey = detailList[t].dicdetailDescription
+                temp[j].dicDetailCode = detailList[t].dicdetailCode
+                t++
+                w++
+              }
             }
           }
+          this.list = temp
+          console.log(this.list)
         }
       })
       // let url =
@@ -273,7 +287,7 @@ export default {
     addOrUpdateHandle: function (row = {}) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row)
+        this.$refs.addOrUpdate.init(row, this.list)
       })
     },
     //查看详情
@@ -284,8 +298,8 @@ export default {
       })
     },
     // 删除
-    deleteHandle(dicCode, dicId) {
-      this.$confirm(`确定对[id=${dicId}]进行删除操作?`, '提示', {
+    deleteHandle(dicCode) {
+      this.$confirm(`确定对${dicCode}进行删除操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
