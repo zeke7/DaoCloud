@@ -81,6 +81,7 @@
 			//获取短信验证码
 			getCode() { 			
 				var that=this
+				let type="";
 				console.log(that.userphone)
 				if (checkPhone(this.userphone)) {
 				    return
@@ -96,16 +97,39 @@
 					this.second = 60;
 					this.showText = true;
 				}, 60000);
-				//这里请求后台获取短信验证码
+				//判断用户是否存在
 				uni.request({
-					url:'http://112.74.55.61:8081/verifiedcodes'+'?userPhone='+that.userphone,
-					success(res) {
-						uni.showToast({
-							title:"验证码已发送",
-							icon:"none",
-							duration:2000					
+					url:'http://112.74.55.61:8081/accountexist'+'?username='+that.userphone,
+					method:'POST',
+					success(res) { 
+						//账号存在=>登录 type‘L0’
+						//账号不存在=>快速注册 type‘S1’
+						console.log(res.data)
+						if(res.data.data==null){
+							type='S1'
+						}else{
+							type='L0'					
+						}
+						uni.request({
+							url:'http://112.74.55.61:8081/verifiedcodes',
+							method:'POST',
+							data:{
+								userphone:that.userphone,
+								type:type
+							},
+							success(res) {
+								uni.showToast({
+									title:"验证码已发送",
+									icon:"none",
+									duration:2000					
+								})
+								//console.log(res)
+							},
+							fail() {
+								console.log('链接失败')
+							}					
 						})
-						console.log(res)
+						console.log(type)
 					},
 					fail() {
 						console.log('链接失败')
@@ -152,9 +176,9 @@
 			//用户名及登录
 			login_password() {
 				var that=this
-				// if (checkPhone(this.user)) {
-				//     return
-				// }
+				if (checkPhone(this.username)) {
+				    return
+				}
 						
 				uni.request({ 
 					url:'http://112.74.55.61:8081/login',

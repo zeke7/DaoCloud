@@ -48,7 +48,7 @@
 			<view style="color: gray; margin: 10upx 30upx;">创建者信息</view>
 			<view class="cu-form-group" style="margin-top: 10upx;">
 				<view class="title">创建者手机号</view>
-				<input v-model="userPhone"></input>
+				<view style="color: #999999;">{{userPhone}}</view>
 			</view>
 		</view>
 		
@@ -94,6 +94,7 @@
 				semester:null,//班课学期
 				picker:['2020-1','2020-2','2021-1','2021-2'],//选择班课学期
 				index:-1,//默认下标为-1,
+				classcode:null,//班课编号
 				userPhone:13055766787 //创建者手机号
 			}
 		},
@@ -145,19 +146,30 @@
 				that.semester=that.picker[that.index]
 			},
 			suc_cre(){
-				uni.navigateTo({
-					url:'suc-creat'
-				})		
+				var that=this
+				uni.request({
+					url:'http://112.74.55.61:8081/classes',
+					method:'POST',
+					data:{
+						classname:that.className,
+						userPhone:that.userPhone,
+						classmember:that.classmember,
+						classcode:that.classcode,
+						semester:that.semester					
+					},
+					success: (res) => {
+						console.log(res.data)
+					},
+					fail: (res) => {
+						console.log(res)
+						console.log("连接失败")
+					}
+				})				
+				// uni.navigateTo({
+				// 	url:'suc-creat'
+				// })		
 			},
 			
-			// handleQuery(){
-			// 	this.$router.push({
-			// 		path:'../home/home',
-			// 		query:{
-			// 			className:11,
-			// 		}
-			// 	});
-			// }
 		}
 	}
 </script>

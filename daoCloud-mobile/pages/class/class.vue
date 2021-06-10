@@ -14,22 +14,38 @@
 		
 		<view class="page_content">
 			<view class="menu">
-				<template v-for="(it,i) in menus">
-					<view class="item" :key="'menu_'+i">
-						<view class="img_view" :style="{background: it.bg}">
-							<image :src="it.icon" class="image"></image>
+				<template >
+					<view class="item" >
+						<view class="img_view" :style="{background: menus[0].bg}">
+							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signdetail"></image>
 						</view>
-						<text class="txt">{{it.txt}}</text>
+						<text class="txt">{{menus[0].txt}}</text>
+					</view>
+				</template>
+				<template>
+					<view class="item" >
+						<view class="img_view" :style="{background: menus[1].bg}">
+							<image :src="menus[1].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
+						</view>
+						<text class="txt">{{menus[1].txt}}</text>
+					</view>
+				</template>
+				<template>
+					<view class="item" >
+						<view class="img_view" :style="{background: menus[2].bg}">
+							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
+						</view>
+						<text class="txt">{{menus[2].txt}}</text>
 					</view>
 				</template>
 			</view>
 		</view>
 		
-		<view style="display: flex;justify-content: space-between;font-size: 115%;margin-top: 30rpx;" >
-				<view style="color: black;margin-left: 30rpx; ">成员</view>
+		<view style="display: flex;justify-content: space-between;font-size: 115%;margin-top: 20rpx;" >
+				<view style="color: black;margin-left: 30rpx; font-size: 35rpx;">成员</view>
 				<view style="color: gray;margin-right: 20rpx; ">93 人</view>
 		</view>	
-			
+			 
 		<view class="cu-list menu-avatar" style="margin-top: 15rpx;" >			
 			<view class="cu-item" v-for="item in Students">
 				<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg)"></view>
@@ -54,20 +70,17 @@
 				menus: [{
 						bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))',
 						icon: '/static/signin.png',
-						txt: '参与签到',
-						isFree: true
+						txt: '参与签到'
 					},
 					{
 						bg: 'linear-gradient(0deg,rgb(238, 130, 238),rgb(238, 130, 238))',
-						icon: '/static/gift.png',
-						txt: '心意卡片',
-						isFree: false
+						icon: '/static/Share.png',
+						txt: '分享班课'
 					},
 					{
 						bg: 'linear-gradient(0deg,rgba(255,126,34,1),rgba(240,184,27,1))',
 						icon: '/static/team.png',
-						txt: '小组方案',
-						isFree: true
+						txt: '小组方案'
 					}
 				],
 				
@@ -75,7 +88,11 @@
 			}
 		},
 		methods: {
-		
+			signdetail(){
+				uni.navigateTo({
+					url:'../signin/signin-detail'
+				})
+			},
 		}
 	}
 </script>
@@ -223,80 +240,6 @@
 			}
 		}
 	
-		.s_menu {
-			display: flex;
-			flex-direction: row;
-			align-items: stretch;
-			justify-content: space-between;
-			margin-top: 15px;
-			margin-left: 10px;
-			margin-right: 10px;
-			padding-left: 10px;
-			padding-right: 10px;
-	
-			.item {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-	
-				.image {
-					width: 35px;
-					height: 35px;
-				}
-	
-				.txt {
-					margin-top: 5px;
-					font-size: 14px;
-					color: rgba(51, 51, 51, 1);
-				}
-			}
-		}
-	
-		.ad {
-			width: 100%;
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: center;
-	
-			.bg {
-				position: absolute;
-				width: 120px;
-				height: 105px;
-				left: 0;
-			}
-	
-			.ad_btn {
-				width: 100%;
-				height: 63px;
-				margin: 30px;
-				background: linear-gradient(0deg, rgba(253, 155, 28, 1), rgba(251, 197, 33, 1));
-				border-radius: 67px;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-	
-				.title {
-					font-size: realSize(38px);
-					font-family: PingFang-SC-Heavy;
-					font-weight: 800;
-					color: rgba(255, 255, 255, 1);
-				}
-	
-				.sub_title {
-					background: linear-gradient(0deg, rgba(255, 128, 37, 1), rgba(255, 153, 32, 1));
-					box-shadow: 0px 4px 5px 0px rgba(92, 53, 48, 0.3), 0px 1px 0px 0px rgba(228, 228, 228, 1);
-					border-radius: realSize(24px);
-					font-size: realSize(24px);
-					font-family: PingFang-SC-Heavy;
-					font-weight: 800;
-					font-style: italic;
-					color: rgba(255, 236, 177, 1);
-					line-height: realSize(26px);
-				}
-			}
-		}
+		
 	}
 </style>

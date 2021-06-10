@@ -92,7 +92,15 @@
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }           
-        }
+        },
+		{
+		    "path" : "pages/signin/signin-detail",//签到详情页面
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }           
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -156,6 +164,10 @@
 			{
 				"name":"class",
 				"path":"pages/class/class"
+			},
+			{
+				"name":"detail",
+				"path":"pages/signin/signin-detail"
 			}
 	    ]
 	}

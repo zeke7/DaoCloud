@@ -108,7 +108,12 @@
 				}, 60000);
 				//这里请求后台获取短信验证码
 				uni.request({
-					url:'http://112.74.55.61:8081/verifiedcodes'+'?userPhone='+that.userphone,
+					url:'http://112.74.55.61:8081/verifiedcodes',
+					method:'POST',
+					data:{
+						userphone:that.userphone,
+						type:'S1'
+					},
 					success(res) {
 						uni.showToast({
 							title:"验证码已发送",
@@ -146,11 +151,12 @@
 				};
 				//验证验证码是否正确
 				uni.request({
-					url:'http://112.74.55.61:8081/verifiedcodes',
+					url:'http://112.74.55.61:8081/verifiedcodesfromuser',
 					method:'POST',
 					data:{
 						userphone:that.userphone,
-						codefromuser:that.code
+						codefromuser:that.code,
+						type:'S1'
 					},
 					success(res){
 						console.log(res.data)
@@ -214,37 +220,7 @@
 						console.log('链接失败')
 					}
 				})
-				// //成功注册
-				// uni.request({
-				// 	url:'http://112.74.55.61:8081/signup',
-				// 	method:'POST',
-				// 	data:{
-				// 		username:that.username,
-				// 		userphone:that.userphone,
-				// 		password:that.password,
-				// 		userschoool:that.userschoool,
-				// 		userdepartment:that.userdepartment,
-				// 		usersno:that.usersno,
-				// 		userole:that.userole,
-				// 		mobiledevice:'MOBILEDEVICE'
-				// 	},
-				// 	success(res) {
-				// 		if(res.data.code==200){
-				// 			console.log("注册成功")
-				// 			console.log(res)
-				// 			// uni.navigateTo({
-				// 			// 	url:"login"
-				// 			// })
-				// 		}
-				// 		else{
-				// 			uni.showToast({ title: '注册失败', icon: 'none' });
-				// 			console.log(res)
-				// 		}
-				// 	},
-				// 	fail() {
-				// 		console.log('sss')
-				// 	}
-				// })
+				
 			}
 		}
 	}

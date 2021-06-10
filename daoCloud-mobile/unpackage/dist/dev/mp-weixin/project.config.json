@@ -64,6 +64,11 @@
           "name": "class",
           "id": 7,
           "pathName": "pages/class/class"
+        },
+        {
+          "name": "detail",
+          "id": 8,
+          "pathName": "pages/signin/signin-detail"
         }
       ]
     }

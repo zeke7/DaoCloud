@@ -273,16 +273,22 @@ var _default = { data: function data() {return { username: '', //用户名
     PickerChange: function PickerChange(e) {this.index = e.detail.value;this.userole = this.index == 0 ? 'student' : 'teacher';}, //获取短信验证码
     getCode: function getCode() {var _this = this;var that = this;console.log(that.userphone);if ((0, _common.checkPhone)(this.userphone)) {return;}var interval = setInterval(function () {_this.showText = false;var times = _this.second - 1; //that.second = times<10?'0'+times:times ;//小于10秒补 0
         _this.second = times;}, 1000);setTimeout(function () {clearInterval(interval);_this.second = 60;_this.showText = true;}, 60000); //这里请求后台获取短信验证码
-      uni.request({ url: 'http://112.74.55.61:8081/verifiedcodes' + '?userPhone=' + that.userphone, success: function success(res) {uni.showToast({ title: "验证码已发送", icon: "none", duration: 2000 });console.log(res);}, fail: function fail() {console.log('链接失败');} });}, //注册账号
+      uni.request({ url: 'http://112.74.55.61:8081/verifiedcodes', method: 'POST', data: { userphone: that.userphone, type: 'S1' }, success: function success(res) {uni.showToast({ title: "验证码已发送", icon: "none", duration: 2000 });console.log(res);}, fail: function fail() {console.log('链接失败');} });}, //注册账号
     register: function register() {var that = this; //检查手机号密码验证码格式
       if ((0, _common.checkPhone)(this.userphone)) {return;};if ((0, _common.checkCode)(this.code)) {return;};if ((0, _common.checkPwd)(this.password)) {return;}; //检查两次密码格式
-      if (this.confirmPassword !== this.password) {uni.showToast({ title: '两次输入密码不一致', icon: 'none' });this.confirmPassword = '';return;}; //验证验证码是否正确
+      if (this.confirmPassword !== this.password) {uni.showToast({ title: '两次输入密码不一致', icon: 'none' });
+
+        this.confirmPassword = '';
+        return;
+      };
+      //验证验证码是否正确
       uni.request({
-        url: 'http://112.74.55.61:8081/verifiedcodes',
+        url: 'http://112.74.55.61:8081/verifiedcodesfromuser',
         method: 'POST',
         data: {
           userphone: that.userphone,
-          codefromuser: that.code },
+          codefromuser: that.code,
+          type: 'S1' },
 
         success: function success(res) {
           console.log(res.data);
@@ -346,37 +352,7 @@ var _default = { data: function data() {return { username: '', //用户名
           console.log('链接失败');
         } });
 
-      // //成功注册
-      // uni.request({
-      // 	url:'http://112.74.55.61:8081/signup',
-      // 	method:'POST',
-      // 	data:{
-      // 		username:that.username,
-      // 		userphone:that.userphone,
-      // 		password:that.password,
-      // 		userschoool:that.userschoool,
-      // 		userdepartment:that.userdepartment,
-      // 		usersno:that.usersno,
-      // 		userole:that.userole,
-      // 		mobiledevice:'MOBILEDEVICE'
-      // 	},
-      // 	success(res) {
-      // 		if(res.data.code==200){
-      // 			console.log("注册成功")
-      // 			console.log(res)
-      // 			// uni.navigateTo({
-      // 			// 	url:"login"
-      // 			// })
-      // 		}
-      // 		else{
-      // 			uni.showToast({ title: '注册失败', icon: 'none' });
-      // 			console.log(res)
-      // 		}
-      // 	},
-      // 	fail() {
-      // 		console.log('sss')
-      // 	}
-      // })
+
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

@@ -238,11 +238,35 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
     };}, methods: { onChoose: function onChoose() {this.cur = !this.cur, console.log(this.cur);}, //注册账号
     go_register: function go_register() {uni.navigateTo({ url: "register" });}, //忘记密码
     go_forgetpassword: function go_forgetpassword() {uni.navigateTo({ url: "forget-password" });}, test: function test() {console.log(this.username, this.password);}, //获取短信验证码
-    getCode: function getCode() {var _this = this;var that = this;console.log(that.userphone);if ((0, _common.checkPhone)(this.userphone)) {return;}var interval = setInterval(function () {_this.showText = false;var times = _this.second - 1; //that.second = times<10?'0'+times:times ;//小于10秒补 0
-        _this.second = times;}, 1000);setTimeout(function () {clearInterval(interval);_this.second = 60;_this.showText = true;}, 60000); //这里请求后台获取短信验证码
-      uni.request({ url: 'http://112.74.55.61:8081/verifiedcodes' + '?userPhone=' + that.userphone, success: function success(res) {uni.showToast({ title: "验证码已发送", icon: "none", duration: 2000 });
+    getCode: function getCode() {var _this = this;var that = this;var type = "";console.log(that.userphone);if ((0, _common.checkPhone)(this.userphone)) {return;}var interval = setInterval(function () {_this.showText = false;var times = _this.second - 1; //that.second = times<10?'0'+times:times ;//小于10秒补 0
+        _this.second = times;}, 1000);setTimeout(function () {clearInterval(interval);_this.second = 60;_this.showText = true;}, 60000); //判断用户是否存在
+      uni.request({ url: 'http://112.74.55.61:8081/accountexist' + '?username=' + that.userphone, method: 'POST', success: function success(res) {//账号存在=>登录 type‘L0’
+          //账号不存在=>快速注册 type‘S1’
+          console.log(res.data);if (res.data.data == null) {
+            type = 'S1';
+          } else {
+            type = 'L0';
+          }
+          uni.request({
+            url: 'http://112.74.55.61:8081/verifiedcodes',
+            method: 'POST',
+            data: {
+              userphone: that.userphone,
+              type: type },
 
-          console.log(res);
+            success: function success(res) {
+              uni.showToast({
+                title: "验证码已发送",
+                icon: "none",
+                duration: 2000 });
+
+              //console.log(res)
+            },
+            fail: function fail() {
+              console.log('链接失败');
+            } });
+
+          console.log(type);
         },
         fail: function fail() {
           console.log('链接失败');
@@ -289,9 +313,9 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
     //用户名及登录
     login_password: function login_password() {
       var that = this;
-      // if (checkPhone(this.user)) {
-      //     return
-      // }
+      if ((0, _common.checkPhone)(this.username)) {
+        return;
+      }
 
       uni.request({
         url: 'http://112.74.55.61:8081/login',

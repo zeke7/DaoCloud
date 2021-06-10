@@ -226,6 +226,7 @@ var _default =
       semester: null, //班课学期
       picker: ['2020-1', '2020-2', '2021-1', '2021-2'], //选择班课学期
       index: -1, //默认下标为-1,
+      classcode: null, //班课编号
       userPhone: 13055766787 //创建者手机号
     };
   },
@@ -277,20 +278,29 @@ var _default =
       that.semester = that.picker[that.index];
     },
     suc_cre: function suc_cre() {
-      uni.navigateTo({
-        url: 'suc-creat' });
+      var that = this;
+      uni.request({
+        url: 'http://112.74.55.61:8081/classes',
+        method: 'POST',
+        data: {
+          classname: that.className,
+          userPhone: that.userPhone,
+          classmember: that.classmember,
+          classcode: that.classcode,
+          semester: that.semester },
 
-    }
+        success: function success(res) {
+          console.log(res.data);
+        },
+        fail: function fail(res) {
+          console.log(res);
+          console.log("连接失败");
+        } });
 
-    // handleQuery(){
-    // 	this.$router.push({
-    // 		path:'../home/home',
-    // 		query:{
-    // 			className:11,
-    // 		}
-    // 	});
-    // }
-  } };exports.default = _default;
+      // uni.navigateTo({
+      // 	url:'suc-creat'
+      // })		
+    } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),

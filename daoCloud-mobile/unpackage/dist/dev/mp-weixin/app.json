@@ -11,7 +11,8 @@
     "pages/class/creat",
     "pages/class/suc-creat",
     "pages/class/join",
-    "pages/signin/signin"
+    "pages/signin/signin",
+    "pages/signin/signin-detail"
   ],
   "subPackages": [],
   "window": {

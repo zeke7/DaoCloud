@@ -201,11 +201,12 @@ var _default =
       };
       //验证验证码是否正确
       uni.request({
-        url: 'http://112.74.55.61:8081/verifiedcodes',
+        url: 'http://112.74.55.61:8081/verifiedcodesfromuser',
         method: 'POST',
         data: {
           userphone: that.userphone,
-          codefromuser: that.code },
+          codefromuser: that.code,
+          type: 'R2' },
 
         success: function success(res) {
           console.log(res.data);

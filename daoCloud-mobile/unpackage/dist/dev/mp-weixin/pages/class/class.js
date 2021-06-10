@@ -132,7 +132,23 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -188,27 +204,30 @@ var _default =
       menus: [{
         bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))',
         icon: '/static/signin.png',
-        txt: '参与签到',
-        isFree: true },
+        txt: '参与签到' },
 
       {
         bg: 'linear-gradient(0deg,rgb(238, 130, 238),rgb(238, 130, 238))',
-        icon: '/static/gift.png',
-        txt: '心意卡片',
-        isFree: false },
+        icon: '/static/Share.png',
+        txt: '分享班课' },
 
       {
         bg: 'linear-gradient(0deg,rgba(255,126,34,1),rgba(240,184,27,1))',
         icon: '/static/team.png',
-        txt: '小组方案',
-        isFree: true }],
+        txt: '小组方案' }],
 
 
 
       Students: [{ name: '张三', no: '2000' }, { name: '李四', no: '2001' }] //加入的班课
     };
   },
-  methods: {} };exports.default = _default;
+  methods: {
+    signdetail: function signdetail() {
+      uni.navigateTo({
+        url: '../signin/signin-detail' });
+
+    } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
