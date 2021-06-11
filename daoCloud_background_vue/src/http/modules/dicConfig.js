@@ -12,7 +12,7 @@ export function getDictionary(token) {
 
 export function dicCurd(method, data, token) {
     return http({
-        url: '/dictionaries',
+        url: '/dictionarydetails',
         method: method,
         headers: {
             Authorization: token

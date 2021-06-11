@@ -17,6 +17,12 @@
             placeholder="参数名称"
         ></el-input>
       </el-form-item>
+      <el-form-item label="关键字" prop="keyword">
+        <el-input
+            v-model="dataForm.keyword"
+            placeholder="关键字"
+        ></el-input>
+      </el-form-item>
       <el-form-item label="参数值" prop="sysParameter">
         <el-input
             v-model="dataForm.sysParameter"
@@ -39,16 +45,30 @@
 
 <script>
 export default {
-  inject:['reload'],
+  inject: ['reload'],
   data() {
+    const validator = (rule, value, callback) => {
+      let list = this.dataList
+      let num = 0
+      for (let i = 0; i < list.length; i++) {
+        if (value === list[i].sysKey) {
+          num++
+        }
+      }
+      if (num === 0) {
+        callback()
+      } else if (num > 0) {
+        callback(new Error('关键字重复'))
+      }
+    }
     return {
+      dataList: [],
       visible: false,
       dataForm: {
         sysId: '',
         sysName: '',
         sysParameter: '',
-        remark: '',
-        status: '1'
+        keyword: ''
       },
       dataRule: {
         sysName: [
@@ -56,13 +76,17 @@ export default {
         ],
         sysParameter: [
           {required: true, message: '参数值不能为空', trigger: 'blur'}
+        ],
+        keyword: [
+          {required: true, message: '参数值不能为空', trigger: 'blur'},
+          {validator: validator}
         ]
       }
     }
   },
   methods: {
-    init(row = {}) {
-      console.log(row.sysId)
+    init(row = {}, dataList) {
+      this.dataList = dataList
       this.dataForm.sysId = row.sysId === undefined ? '' : row.sysId
       this.visible = true
       this.$nextTick(() => {
@@ -75,15 +99,13 @@ export default {
         ) {
           this.dataForm.sysName = row.sysName
           this.dataForm.sysParameter = row.sysParameter
-          this.dataForm.status = '1'
-          this.dataForm.remark = row.remark
+          this.dataForm.keyword = row.sysKey
         } else {
           this.dataForm = {
             sysId: '',
             sysName: '',
             sysParameter: '',
-            remark: '',
-            status: '1'
+            keyword: ''
           }
         }
       })
@@ -92,19 +114,22 @@ export default {
     dataFormSubmit() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
+          console.log("in")
           let token = this.$cookie.get('token')
           let method = this.dataForm.sysId === '' ? 'post' : 'put'
           let data = {}
           if (this.dataForm.sysId === '') {
             data = {
               sysName: this.dataForm.sysName,
-              sysValue: this.dataForm.sysParameter
+              sysValue: this.dataForm.sysParameter,
+              sysKey: this.dataForm.keyword
             }
           } else {
             data = {
               sysName: this.dataForm.sysName,
               sysValue: this.dataForm.sysParameter,
-              sysId: this.dataForm.sysId
+              sysId: this.dataForm.sysId,
+              sysKey: this.dataForm.keyword
             }
           }
           console.log(data)

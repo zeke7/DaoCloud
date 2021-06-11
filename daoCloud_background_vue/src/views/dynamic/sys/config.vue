@@ -34,6 +34,15 @@
         </template>
       </el-table-column>
       <el-table-column
+          prop="keyword"
+          header-align="center"
+          align="center"
+          label="关键字">
+        <template slot-scope="scope">
+          <span>{{ scope.row.sysKey }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
           prop="eachSignTime"
           header-align="center"
           align="center"
@@ -42,17 +51,17 @@
           <span>{{ scope.row.sysParameter }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-          prop="status"
-          header-align="center"
-          align="center"
-          label="状态（禁用 / 启用）">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="enable(scope.row.sysId)">
-            {{ scope.row.status == 0 ? "启用" : "禁用" }}
-          </el-button>
-        </template>
-      </el-table-column>
+      <!--<el-table-column-->
+      <!--    prop="status"-->
+      <!--    header-align="center"-->
+      <!--    align="center"-->
+      <!--    label="状态（禁用 / 启用）">-->
+      <!--  <template slot-scope="scope">-->
+      <!--    <el-button size="mini" @click="enable(scope.row.sysId)">-->
+      <!--      {{ scope.row.status == 0 ? "启用" : "禁用" }}-->
+      <!--    </el-button>-->
+      <!--  </template>-->
+      <!--</el-table-column>-->
       <el-table-column
           fixed="right"
           header-align="center"
@@ -61,7 +70,7 @@
           label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.sysId)">删除</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.sysId, scope.row.sysKey)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -146,13 +155,13 @@ export default {
     addOrUpdateHandle(row) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row)
+        this.$refs.addOrUpdate.init(row, this.dataList)
       })
     },
     // 删除
-    deleteHandle(id) {
+    deleteHandle(id, key) {
       let token = this.$cookie.get('token')
-      this.$confirm(`确定对id=${id}进行删除操作?`, '提示', {
+      this.$confirm(`确定删除${key}?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -174,26 +183,6 @@ export default {
       }).catch(() => {
       })
     },
-    enable(status) {
-      this.$http({
-        url: this.$http.adornUrl(`syssettings/settings/setValid/${status}`),
-        method: 'put',
-        data: this.$http.adornData({})
-      }).then(({data}) => {
-        if (data && data.code === 200) {
-          this.$message({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-            onClose: () => {
-              this.getDataList()
-            }
-          })
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    }
   }
 }
 </script>

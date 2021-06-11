@@ -45,6 +45,7 @@
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
+      console.log(value)
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
