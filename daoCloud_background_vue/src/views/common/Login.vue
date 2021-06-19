@@ -31,8 +31,6 @@
 </template>
 <script>
 import {mapActions} from 'vuex'
-import {setToken} from '@/http/auth.js'
-// import axios from "axios";
 export default {
   data() {
     const rightPhone = (rule, value, callback) =>{
@@ -92,6 +90,7 @@ export default {
             password: this.dataForm.password
           }
           this.$http.commonUser.getToken(val).then(response => {
+            console.log()
             if (response.status === 200 && response.data.msg === '登录成功(Login Success.)') {
               this.$message({
                 message: '登录成功',
@@ -99,7 +98,7 @@ export default {
               })
               // 保存 token
               this.$cookie.set('token', response.headers.authorization,1)
-              this.$cookie.set('identity', "admin",1)
+              this.$cookie.set('identity', response.data.data.roleId,1)
               this.updateName(this.dataForm.userPhone)
               this.$router.push({
                 name: 'Home'
