@@ -46,6 +46,13 @@ public class CheckinController {
 
     // 获取个人签到记录
     @CrossOrigin
+    @PostMapping("/tcheckninhistory")
+    public BaseResponse tCheckinHistory(@RequestBody JSONObject checkinrecord){
+        return checkinService.CheckinHistoryteacher(checkinrecord);
+    }
+
+    // 获取个人签到记录
+    @CrossOrigin
     @PostMapping("/scheckninrecords")
     public BaseResponse sCheckinRecords(@RequestBody JSONObject checkinrecord){
         return checkinService.recordCheckinstudent(checkinrecord);
@@ -56,4 +63,12 @@ public class CheckinController {
     public BaseResponse sCheckinRecordsmakeup(@RequestBody JSONObject checkinrecord){
         return checkinService.recordModifiedByTeacher(checkinrecord);
     }
+
+    @CrossOrigin
+    @PostMapping("/stuexp")
+    public BaseResponse studentexp(@RequestBody JSONObject checkinrecord){
+        return checkinService.stuexp(checkinrecord);
+    }
+
+
 }

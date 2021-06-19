@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.fzu.gcxl.daocloud.application.service.AccountService;
 import com.fzu.gcxl.daocloud.application.service.LoginService;
 import com.fzu.gcxl.daocloud.application.service.SmsService;
+import com.fzu.gcxl.daocloud.application.service.UserService;
 import com.fzu.gcxl.daocloud.application.service.assembler.UserDtoAssembler;
 import com.fzu.gcxl.daocloud.domain.entity.Account;
 import com.fzu.gcxl.daocloud.domain.entity.User;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
 import com.fzu.gcxl.daocloud.domain.exception.CustomUnauthorizedException;
 import com.fzu.gcxl.daocloud.domain.repository.AccountRepository;
+import com.fzu.gcxl.daocloud.domain.repository.RoleRepository;
 import com.fzu.gcxl.daocloud.domain.repository.UserRepository;
 import com.fzu.gcxl.daocloud.infrastructure.util.JwtUtil;
 import org.apache.shiro.SecurityUtils;
@@ -39,6 +41,9 @@ public class LoginServiceImp implements LoginService {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private UserDtoAssembler userDtoAssembler;
 
 
@@ -52,6 +57,7 @@ public class LoginServiceImp implements LoginService {
         String username = usertologin.getString("username");
         String password = usertologin.getString("password");
         Account account = accountService.findAccountByPhone(username);
+
         if (account == null) {
             throw new CustomUnauthorizedException("该帐号不存在");
         }
@@ -111,13 +117,10 @@ public class LoginServiceImp implements LoginService {
         }
 
         if (smsService.verifySms(usertologin).getData().equals("success")) {
-            ByteSource salt = ByteSource.Util.bytes(username);
-//            String currentTimeMillis = String.valueOf(System.currentTimeMillis());
             String token = JwtUtil.sign(username, String.valueOf(System.currentTimeMillis()));
             System.out.println("loginsms:"+token);
             httpServletResponse.setHeader("Authorization", token);
             httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
-
             return new BaseResponse(HttpStatus.OK.value(), "登录成功(Login Success.)", userDtoAssembler.assembleUser(username));
         } else {
             return new BaseResponse(HttpStatus.OK.value(), "登录失败(Login Fail)", "LoginFailed");

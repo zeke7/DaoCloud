@@ -1,8 +1,84 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fzu.gcxl.daocloud.domain.repository.AccountRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.Account">
+    <id column="account_id" jdbcType="INTEGER" property="accountId" />
+    <result column="login_password" jdbcType="VARCHAR" property="loginPassword" />
+    <result column="login_phone" jdbcType="VARCHAR" property="loginPhone" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    account_id, login_password, login_phone, user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from account
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Account">
+    insert into account (account_id, login_password, login_phone, 
+      user_id)
+    values (#{accountId,jdbcType=INTEGER}, #{loginPassword,jdbcType=VARCHAR}, #{loginPhone,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Account">
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="accountId != null">
+        account_id,
+      </if>
+      <if test="loginPassword != null">
+        login_password,
+      </if>
+      <if test="loginPhone != null">
+        login_phone,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="accountId != null">
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="loginPassword != null">
+        #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPhone != null">
+        #{loginPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Account">
+    update account
+    <set>
+      <if test="loginPassword != null">
+        login_password = #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPhone != null">
+        login_phone = #{loginPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.Account">
+    update account
+    set login_password = #{loginPassword,jdbcType=VARCHAR},
+      login_phone = #{loginPhone,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER}
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </update>
 
     <insert id="createNewAccount" parameterType="Account">
         insert into account (login_password, login_phone)

@@ -1,32 +1,75 @@
 package com.fzu.gcxl.daocloud.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Date;
 
-import java.io.Serializable;
-import java.util.List;
+public class User{
+    private Integer userId;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class User implements Serializable {
-
-
-    private Integer userid;
     private Integer roleId;
+
     private String userName;
-    private String userPhone;
-    // 所在学校
+
     private String userSchool;
-    // 学号/工号
+
     private String userSno;
 
     private String userDepartment;
 
-    // 用户登录信息
-//    private Account account;
-//
-//    private List<Class> classList;
+    private String userPhone;
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
+    }
+
+    public String getUserSchool() {
+        return userSchool;
+    }
+
+    public void setUserSchool(String userSchool) {
+        this.userSchool = userSchool == null ? null : userSchool.trim();
+    }
+
+    public String getUserSno() {
+        return userSno;
+    }
+
+    public void setUserSno(String userSno) {
+        this.userSno = userSno == null ? null : userSno.trim();
+    }
+
+    public String getUserDepartment() {
+        return userDepartment;
+    }
+
+    public void setUserDepartment(String userDepartment) {
+        this.userDepartment = userDepartment == null ? null : userDepartment.trim();
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone == null ? null : userPhone.trim();
+    }
 }

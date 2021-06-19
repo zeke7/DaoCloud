@@ -27,6 +27,9 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
+    @Autowired
+    AccountService accountService;
+
     @RequestMapping("/toLogin")
     public String toLogin(){
         return "loginpage";
@@ -45,6 +48,14 @@ public class LoginController {
     @PostMapping(value = "/loginbysms")
     public BaseResponse userLoginbySms(@RequestBody JSONObject usertologin, HttpServletResponse httpServletResponse) {
         return loginService.loginsms(usertologin, httpServletResponse);
+    }
+
+    @CrossOrigin
+    @ResponseBody
+    @PostMapping(value = "/accountexist")
+    public BaseResponse userExist(String username) {
+        // 将用户名和密码封装成 UsernamePasswordToken 对象
+        return new BaseResponse(HttpStatus.OK.value(), "用户是否存在", accountService.findAccountByPhone(username));
     }
 
 }

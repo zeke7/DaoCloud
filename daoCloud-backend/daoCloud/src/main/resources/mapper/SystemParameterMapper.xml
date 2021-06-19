@@ -5,9 +5,10 @@
     <id column="sys_id" jdbcType="INTEGER" property="sysId" />
     <result column="sys_name" jdbcType="VARCHAR" property="sysName" />
     <result column="sys_parameter" jdbcType="VARCHAR" property="sysParameter" />
+    <result column="sys_key" jdbcType="VARCHAR" property="sysKey" />
   </resultMap>
   <sql id="Base_Column_List">
-    sys_id, sys_name, sys_parameter
+    sys_id, sys_name, sys_parameter, sys_key
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -20,10 +21,10 @@
     where sys_id = #{sysId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
-    insert into system_parameter (sys_id, sys_name, sys_parameter
-      )
-    values (#{sysId,jdbcType=INTEGER}, #{sysName,jdbcType=VARCHAR}, #{sysParameter,jdbcType=VARCHAR}
-      )
+    insert into system_parameter (sys_id, sys_name, sys_parameter, 
+      sys_key)
+    values (#{sysId,jdbcType=INTEGER}, #{sysName,jdbcType=VARCHAR}, #{sysParameter,jdbcType=VARCHAR}, 
+      #{sysKey,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
     insert into system_parameter
@@ -37,6 +38,9 @@
       <if test="sysParameter != null">
         sys_parameter,
       </if>
+      <if test="sysKey != null">
+        sys_key,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="sysId != null">
@@ -47,6 +51,9 @@
       </if>
       <if test="sysParameter != null">
         #{sysParameter,jdbcType=VARCHAR},
+      </if>
+      <if test="sysKey != null">
+        #{sysKey,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -59,15 +66,20 @@
       <if test="sysParameter != null">
         sys_parameter = #{sysParameter,jdbcType=VARCHAR},
       </if>
+      <if test="sysKey != null">
+        sys_key = #{sysKey,jdbcType=VARCHAR},
+      </if>
     </set>
     where sys_id = #{sysId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.SystemParameter">
     update system_parameter
     set sys_name = #{sysName,jdbcType=VARCHAR},
-      sys_parameter = #{sysParameter,jdbcType=VARCHAR}
+      sys_parameter = #{sysParameter,jdbcType=VARCHAR},
+      sys_key = #{sysKey,jdbcType=VARCHAR}
     where sys_id = #{sysId,jdbcType=INTEGER}
   </update>
+
 
 
   <select id="getAllSysParams" parameterType="java.lang.Integer" resultMap="BaseResultMap">

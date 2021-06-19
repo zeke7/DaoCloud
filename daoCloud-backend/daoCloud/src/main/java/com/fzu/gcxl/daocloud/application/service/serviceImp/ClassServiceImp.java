@@ -10,7 +10,6 @@ import com.fzu.gcxl.daocloud.domain.exception.UserFriendException;
 import com.fzu.gcxl.daocloud.domain.repository.ClassInfoRepository;
 import com.fzu.gcxl.daocloud.domain.repository.ClassRepository;
 import com.fzu.gcxl.daocloud.domain.repository.UserRepository;
-import com.fzu.gcxl.daocloud.frontinterface.dto.ClassInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,26 +35,33 @@ public class ClassServiceImp implements ClassService {
         String classname = createClass.getString("classname");
         String userPhone = createClass.getString("userphone");
         Integer classmember = createClass.getInteger("classmembers");
-        String classno = createClass.getString("classcode");
+//        String classno = createClass.getString("classcode");
         String semester = createClass.getString("classsemester");
+
+        String classNo = String.valueOf((int)((Math.random()*9+1)*100000));
+        while (classRepository.selectByPrimaryKey(classNo) != null){
+            classNo = String.valueOf((int)((Math.random()*9+1)*100000));
+        }
+
         try{
             Class newClass = new Class();
             newClass.setClassName(classname);
             newClass.setUserPhone(userPhone);
             newClass.setClassMember(classmember);
-            newClass.setClassCode(classno);
+
+            newClass.setClassCode(classNo);
             newClass.setCreateTime(new Date());
             newClass.setClassSemester(semester);
+            // 0-> not allowed 1->allow
+            newClass.setClassIsallowed("1");
             // 0->false 1->true
             newClass.setClassIsclose("0");
 
-            if (classRepository.selectByClassName(classname) == null && classRepository.selectByPrimaryKey(classno) == null){
-                int success = classRepository.insert(newClass);
-                if(success != 0){
-                    return new BaseResponse(HttpStatus.OK.value(), "班课创建成功", "CreateClassSuccess");
-                }else{
-                    return new BaseResponse(HttpStatus.OK.value(), "班课创建失败", "CreateClassFail");
-                }
+            if (classRepository.selectByClassName(classname) == null && classRepository.selectByPrimaryKey(classNo) == null){
+                int res = classRepository.insert(newClass);
+                if(res==-1)
+                    return new BaseResponse(500, "班课创建失败","");
+                return new BaseResponse(HttpStatus.OK.value(), "班课创建成功", classNo);
             }else {
                 return new BaseResponse(HttpStatus.OK.value(), "班课创建失败, 班课名称或班课编号重复", "CreateClassFail_Num_Name");
             }
@@ -171,7 +177,7 @@ public class ClassServiceImp implements ClassService {
             newClass.setCreateTime(new Date());
             newClass.setClassCode(classcode);
             // 0->false 1->true
-            newClass.setClassIsclose(isallowed);
+            newClass.setClassIsallowed(isallowed);
 
             int res = classRepository.updateByPrimaryKeySelective(newClass);
             if(res==-1)
@@ -189,8 +195,13 @@ public class ClassServiceImp implements ClassService {
         String userphone = joinClass.getString("userphone");
 
         try{
-            if (classInfoRepository.selectUserByphonecode(userphone, classcode) == null){
-                if (classRepository.selectByPrimaryKey(classcode).getClassIsallowed().equals("1")){
+            List<ClassInfo> currentclassInfo = classInfoRepository.selectUserByphonecode(classcode, userphone);
+            System.out.println(currentclassInfo);
+            if (currentclassInfo.size() == 0){
+                String isallowd = classRepository.selectByPrimaryKey(classcode).getClassIsallowed();
+                if(isallowd == null)
+                    isallowd = "1";
+                if (isallowd.equals("0")){
                     return new BaseResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "班课不允许加入", "CreateClassFail");
                 }else {
                     ClassInfo classInfo = new ClassInfo();
@@ -202,7 +213,7 @@ public class ClassServiceImp implements ClassService {
                         return new BaseResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "班课加入失败", "CreateClassFail");
                     }else{
                         // 班级人数+1
-                        updateClassMemberByCode(joinClass);
+//                        updateClassMemberByCode(joinClass);
                         return new BaseResponse(HttpStatus.OK.value(), "班课加入成功", "CreateClassSuccess");
                     }
                 }
@@ -210,6 +221,7 @@ public class ClassServiceImp implements ClassService {
                 return new BaseResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "该用户已在该班课中", "JoinClassFail");
             }
         }catch (Exception e){
+            System.out.println(e);
             throw new UserFriendException("班课加入失败，参数没有通过有效性验证。");
         }
     }
@@ -232,6 +244,18 @@ public class ClassServiceImp implements ClassService {
 
     }
 
+
+    @Override
+    public BaseResponse selectAllClassesInfoPerson(String userphone) {
+        try{
+            return new BaseResponse(200, "查询成功", classDtoAssembler.userClassinfoAssembler(userphone));
+        }catch (Exception e){
+            System.out.println(e);
+            throw new UserFriendException("查询失败");
+        }
+
+    }
+
     @Override
     public BaseResponse selectAllInfo() {
         try{
@@ -239,6 +263,17 @@ public class ClassServiceImp implements ClassService {
         }catch (Exception e){
             System.out.println(e);
             throw new UserFriendException("查询失败");
+        }
+    }
+
+    @Override
+    public BaseResponse getStudentCountsByClassCode(String classCode) {
+        try{
+            List<ClassInfo> classInfoList = classInfoRepository.selectAllClassInfoByClassCode(classCode);
+            return new BaseResponse(200, "查询人数成功", classInfoList.size());
+        }catch (Exception e){
+            System.out.println(e);
+            throw new UserFriendException("查询人数失败");
         }
     }
 }

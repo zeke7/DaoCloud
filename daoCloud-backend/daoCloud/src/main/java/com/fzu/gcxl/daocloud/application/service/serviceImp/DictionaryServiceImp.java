@@ -2,6 +2,7 @@ package com.fzu.gcxl.daocloud.application.service.serviceImp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fzu.gcxl.daocloud.application.service.DictionaryService;
+import com.fzu.gcxl.daocloud.application.service.assembler.DictionaryDtoAssembler;
 import com.fzu.gcxl.daocloud.domain.entity.Dictionary;
 import com.fzu.gcxl.daocloud.domain.entity.Dictionarydetail;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
@@ -21,6 +22,9 @@ public class DictionaryServiceImp implements DictionaryService {
 
     @Autowired
     DictionarydetailRepository dictionarydetailRepository;
+
+    @Autowired
+    DictionaryDtoAssembler DicDtoAssembler;
 
     public BaseResponse createNewDictionary(JSONObject dictionary){
         // 创建大类别
@@ -51,7 +55,7 @@ public class DictionaryServiceImp implements DictionaryService {
 
     public BaseResponse deleteDictionaryByCode(String code){
         try{
-            if (dictionarydetailRepository.selectDetialsbyDicCode(code) != null){
+            if (dictionarydetailRepository.selectDetialsbyDicCode(code).size() != 0){
                 return new BaseResponse(500, "删除字典类别失败","");
             }else {
                 if (dictionaryRespository.selectByPrimaryKey(code) != null){
@@ -106,31 +110,46 @@ public class DictionaryServiceImp implements DictionaryService {
     // 创建字典细节数据
     public BaseResponse createNewDictionaryDetail(JSONObject dictionary){
         String diccode = dictionary.getString("dictionarycode");
+
+        String dicname = dictionary.getString("dicname");
+        String dicdiscp = dictionary.getString("dicdiscp");
+        String dicvalue = dictionary.getString("dicvalue");
+
         String dicdetailcode = dictionary.getString("dicdetailcode");
         String dicdetailname = dictionary.getString("dicdetailname");
         String dicdetaildiscp = dictionary.getString("dicdetaildiscp");
         String dicdetailvalue = dictionary.getString("dicdetailvalue");
         try{
-            if (dictionaryRespository.selectByPrimaryKey(diccode) == null){
-                return new BaseResponse(500, "添加字典详情失败,字典类别不存在","");
-            }else{
-                Dictionarydetail newdicdetail= new Dictionarydetail();
-                newdicdetail.setDicCode(diccode);
-                newdicdetail.setDicdetailCode(dicdetailcode);
-                newdicdetail.setDicdetailName(dicdetailname);
-                newdicdetail.setDicdetailDescription(dicdetaildiscp);
-                newdicdetail.setDicdetailValue(dicdetailvalue);
+            Dictionarydetail newdicdetail= new Dictionarydetail();
+            newdicdetail.setDicCode(diccode);
+            newdicdetail.setDicdetailCode(dicdetailcode);
+            newdicdetail.setDicdetailName(dicdetailname);
+            newdicdetail.setDicdetailDescription(dicdetaildiscp);
+            newdicdetail.setDicdetailValue(dicdetailvalue);
+            System.out.println(newdicdetail);
 
-                if (dictionarydetailRepository.selectByPrimaryKey(dicdetailcode) != null){
-                    return new BaseResponse(500, "添加字典详情失败，已经存在。","");
-                }else{
-                    int res = dictionarydetailRepository.insert(newdicdetail);
-                    if (res == -1)
-                        return new BaseResponse(500, "添加字典详情失败","");
-                    return new BaseResponse(200, "添加字典详情成功","");
-                }
+            if (dictionaryRespository.selectByName(dicname) == null
+                    && dictionaryRespository.selectByPrimaryKey(diccode) == null){
+                Dictionary newDictionary = new Dictionary();
+                newDictionary.setDicCode(diccode);
+                newDictionary.setDicName(dicname);
+                newDictionary.setDicDiscription(dicdiscp);
+                newDictionary.setDicValue(dicvalue);
+                int res = dictionaryRespository.insert(newDictionary);
+                if(res==-1)
+                    return new BaseResponse(500, "添加字典类别失败","");
+            }
+
+            if (dictionarydetailRepository.selectByDicAndDetialName(diccode, dicdetailname) != null){
+                return new BaseResponse(500, "添加字典详情失败，已经存在。","");
+            }else{
+                int res = dictionarydetailRepository.insert(newdicdetail);
+                if (res == -1)
+                    return new BaseResponse(500, "添加字典详情失败","");
+                return new BaseResponse(200, "添加字典详情成功","");
             }
         }catch (Exception e){
+            System.out.println(e);
             throw new UserFriendException("添加字典详情失败");
         }
 
@@ -198,6 +217,24 @@ public class DictionaryServiceImp implements DictionaryService {
     public BaseResponse selectAllDictionaryDetails(String dicCode) {
         try{
             return new BaseResponse(200, "查询成功", dictionarydetailRepository.selectDetialsbyDicCode(dicCode));
+        }catch (Exception e){
+            throw new UserFriendException("查询失败");
+        }
+    }
+
+    @Override
+    public BaseResponse selectAllDicdto() {
+        try{
+            return new BaseResponse(200, "查询成功", DicDtoAssembler.DictionaryInfoAssembler());
+        }catch (Exception e){
+            throw new UserFriendException("查询失败");
+        }
+    }
+
+    @Override
+    public BaseResponse selectAllDicdtoBycode(String dicCode) {
+        try{
+            return new BaseResponse(200, "查询成功", DicDtoAssembler.DictionaryInfoByCodeAssembler(dicCode));
         }catch (Exception e){
             throw new UserFriendException("查询失败");
         }

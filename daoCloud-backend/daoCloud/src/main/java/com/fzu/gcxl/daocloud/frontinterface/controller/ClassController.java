@@ -50,13 +50,19 @@ public class ClassController {
     }
 
     @CrossOrigin
+    @PutMapping("/classallowed")
+    public BaseResponse allowClass(@RequestBody JSONObject closeClass){
+        return classService.ClassNotAllowedByCode(closeClass);
+    }
+
+    @CrossOrigin
     @GetMapping("/codeClasses")
     public BaseResponse getClassByCode(String classCode){
         return classService.getClassesByCode(classCode);
     }
 
     @CrossOrigin
-    @PutMapping("/inclasses")
+    @PostMapping("/inclasses")
     public BaseResponse classinfo(@RequestBody JSONObject closeClass){
         return classService.joinClassByCode(closeClass);
     }
@@ -74,9 +80,21 @@ public class ClassController {
     }
 
     @CrossOrigin
+    @GetMapping("/classinfodto")
+    public BaseResponse getClassinfoDto(String userphone){
+        return classService.selectAllClassesInfoPerson(userphone);
+    }
+
+    @CrossOrigin
     @GetMapping("/allclassesdto")
     public BaseResponse getallClassesDto(){
         return classService.selectAllInfo();
+    }
+
+    @CrossOrigin
+    @GetMapping("/students")
+    public BaseResponse getStuNums(String classCode){
+        return classService.getStudentCountsByClassCode(classCode);
     }
 
 //    @CrossOrigin

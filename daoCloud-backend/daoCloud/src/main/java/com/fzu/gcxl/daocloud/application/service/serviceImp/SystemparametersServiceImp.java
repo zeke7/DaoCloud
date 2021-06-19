@@ -19,10 +19,12 @@ public class SystemparametersServiceImp implements SystemparametersService {
     public BaseResponse createNewSysParams(JSONObject sysparameter){
         String sysname = sysparameter.getString("sysName");
         String sysvalue = sysparameter.getString("sysValue");
+        String syskey = sysparameter.getString("sysKey");
 
         SystemParameter systemParameter = new SystemParameter();
         systemParameter.setSysName(sysname);
         systemParameter.setSysParameter(sysvalue);
+        systemParameter.setSysKey(syskey);
 
 
         if (systemParameterRepository.selectBysname(sysname) == null){
@@ -54,18 +56,20 @@ public class SystemparametersServiceImp implements SystemparametersService {
         Integer sid = sysparameter.getInteger("sysId");
         String sysname = sysparameter.getString("sysName");
         String sysvalue = sysparameter.getString("sysValue");
+        String syskey = sysparameter.getString("sysKey");
 
         SystemParameter systemParameter = new SystemParameter();
+        systemParameter.setSysName(sysname);
         systemParameter.setSysParameter(sysvalue);
         systemParameter.setSysId(sid);
+        systemParameter.setSysKey(syskey);
 
         if (systemParameterRepository.selectBysname(sysname) != null){
-            int success = systemParameterRepository.updateByPrimaryKeySelective(systemParameter);
-            if(success != 0){
-                return new BaseResponse(HttpStatus.OK.value(), "系统参数更新成功", "Success");
-            }else{
-                return new BaseResponse(HttpStatus.OK.value(), "系统参数更新失败", "Fail");
-            }
+            System.out.println(systemParameterRepository.selectBysname(sysname));
+            int res = systemParameterRepository.updateByPrimaryKeySelective(systemParameter);
+            if (res == -1)
+                return new BaseResponse(500, "系统参数更新失败","");
+            return new BaseResponse(200, "系统参数更新成功","");
         }else {
             return new BaseResponse(HttpStatus.OK.value(), "系统参数不存在", "Exist");
         }

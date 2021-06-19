@@ -8,9 +8,11 @@
     <result column="checkin_type" jdbcType="INTEGER" property="checkinType" />
     <result column="checkin_num" jdbcType="INTEGER" property="checkinNum" />
     <result column="checkin_numrequired" jdbcType="INTEGER" property="checkinNumrequired" />
+    <result column="class_code" jdbcType="VARCHAR" property="classCode" />
   </resultMap>
   <sql id="Base_Column_List">
-    checkin_hid, user_id, checkin_date, checkin_type, checkin_num, checkin_numrequired
+    checkin_hid, user_id, checkin_date, checkin_type, checkin_num, checkin_numrequired, 
+    class_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -24,11 +26,11 @@
   </delete>
   <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.CheckinHistory">
     insert into checkin_history (checkin_hid, user_id, checkin_date, 
-      checkin_type, checkin_num, checkin_numrequired
-      )
+      checkin_type, checkin_num, checkin_numrequired, 
+      class_code)
     values (#{checkinHid,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{checkinDate,jdbcType=TIMESTAMP}, 
-      #{checkinType,jdbcType=INTEGER}, #{checkinNum,jdbcType=INTEGER}, #{checkinNumrequired,jdbcType=INTEGER}
-      )
+      #{checkinType,jdbcType=INTEGER}, #{checkinNum,jdbcType=INTEGER}, #{checkinNumrequired,jdbcType=INTEGER}, 
+      #{classCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.CheckinHistory">
     insert into checkin_history
@@ -51,6 +53,9 @@
       <if test="checkinNumrequired != null">
         checkin_numrequired,
       </if>
+      <if test="classCode != null">
+        class_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="checkinHid != null">
@@ -70,6 +75,9 @@
       </if>
       <if test="checkinNumrequired != null">
         #{checkinNumrequired,jdbcType=INTEGER},
+      </if>
+      <if test="classCode != null">
+        #{classCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -91,6 +99,9 @@
       <if test="checkinNumrequired != null">
         checkin_numrequired = #{checkinNumrequired,jdbcType=INTEGER},
       </if>
+      <if test="classCode != null">
+        class_code = #{classCode,jdbcType=VARCHAR},
+      </if>
     </set>
     where checkin_hid = #{checkinHid,jdbcType=INTEGER}
   </update>
@@ -100,7 +111,16 @@
       checkin_date = #{checkinDate,jdbcType=TIMESTAMP},
       checkin_type = #{checkinType,jdbcType=INTEGER},
       checkin_num = #{checkinNum,jdbcType=INTEGER},
-      checkin_numrequired = #{checkinNumrequired,jdbcType=INTEGER}
+      checkin_numrequired = #{checkinNumrequired,jdbcType=INTEGER},
+      class_code = #{classCode,jdbcType=VARCHAR}
     where checkin_hid = #{checkinHid,jdbcType=INTEGER}
   </update>
+
+
+    <select id="selectCheckinHistoryForTeacher" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from checkin_history
+        where class_code = #{classCode,jdbcType=VARCHAR} and user_id = #{userId,jdbcType=VARCHAR}
+    </select>
 </mapper>

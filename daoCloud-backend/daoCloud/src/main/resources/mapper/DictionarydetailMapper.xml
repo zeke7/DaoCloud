@@ -165,4 +165,18 @@
     where dic_code = #{dicCode,jdbcType=VARCHAR} and dicdetail_code = #{dicdetailCode,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectByDicAndDetialName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionarydetail
+    where dic_code = #{dicCode,jdbcType=VARCHAR} and dicdetail_name = #{dicdetailName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectDetialbyName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionarydetail
+    where dicdetail_name = #{dicdetailName,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

@@ -151,8 +151,7 @@
     select
     <include refid="Base_Column_List" />
     from checkin_record
-    where  class_code = #{classCode,jdbcType=VARCHAR} and checkin_startdate = #{checkinStartdate,jdbcType=TIMESTAMP}
-    and user_id = #{studentId,jdbcType=VARCHAR}
+    where  class_code = #{classCode,jdbcType=VARCHAR} and user_id = #{studentId,jdbcType=VARCHAR}
   </select>
 
 </mapper>

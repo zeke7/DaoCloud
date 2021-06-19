@@ -1,16 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fzu.gcxl.daocloud.domain.repository.UserRepository">
-    <insert id="createNewUser" parameterType="User">
-        insert into daocloud.user (user_name, user_school, user_department, user_sno, user_phone, role_id)
-        values (#{userName},#{userSchool},#{userDepartment},#{userSno},#{userPhone},#{roleId})
-    </insert>
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_school" jdbcType="VARCHAR" property="userSchool" />
+    <result column="user_sno" jdbcType="VARCHAR" property="userSno" />
+    <result column="user_department" jdbcType="VARCHAR" property="userDepartment" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, role_id, user_name, user_school, user_sno, user_department, user_phone
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.User">
+    insert into user (user_id, role_id, user_name,
+      user_school, user_sno, user_department, 
+      user_phone)
+    values (#{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{userSchool,jdbcType=VARCHAR}, #{userSno,jdbcType=VARCHAR}, #{userDepartment,jdbcType=VARCHAR}, 
+      #{userPhone,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userSchool != null">
+        user_school,
+      </if>
+      <if test="userSno != null">
+        user_sno,
+      </if>
+      <if test="userDepartment != null">
+        user_department,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userSchool != null">
+        #{userSchool,jdbcType=VARCHAR},
+      </if>
+      <if test="userSno != null">
+        #{userSno,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartment != null">
+        #{userDepartment,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.User">
+    update user
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userSchool != null">
+        user_school = #{userSchool,jdbcType=VARCHAR},
+      </if>
+      <if test="userSno != null">
+        user_sno = #{userSno,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartment != null">
+        user_department = #{userDepartment,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.User">
+    update user
+    set role_id = #{roleId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_school = #{userSchool,jdbcType=VARCHAR},
+      user_sno = #{userSno,jdbcType=VARCHAR},
+      user_department = #{userDepartment,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
 
-    <select id="findUserByName" resultType="User">
-        select * from daocloud.user where user_name = #{name};
-    </select>
+  <select id="findUserByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </select>
 
-    <select id="findUserByPhone" resultType="User">
-        select * from daocloud.user where user_phone = #{userPhone};
-    </select>
+  <select id="findUserByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_phone = #{userPhone,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByPhoneSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.User">
+    update user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userSchool != null">
+        user_school = #{userSchool,jdbcType=VARCHAR},
+      </if>
+      <if test="userSno != null">
+        user_sno = #{userSno,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartment != null">
+        user_department = #{userDepartment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_phone = #{userPhone,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="selectUserByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+  </select>
+
+  <insert id="createNewUser" parameterType="com.fzu.gcxl.daocloud.domain.entity.User">
+    insert into user (user_id, role_id, user_name,
+      user_school, user_sno, user_department,
+      user_phone)
+    values (#{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR},
+      #{userSchool,jdbcType=VARCHAR}, #{userSno,jdbcType=VARCHAR}, #{userDepartment,jdbcType=VARCHAR},
+      #{userPhone,jdbcType=VARCHAR})
+  </insert>
+
 </mapper>

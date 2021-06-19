@@ -2,16 +2,11 @@ package com.fzu.gcxl.daocloud.application.service.serviceImp;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fzu.gcxl.daocloud.application.service.CheckinService;
-import com.fzu.gcxl.daocloud.domain.entity.Checkin;
-import com.fzu.gcxl.daocloud.domain.entity.CheckinHistory;
-import com.fzu.gcxl.daocloud.domain.entity.CheckinRecord;
+import com.fzu.gcxl.daocloud.domain.entity.*;
 import com.fzu.gcxl.daocloud.domain.entity.Class;
 import com.fzu.gcxl.daocloud.domain.entity.response.BaseResponse;
 import com.fzu.gcxl.daocloud.domain.exception.UserFriendException;
-import com.fzu.gcxl.daocloud.domain.repository.CheckinHistoryRepository;
-import com.fzu.gcxl.daocloud.domain.repository.CheckinRecordRepository;
-import com.fzu.gcxl.daocloud.domain.repository.CheckinRepository;
-import com.fzu.gcxl.daocloud.domain.repository.ClassRepository;
+import com.fzu.gcxl.daocloud.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,30 +29,46 @@ public class CheckinServiceImp implements CheckinService {
     @Autowired
     CheckinRecordRepository checkinRecordRepository;
 
+    @Autowired
+    SystemParameterRepository systemParameterRepository;
+
+    @Autowired
+    ClassInfoRepository classInfoRepository;
+
     // 教师发起签到
     public BaseResponse teastartCheckin(@RequestBody JSONObject tcheckin){
-        // 签到类型
-//        Integer checkintype = tcheckin.getInteger("checkintype");
         // 进行签到的班级代码
         String classcode = tcheckin.getString("classcode");
         // 班级的教师
         String userphone = tcheckin.getString("teacherphone");
         // 签到发起位置
         String location = tcheckin.getString("location");
+        // 签到经验值
+        Integer exp = tcheckin.getInteger("checkinexp") == null? tcheckin.getInteger("checkinexp"): 2;
 
         // 将信息存入数据库
         // 判断是否已经有同一门课程的实时签到记录
         try{
-            if (checkinRepository.selcetByClassCode(classcode) == null ||
-                    checkinRepository.selcetByClassCode(classcode).getIsClose() == 1){
+            boolean checkinClose = true;
+            List<Checkin> curCheckin = checkinRepository.selcetCheckinByClassCode(classcode);
+            for (Checkin check: curCheckin) {
+                if (check.getIsClose() == 0){
+                    checkinClose = false;
+                    break;
+                }
+            }
+            if (curCheckin.size() == 0 || checkinClose){
                 Checkin checkin = new Checkin();
-                checkin.setType(1);
+                // 设置经验值
+                checkin.setType(exp);
                 checkin.setClassCode(classcode);
                 checkin.setUserId(userphone);
 
                 Date currentDate = new Date(System.currentTimeMillis());
                 checkin.setCheckinDate(currentDate);
                 checkin.setStartTime(currentDate);
+                SystemParameter systime = systemParameterRepository.selectBysname("签到时间");
+                String sysParameter = systime != null? systime.getSysParameter() : "5";
                 // 签到持续时间 签到持续时间 -> 从系统参数获得
                 checkin.setDuration(5 * 60 * 1000);
                 Date endDate = new Date(System.currentTimeMillis() + 5 * 60 * 1000);
@@ -68,16 +79,18 @@ public class CheckinServiceImp implements CheckinService {
                 checkin.setCheckinLocation(location);
                 // 0->false 1->true 发起的时候为 开启0
                 checkin.setIsClose(0);
-
+                List<ClassInfo> classInfoList = classInfoRepository.selectAllClassInfoByClassCode(classcode);
+                checkin.setClassMembers((long) classInfoList.size());
                 int res = checkinRepository.insert(checkin);
                 if (res == -1)
                     new BaseResponse(500, "发起签到失败","checkinfailed");
-                return new BaseResponse(200, "发起签到成功","checkinsuccess");
+                return new BaseResponse(200, "发起签到成功",currentDate.toString());
             }
             else {
                 return new BaseResponse(500, "发起签到失败，已存在","checkinexist");
             }
         }catch (Exception e){
+            System.out.println(e);
             throw new UserFriendException("发起签到失败");
         }
     }
@@ -93,7 +106,8 @@ public class CheckinServiceImp implements CheckinService {
         Date checkindate = tcheckin.getDate("checkindate");
 
         try{
-            Checkin checkin = checkinRepository.selcetByClassCode(classcode);
+            int checkinId = checkinRepository.selcetIdByClassCodeDate(classcode, checkindate);
+            Checkin checkin = checkinRepository.selectByPrimaryKey(checkinId);
             if (checkin != null){
                 if (checkin.getIsClose() == 1){
                     return new BaseResponse(500, "关闭失败, 签到已经关闭","Closefailed");
@@ -102,7 +116,7 @@ public class CheckinServiceImp implements CheckinService {
                     // 0->false 1->true 发起的时候为 开启0
                     newCheckin.setIsClose(1);
                     newCheckin.setClassCode(classcode);
-                    newCheckin.setCheckinId(checkinRepository.selcetIdByClassCodeDate(classcode, checkindate));
+                    newCheckin.setCheckinId(checkinId);
                     int res = checkinRepository.updateByPrimaryKeySelective(newCheckin);
                     if (res == -1)
                         return new BaseResponse(500, "关闭失败","Closefailed");
@@ -119,6 +133,7 @@ public class CheckinServiceImp implements CheckinService {
                     }
                     checkinHistory.setCheckinNum(checknumtotal);
                     checkinHistory.setUserId(userphone);
+                    checkinHistory.setClassCode(classcode);
                     int resh = checkinHistoryRepository.insert(checkinHistory);
                     if (resh == -1)
                         return new BaseResponse(500, "签到历史记录插入失败","CloseSuccess;HistoryFailed");
@@ -128,6 +143,7 @@ public class CheckinServiceImp implements CheckinService {
                 return new BaseResponse(500, "关闭失败","Closefailed");
             }
         }catch (Exception e){
+            System.out.println(e);
             throw new UserFriendException("关闭失败");
         }
     }
@@ -141,6 +157,7 @@ public class CheckinServiceImp implements CheckinService {
         String checkinlocation = tcheckin.getString("location");
         // 学生的手机号
         String userphone = tcheckin.getString("studentphone");
+        // 签到开始时间
         Date checkindate = tcheckin.getDate("checkindate");
 
         try{
@@ -154,10 +171,18 @@ public class CheckinServiceImp implements CheckinService {
                 if (checkinRecordRepository.selectByCodeandDateSingle(classcode, checkindate, userphone) != null){
                     return new BaseResponse(500, "学生已签到成功，请勿重复签到","Checkinfailed");
                 }
+
+                // 判断学生签到时间是否超时
+                Date stuCheckinDate = new Date(System.currentTimeMillis());
+                System.out.println(checkin.getEndTime());
+                boolean after = stuCheckinDate.after(checkin.getEndTime());
+                if (after)
+                    return new BaseResponse(500, "学生签到超时","CheckinLate");
+
                 // 修改checkin_record表 记录签到
                 CheckinRecord checkinRecord = new CheckinRecord();
                 checkinRecord.setCheckinLocation(checkinlocation);
-                checkinRecord.setCheckinTime(new Date(System.currentTimeMillis()));
+                checkinRecord.setCheckinTime(stuCheckinDate);
                 checkinRecord.setUserId(userphone);
                 checkinRecord.setClassCode(classcode);
                 checkinRecord.setCheckinStartdate(checkindate);
@@ -172,6 +197,23 @@ public class CheckinServiceImp implements CheckinService {
             }
         }catch (Exception e){
             throw new UserFriendException("学生签到失败");
+        }
+    }
+
+
+    // 教师获取某门课的历史签到记录
+    public BaseResponse CheckinHistoryteacher(@RequestBody JSONObject tcheckin){
+        // 进行签到的班级代码
+        String classcode = tcheckin.getString("classcode");
+        // 班级的教师
+        String userphone = tcheckin.getString("teacherphone");
+        // 课程开始签到的时间
+        try{
+            List<CheckinHistory> checkinRecords = checkinHistoryRepository.selectCheckinHistoryForTeacher(classcode, userphone);
+            return new BaseResponse(200, "获取成功", checkinRecords);
+        }catch (Exception e){
+            System.out.println(e);
+            throw new UserFriendException("获取失败");
         }
     }
 
@@ -197,9 +239,8 @@ public class CheckinServiceImp implements CheckinService {
         String classcode = tcheckin.getString("classcode");
         // 班级的教师
         String userphone = tcheckin.getString("studentphone");
-        // 课程开始签到的时间
-        Date checkindate = tcheckin.getDate("checkindate");
-        List<CheckinRecord> checkinRecords = checkinRecordRepository.selectCheckinRecordsForStudent(classcode, checkindate, userphone);
+
+        List<CheckinRecord> checkinRecords = checkinRecordRepository.selectCheckinRecordsForStudent(classcode, userphone);
 
         return new BaseResponse(200, "获取成功", checkinRecords);
     }
@@ -248,11 +289,27 @@ public class CheckinServiceImp implements CheckinService {
         }
     }
 
-    @Override
-    public BaseResponse stuexp(JSONObject tcheckin) {
-        return null;
-    }
+
 
     // 学生获得的经验值
+    @Override
+    public BaseResponse stuexp(JSONObject tcheckin) {
+        try{
+            // 进行签到的班级代码
+            String classcode = tcheckin.getString("classcode");
+            String stuphone = tcheckin.getString("studentphone");
+            Integer exp = tcheckin.getInteger("exp");
+
+            List<CheckinRecord> checkinRecords = checkinRecordRepository.selectCheckinRecordsForStudent(classcode, stuphone);
+
+            return new BaseResponse(200, "", exp*checkinRecords.size());
+        }catch (Exception e){
+            System.out.println(e);
+            throw new UserFriendException("获取经验值失败");
+        }
+
+    }
+
+
 
 }

@@ -29,8 +29,14 @@ public interface UserRepository extends IRepository<User>{
     @Override
     int updateByPrimaryKey(User record);
 
+    int updateByPhoneSelective(User record);
+
     User findUserByPhone(String phone);
     User findUserByName(String name);
     int createNewUser(User user);
+
+    List<User> selectUserByRoleId(Integer roleId);
+
+    List<User> selectAllUser();
 
 }

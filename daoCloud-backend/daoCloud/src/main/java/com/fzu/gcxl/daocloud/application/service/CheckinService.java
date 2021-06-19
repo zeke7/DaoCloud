@@ -23,6 +23,7 @@ public interface CheckinService {
     // 教师获取某门课的签到记录
     public BaseResponse recordCheckinteacher(@RequestBody JSONObject tcheckin);
 
+    public BaseResponse CheckinHistoryteacher(@RequestBody JSONObject tcheckin);
     // 学生 获取签到记录
     public BaseResponse recordCheckinstudent(@RequestBody JSONObject tcheckin);
 

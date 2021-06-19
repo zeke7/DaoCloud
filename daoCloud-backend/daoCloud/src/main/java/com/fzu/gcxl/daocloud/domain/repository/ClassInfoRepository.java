@@ -4,9 +4,12 @@ import com.fzu.gcxl.daocloud.domain.entity.ClassInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+
 @Mapper
 @Repository
-public interface ClassInfoRepository extends IRepository<ClassInfo>{
+public interface ClassInfoRepository {
     int deleteByPrimaryKey(Integer classinfoId);
 
     int insert(ClassInfo record);
@@ -19,5 +22,9 @@ public interface ClassInfoRepository extends IRepository<ClassInfo>{
 
     int updateByPrimaryKey(ClassInfo record);
 
-    ClassInfo selectUserByphonecode(String classcode, String userphone);
+    List<ClassInfo> selectUserByphonecode(String classcode, String userphone);
+
+    List<ClassInfo> selectAllClassInfoByUser(String userPhone);
+
+    List<ClassInfo> selectAllClassInfoByClassCode(String classCodes);
 }
