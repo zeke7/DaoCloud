@@ -3,8 +3,8 @@
 		<view class="page_edu_header">
 			<view class="header_content">
 				<view class="left">
-					<text class="title">工程实践</text>
-					<text class="sub_title">任课教师：池zb</text>
+					<text class="title">{{className}}</text>
+					<text class="sub_title" style="font-size: 50rpx;">{{classCode}}</text>
 				</view>
 				<view>
 					<image src="/static/right.png" style="width: 131px;height: 122px;"></image>
@@ -15,30 +15,55 @@
 		<view class="page_content">
 			<view class="menu">
 				<template >
-					<view class="item" >
+					<view v-if="classType=='0'" class="item" >
 						<view class="img_view" :style="{background: menus[0].bg}">
-							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signdetail"></image>
+							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signin"></image>
 						</view>
 						<text class="txt">{{menus[0].txt}}</text>
+					</view>
+					<view v-else class="item" >
+						<view class="img_view" :style="{background: menus[0].bg}">
+							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="initiateSignin"></image>
+						</view>
+						<text class="txt">发起签到</text>
+					</view>
+				</template>
+				<template v-if="classType=='1'">
+					<view class="item" >
+						<view class="img_view" :style="{background: menus[0].bg}">
+							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="endSignin"></image>
+						</view>
+						<text class="txt">结束签到</text>
 					</view>
 				</template>
 				<template>
 					<view class="item" >
 						<view class="img_view" :style="{background: menus[1].bg}">
-							<image :src="menus[1].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
+							<image :src="menus[1].icon" class="image" style="height: 80rpx; width: 80rpx;"@click="signindetail"></image>
 						</view>
 						<text class="txt">{{menus[1].txt}}</text>
 					</view>
 				</template>
 				<template>
-					<view class="item" >
+					<view v-if="classType=='0'" class="item" >
 						<view class="img_view" :style="{background: menus[2].bg}">
 							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
 						</view>
 						<text class="txt">{{menus[2].txt}}</text>
 					</view>
+					<view v-else class="item">
+						<view class="img_view" :style="{background: menus[2].bg}">
+							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="test"></image>
+						</view>
+						<text class="txt">结束班课</text>
+					</view>
 				</template>
 			</view>
+		</view>
+		
+		<view v-if="classType=='1'" class="cu-form-group margin-top">
+			<view class="title">是否允许加入</view>
+			<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
 		</view>
 		
 		<view style="display: flex;justify-content: space-between;font-size: 115%;margin-top: 20rpx;" >
@@ -64,9 +89,18 @@
 </template>
 
 <script>
+	import {formateDate} from "@/common/util.js" 
 	export default {
 		data() {
 			return {
+				user:null,//当前用户信息
+				class:'',//课程信息
+				classType:'',//管理班课|查看班课
+				className:'',//班课名
+				classCode:'',
+				longitude:'',//地理位置经度（教师发起签到）
+				latitude:'',//地理位置维度（教师发起签到）
+				startTime:'',//开始时间
 				menus: [{
 						bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))',
 						icon: '/static/signin.png',
@@ -83,14 +117,150 @@
 						txt: '小组方案'
 					}
 				],
-				
+				switchA: true,
 				Students:[{name:'张三',no:'2000'},{name:'李四',no:'2001'}],//加入的班课
 			}
+		},
+		onLoad() {
+			var that=this;
+			that.user=uni.getStorageSync('data')
+			uni.getLocation({
+				type: 'wgs84',
+				success: function (res) {
+					console.log('当前位置的经度：' + res.longitude);
+					console.log('当前位置的纬度：' + res.latitude);
+					that.longitude=res.longitude,
+					that.latitude=res.latitude
+				}
+			});	
+		},
+		onShow() {
+			var that=this;
+			var allClass=[];
+			var classIndex=0;
+			that.classType=uni.getStorageSync('classType')
+			classIndex=uni.getStorageSync('classIndex')
+			if(that.classType=='0'){
+				allClass=uni.getStorageSync('join_class')
+			}else if(that.classType=='1'){
+				allClass=uni.getStorageSync('bulid_class')
+			}
+			that.class=allClass[classIndex]
+			that.className=that.class.className
+			that.classCode=that.class.classCode
+			that.switchA=true?that.class.classIsallowed=='1':false
+			uni.request({
+				url:'http://112.74.55.61:8081/checkinfo',
+				header: {Authorization:uni.getStorageSync('token')},
+				method:'GET',
+				data:{
+					classcode:that.classCode,
+				}, 
+				success: (res) => {
+					console.log(res.data.data)
+					that.startTime=res.data.data.startTime
+				},
+				fail: (res) => {
+					console.log(res)
+					console.log("连接失败")
+				}
+			})
 		},
 		methods: {
 			signdetail(){
 				uni.navigateTo({
 					url:'../signin/signin-detail'
+				})
+			},
+			//教师发起签到
+			initiateSignin(){
+				var that=this;			
+				uni.request({
+					url:'http://112.74.55.61:8081/checkinteachers',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'POST',
+					data:{
+						classcode:that.classCode,
+						teacherphone:that.user.userPhone,
+						location_x:that.longitude,
+						location_y:that.latitude
+					}, 
+					success: (res) => {
+						console.log(res.data)
+						console.log(res.data.data)	
+						if(res.data.msg=="发起签到失败，已存在"){
+							uni.showToast({ title: '请先结束签到再发起新的签到', icon: 'none' });
+						}else if(res.data.msg=="发起签到成功"){
+							uni.showToast({ title: '发起签到成功，期限为5分钟', icon: 'none' });
+						}
+					},
+					fail: (res) => {
+						console.log(res)
+						console.log("连接失败")
+					}
+				})
+				
+				// var time=formateDate(new Date(), 'Y-M-D h:min:s')
+				// uni.setStorageSync('signinTime',time)
+			},
+			//结束签到
+			endSignin(){
+				var that=this;
+				uni.request({
+					url:'http://112.74.55.61:8081/checkinover',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'PUT',
+					data:{
+						classcode:that.classCode,
+						teacherphone:that.user.userPhone,
+						checkindate:that.startTime
+					}, 
+					success: (res) => {
+						console.log(res.data)
+						console.log(res.data.data)	
+						uni.showToast({ title: '成功结束签到', icon: 'none' });
+					},
+					fail: (res) => {
+						console.log(res)
+						console.log("连接失败")
+					}
+				})
+			},
+			test(){
+				var that=this
+				uni.getLocation({
+					type: 'wgs84',
+					success: function (res) {
+						console.log('当前位置的经度：' + res.longitude);
+						console.log('当前位置的纬度：' + res.latitude);
+						that.longitude=res.longitude,
+						that.latitude=res.latitude
+					},
+					
+				});	
+			},
+			SwitchA(e) {
+				var that=this
+				that.switchA = e.detail.value
+				console.log(e.detail.value)
+				var type='0'
+				type='1'?that.switchA==true:'0'
+				uni.request({
+					url:'http://112.74.55.61:8081/classallowed',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'GET',
+					data:{
+						classCode:that.classCode,
+						isclose:type	
+					}, 
+					success: (res) => {
+						console.log(res.data)
+						console.log(res.data.data)				
+					},
+					fail: (res) => {
+						console.log(res)
+						console.log("连接失败")
+					}
 				})
 			},
 		}
@@ -173,7 +343,6 @@
 					font-size: realSize(21px);
 					font-weight: 400;
 					color: rgba(255, 255, 255, 1);
-	
 					background: linear-gradient(0deg, rgba(120, 255, 224, 1) 0%, rgba(255, 255, 255, 1) 100%);
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;

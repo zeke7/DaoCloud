@@ -212,9 +212,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 var _default =
 {
   data: function data() {
@@ -224,28 +221,54 @@ var _default =
       tabList: ["我创建的", "我加入的"],
       modalName: null, //模态框
       bulidClass: [], //创建的班课
-      joinClass: [{ name: '工程训练', teacher: '池芝标' }, { name: '工程英语', teacher: '陈勃' }] //加入的班课
-    };
+      joinClass: [], //加入的班课
+      user: null };
+
   },
-  // onLoad() {
-  // 	var that=this;
-  // 	uni.getStorage({
-  // 		key:'join_class',
-  // 		success: function (res) {
-  // 			console.log(res.data)
-  // 			that.joinClass=res.data
-  // 		},				
-  // 	})
-  // },
+  onLoad: function onLoad() {
+    var that = this;
+    that.user = uni.getStorageSync('data');
+  },
   onShow: function onShow() {
     var that = this;
-    uni.getStorage({
-      key: 'join_class',
+    that.user = uni.getStorageSync('data');
+    uni.request({
+      url: 'http://112.74.55.61:8081/classinfodto',
+      header: { Authorization: uni.getStorageSync('token') },
+      method: 'GET',
+      data: {
+        userphone: that.user.userPhone },
+
       success: function success(res) {
-        //console.log(res.data)
-        that.joinClass = res.data;
+        console.log(res.data);
+        console.log(res.data.data);
+        that.joinClass = res.data.data.classinfos;
+      },
+      fail: function fail(res) {
+        console.log(res);
+        console.log("连接失败");
       } });
 
+
+    if (that.user.roleId == '2') {
+      uni.request({
+        url: 'http://112.74.55.61:8081/classesdto',
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'GET',
+        data: {
+          userphone: that.user.userPhone },
+
+        success: function success(res) {
+          console.log(res.data);
+          console.log(res.data.data);
+          that.bulidClass = res.data.data.classes;
+        },
+        fail: function fail(res) {
+          console.log(res);
+          console.log("连接失败");
+        } });
+
+    }
   },
   onHide: function onHide() {
     var that = this;
@@ -253,10 +276,19 @@ var _default =
       key: 'join_class',
       data: that.joinClass,
       success: function success() {
-        console.log('success');
+        //console.log('success');
       } });
 
     this.modalName = null;
+    if (that.user.roleId == '2') {
+      uni.setStorage({
+        key: 'bulid_class',
+        data: that.bulidClass,
+        success: function success() {
+          //console.log('success');
+        } });
+
+    }
   },
   methods: {
     //切换操作条  我创建的/我加入的
@@ -272,19 +304,36 @@ var _default =
       this.modalName = null;
     },
     //班课详情
-    go_class: function go_class() {
+    go_class: function go_class(index) {
+      uni.setStorageSync('classType', '0');
+      uni.setStorageSync('classIndex', index);
+      uni.navigateTo({
+        url: '../class/class' });
+
+    },
+    //管理班课
+    manage_class: function manage_class(index) {
+      uni.setStorageSync('classType', '1');
+      uni.setStorageSync('classIndex', index);
       uni.navigateTo({
         url: '../class/class' });
 
     },
     //创建班课
-    go_addclass: function go_addclass() {
-      uni.navigateTo({
-        url: "../class/creat" });
+    goAddclass: function goAddclass() {
+      var that = this;
+      if (that.user.roleId == '3') {
+        uni.showToast({ title: '未拥有创建班课的权限', icon: 'none' });
+      } else {
+        uni.navigateTo({
+          url: "../class/creat" });
 
+      }
     },
-    //加入班课
-    go_signin: function go_signin() {
+    //去签到
+    goSignin: function goSignin(index) {
+      uni.setStorageSync('classType', '0');
+      uni.setStorageSync('classIndex', index);
       uni.navigateTo({
         url: "../signin/signin" });
 

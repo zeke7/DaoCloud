@@ -4,7 +4,7 @@
 		<view class="cu-form-group" style="display: flex;justify-content: center;height: 180rpx;">				
 			<!--	封面为空、添加封面  	-->
 			<view @tap="ChooseImage" v-if="imgList.length<1">
-				<image src="../../static/照相机.png" style="height: 100rpx;width: 110rpx;"></image>
+				<image src="../../static/c.png" style="height: 100rpx;width: 110rpx;"></image>
 				<view>添加封面</view>
 			</view>
 			<!--	存在封面  	-->
@@ -19,29 +19,46 @@
 		<view>
 			<view style="color: gray; margin: 10upx 30upx;">班课信息</view>
 			<view class="cu-form-group" style="margin-top: 10upx;">
-				<view class="title">班课名称</view>
-				<input v-model="className"></input>
+				<view class="title">班级名称</view>
+				<input v-model="courseName"></input>
 			</view>
 			<view class="cu-form-group">
-				<view class="title">教师姓名</view>
-				<input v-model="teacherName"></input>
+				<view class="title">班课名称</view>
+				<picker @change="Picker_className" :value="index_className" :range="picker_className">
+					<view class="picker">
+						{{index_className>-1?picker_className[index_className]:'去选择'}}
+					</view>
+				</picker>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">班课学生人数</view>
 				<input v-model="classmember"></input>
 			</view>
+<!-- 			<view class="cu-form-group">
+				<view class="title">学校院系</view>
+				<picker mode="multiSelector" @change="MultiChange" @columnchange="MultiColumnChange" :value="multiIndex" :range="multiArray">
+					<view class="picker">
+						{{multiArray[0][multiIndex[0]]}}，{{multiArray[1][multiIndex[1]]}}
+					</view>
+				</picker>
+			</view> -->
+			<view class="cu-form-group">
+				<view class="title">学校院系</view>
+				<view v-if="!cur" @click="chooseSchool">去选择 ></view>
+				<view v-else>{{schoolCollege}}</view>
+			</view>
 			<view class="cu-form-group">
 				<view class="title">课程学期</view>
-				<picker @change="PickerChange" :value="index" :range="picker">
+				<picker @change="PickerChange" :value="index" :range="picker2">
 					<view class="picker">
-						{{index>-1?picker[index]:'去选择'}}
+						{{index>-1?picker2[index]:'去选择'}}
 					</view>
 				</picker>
 			</view>
-			<view class="cu-form-group">
-				<view class="title">班课编号</view>
-				<input v-model="classcode"></input>
-			</view>
+			<!-- <view class="cu-form-group">
+				<view class="title">课程学期</view>
+				<view style="color: #999999;">2020-2021-2</view>
+			</view> -->
 		</view>
 		<!--	创建人信息  	-->
 		<view>
@@ -52,51 +69,54 @@
 			</view>
 		</view>
 		
-		<!--	类型   	-->
-		<!-- <view>
-			<view style="color: gray; margin: 20upx 30upx;">类别</view>
-			<view class="cu-form-group" style="margin-top: 10upx;">
-				<view class="title">学校课表班课</view>
-				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
-			</view>
-			<view style="color: gray; margin: 10upx 10upx;">学校课表班课是学校安排课程表里的正式课程</view>
-			<view class="cu-form-group" style="margin-top: 10upx;">
-				<view class="title">云教材</view>
-				<picker @change="PickerChange" :value="index" :range="picker">
-					<view class="picker">
-						{{index>-1?picker[index]:'去选择'}}
-					</view>
-				</picker>
-			</view>
-		</view> -->
-		<!--	展开设置学校、院系详情   	-->
-		<!-- <view>
-			<view style="color: gray; margin: 20upx 10upx;">展开设置学校、院系详情</view>
-			<view>
-				<text style="font-size: 30upx;margin: 20upx 10upx;">设置班课详情</text>
-				<text class="cuIcon-refresharrow" ></text>
-			</view>			
-		</view> -->
-		
 		<!--	创建班课完成   	-->
 		<button class="button bg-blue"  @click="suc_cre()">创建班课</button>
 	</view>
 </template>
 
 <script>
+	import request from '../../common/request.js'
 	export default {
 		data() {
 			return {
 				imgList: [],//班课封面				
 				className:null,//班课名称
-				teacherName:null,
+				picker_className:['工程实践','工程训练','专业英语','智能技术','软件体系结构'],//选择班课名称
+				index_className:-1,//默认下标为-1,
+				courseName:null,//班级名称
 				classmember:null,//班课学生人数
 				semester:null,//班课学期
-				picker:['2020-1','2020-2','2021-1','2021-2'],//选择班课学期
-				index:-1,//默认下标为-1,
-				classcode:null,//班课编号
-				userPhone:13055766787 //创建者手机号
+				schoolCollege:null,
+				cur:false,
+				date: new Date().toISOString().slice(0, 10),
+				// multiArray: [
+				// 	['福州大学', '福建师范大学','福建医科大学'],
+				// 	['数学与计算机科学学院', '土木工程学院', '经济与管理学院', '外国语学院', '化学学院']
+				// ],
+				// multiIndex: [0, 0],
+				picker2:['2020-2021-1','2020-2021-2','2021-2022-1','2021-2022-2'],//选择班课学期
+				index:1,//默认下标为-1,
+				classCode:null,//班课号
+				user:null,//用户信息
+				userPhone:null //创建者手机号
 			}
+		},
+		onShow() {
+			this.schoolCollege=uni.getStorageSync('school')+uni.getStorageSync('college')
+			this.cur=uni.getStorageSync('cur')
+			console.log(this.schoolCollege)
+			console.log(this.cur)
+		},
+		onLoad() {
+			var that=this;
+			uni.removeStorageSync('school')
+			uni.removeStorageSync('college')
+			uni.removeStorageSync('cur')
+			if(this.date>'2021-07-31'){
+				this.index=2
+			}			
+			that.user=uni.getStorageSync('data')
+			that.userPhone=that.user.userPhone
 		},
 		methods: {
 			//选择照片
@@ -113,6 +133,11 @@
 						}
 					}
 				});
+			},
+			chooseSchool(){
+				uni.navigateTo({
+					url:'school'
+				})
 			},
 			//放大查看照片
 			ViewImage(e) {
@@ -143,31 +168,65 @@
 			PickerChange(e) {
 				var that=this;
 				that.index = e.detail.value,
-				that.semester=that.picker[that.index]
+				that.semester=that.picker2[that.index]
 			},
+			//选择课程名
+			Picker_className(e){
+				var that=this;
+				that.index_className = e.detail.value,
+				that.className=that.picker_className[that.index_className]
+			},
+			// //选择学校&院系
+			// MultiChange(e) {
+			// 	this.multiIndex = e.detail.value
+			// },
+			// MultiColumnChange(e) {
+			// 	let data = {
+			// 		multiArray: this.multiArray,
+			// 		multiIndex: this.multiIndex
+			// 	};
+			// 	data.multiIndex[e.detail.column] = e.detail.value;
+			// 	switch (e.detail.column) {
+			// 		case 0:
+			// 			switch (data.multiIndex[0]) {						
+			// 				case 0:
+			// 					data.multiArray[1] = ['数学与计算机科学学院', '土木工程学院', '经济与管理学院', '外国语学院', '化学学院'];
+			// 					break;
+			// 				// case 1:
+			// 				// 	data.multiArray[1] = ;
+			// 				// 	break;
+			// 			}
+			// 			// data.multiIndex[1] = 0;
+			// 			// break;
+			// 	}
+			// 	this.multiArray = data.multiArray;
+			// 	this.multiIndex = data.multiIndex;
+			// },
 			suc_cre(){
 				var that=this
 				uni.request({
 					url:'http://112.74.55.61:8081/classes',
+					header: {Authorization:uni.getStorageSync('token')},
 					method:'POST',
 					data:{
 						classname:that.className,
-						userPhone:that.userPhone,
-						classmember:that.classmember,
-						classcode:that.classcode,
-						semester:that.semester					
+						userphone:that.userPhone,
+						classmembers:that.classmember,
+						classsemester:that.semester
 					},
 					success: (res) => {
 						console.log(res.data)
+						that.classCode=res.data.data
+						uni.setStorageSync('classCode',that.classCode)
 					},
 					fail: (res) => {
 						console.log(res)
 						console.log("连接失败")
 					}
-				})				
-				// uni.navigateTo({
-				// 	url:'suc-creat'
-				// })		
+				})	
+				uni.navigateTo({
+					url:'suc-creat?classCode='
+				})
 			},
 			
 		}

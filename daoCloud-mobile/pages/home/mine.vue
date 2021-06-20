@@ -7,7 +7,7 @@
 						<view class="avator">
 							<img src="../../static/face.png">
 						</view>
-						<view style="text-align: center; width: 100%;">13055766787</view>
+						<view style="text-align: center; width: 100%;">{{userName}}</view>
 					</view>
 					<view class="box-bd">
 						<view class="item" style="padding-right: 100rpx;">
@@ -27,46 +27,57 @@
 				<view class="li noborder" >
 					<view class="icon"><image src="../../static/cc-card1.png"></image></view>
 					<view class="text">我的信息</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
 			<view class="list">
 				<view class="li " >
 					<view class="icon"><image src="../../static/help.png"></image></view>
 					<view class="text">帮助中心</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 				<view class="li " >
 					<view class="icon"><image src="../../static/about.png"></image></view>
 					<view class="text">关于我们</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 				<view class="li " >
 					<view class="icon"><image src="../../static/opinion.png"></image></view>
 					<view class="text">意见反馈</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
 			<view class="list">
 				<view class="li noborder" >
 					<view class="icon"><image src="../../static/set.png"></image></view>
 					<view class="text">系统设置</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
 		</view>
+		<button @click="loginOut">登 出</button>
 	</view>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				user:null,
+				userName:''
 			};
 		},
 		onLoad() {
+			var that=this;
+			that.user=uni.getStorageSync('data')
+			that.userName=that.user.userName
 		},
 		methods: {
-
+			loginOut(){
+				uni.clearStorageSync()
+				uni.navigateTo({
+					url:'../login/login'
+				})
+			}
 		}
 	}
 </script>
@@ -185,5 +196,17 @@ page{
 			height:40upx;
 		}
 	}
+}
+
+.button {
+	width: 600rpx;
+	font-size: 28rpx;
+	background: #5677fc;
+	color: #fff;
+	height: 90rpx;
+	line-height: 90rpx;
+	margin-top: 160rpx;
+	border-radius: 50rpx;
+	box-shadow: 0 5px 7px 0 rgba(86, 119, 252, 0.2);
 }
 </style>

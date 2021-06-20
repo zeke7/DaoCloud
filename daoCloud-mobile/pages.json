@@ -57,7 +57,7 @@
             "path" : "pages/test/test",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "选择学校",
                 "enablePullDownRefresh": false
             }
             
@@ -100,6 +100,22 @@
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }           
+		}
+        ,{
+            "path" : "pages/class/school",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }         
+        },
+		{
+		    "path" : "pages/class/college",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }         
 		}
     ],
 	"globalStyle": {

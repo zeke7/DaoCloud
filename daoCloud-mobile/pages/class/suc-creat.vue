@@ -6,7 +6,9 @@
 				<dt><image src="../../static/logo.png" ></image></dt>
 				<dd>创建成功</dd>
 			</dl>
-
+			<view style="margin-top: 30rpx;text-align: center;font-size: 50rpx;font-weight: 300;color: #007AFF;">
+				{{kr}}
+			</view>
 		<!-- 	<view class="qrcode-body" style="margin-top: 50rpx;">
 				 <view class="qrcode">
 					  <canvas canvas-id="myCanvas"/>
@@ -31,22 +33,27 @@
 		data() {
 			return {
 				img:"",
-				kr:"2333333"
+				kr:"345862"
 			}
 		},
 
 		onShow() {
+			var that=this
 			console.log('show')
+			// that.kr=uni.getStorageSync('classCode')
 		},
 		onLoad() {
+			var that=this
+			// that.kr=uni.getStorageSync('classCode')
+			//console.log(option.classCode)
 			// let qrcode = new Qrcode({
 			//         'level': 'Q',
 			//         'size': 200,
 			// 		'foreground':'#6495ED'
 			//       });
-			var str1 = this.kr.replace(' ','+')		
+			var str1 = that.kr.replace(' ','+')		
 			//将创建成功的班课号生成二维码
-			this.img='https://tool.oschina.net/action/qrcode/generate?data='+str1+'&output=image%2Fgif&error=L&type=0&margin=0&size=4&1621760013581'		 
+			that.img='https://tool.oschina.net/action/qrcode/generate?data='+str1+'&output=image%2Fgif&error=L&type=0&margin=0&size=4&1621760013581'		 
 		},
 		methods: {
 			//保存图片到相册

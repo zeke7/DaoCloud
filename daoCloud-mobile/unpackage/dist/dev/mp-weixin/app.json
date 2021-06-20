@@ -12,7 +12,9 @@
     "pages/class/suc-creat",
     "pages/class/join",
     "pages/signin/signin",
-    "pages/signin/signin-detail"
+    "pages/signin/signin-detail",
+    "pages/class/school",
+    "pages/class/college"
   ],
   "subPackages": [],
   "window": {

@@ -27,6 +27,13 @@
 	export default {
 		data() {
 			return {
+				user:null,//当前用户信息
+				class:'',//课程信息
+				classType:'',//管理班课|查看班课
+				classCode:'',
+				tcLongitude:'',//教师位置经度
+				tcLatitude:'',//教师位置纬度
+				startTime:'',//签到开始时间
 				longitude:'',//地理位置经度
 				latitude:'',//地理位置维度
 				address:'签到以获取地理位置',//地理位置信息
@@ -35,20 +42,84 @@
 				isclick:false
 			}
 		},
+		onLoad() {
+			var that=this;
+			that.user=uni.getStorageSync('data')
+		
+		},
+		onShow() {
+			var that=this;
+			var allClass=[];
+			var classIndex=0;
+			that.user=uni.getStorageSync('data')
+			that.classType=uni.getStorageSync('classType')
+			classIndex=uni.getStorageSync('classIndex')
+			if(that.classType=='0'){
+				allClass=uni.getStorageSync('join_class')
+			}else if(that.classType=='1'){
+				allClass=uni.getStorageSync('bulid_class')
+			}
+			that.class=allClass[classIndex]
+			that.classCode=that.class.classCode
+			console.log(that.classCode)
+			uni.getLocation({
+				type: 'wgs84',
+				success: function (res) {
+					console.log('当前位置的经度：' + res.longitude);
+					console.log('当前位置的纬度：' + res.latitude);
+					that.longitude=res.longitude,
+					that.latitude=res.latitude
+				}
+			});	
+			uni.request({
+				url:'http://112.74.55.61:8081/checkinfo',
+				header: {Authorization:uni.getStorageSync('token')},
+				method:'GET',
+				data:{
+					classcode:that.classCode,
+				}, 
+				success: (res) => {
+					console.log(res.data.data)
+					that.tcLongitude=res.data.data.checkinLocx
+					that.tcLatitude=res.data.data.checkinLocy
+					that.startTime=res.data.data.startTime
+				},
+				fail: (res) => {
+					console.log(res)
+					console.log("连接失败")
+				}
+			})
+		},
 		methods: {
 			clickSign(){
 				var that=this
-				uni.getLocation({
-					type: 'wgs84',
-					success: function (res) {
-						console.log('当前位置的经度：' + res.longitude);
-						console.log('当前位置的纬度：' + res.latitude);
-						that.longitude=res.longitude,
-						that.latitude=res.latitude,
-						that.getAdd()
+				uni.request({
+					url:'http://112.74.55.61:8081/checkninstudents',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'POST',
+					data:{
+						classcode:that.classCode,
+						studentphone:that.user.userPhone,
+						location_x:that.longitude,
+						location_y:that.latitude,
+						checkindate:that.startTime
+					}, 
+					success: (res) => {
+						console.log(res.data)
+						if(res.data.msg==="学生签到超时"){
+							uni.showToast({ title: '老师还没有开始签到或签到已结束', icon: 'none' });
+						}else if(res.data.msg==="学生签到成功"){
+							uni.showToast({ title: '签到成功！', icon: 'none' });
+							that.getAdd()
+							that.isclick=true
+						}
+					},
+					fail: (res) => {
+						console.log(res)
+						console.log("连接失败")
 					}
-				});	
-				that.isclick=true
+				})
+			
 			},
 			// 腾讯位置服务
 			getAdd() {
