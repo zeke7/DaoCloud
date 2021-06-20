@@ -4,6 +4,7 @@ import * as systemConfig from './modules/systemConfig'
 import * as classConfig from './modules/classConfig'
 import * as dicConfig from './modules/dicConfig'
 import * as teacherMenu from './modules/teacherMenu'
+import * as userInfo from './modules/userInfo'
 
 export default {
 	commonUser,
@@ -11,5 +12,6 @@ export default {
 	systemConfig,
 	classConfig,
 	dicConfig,
-	teacherMenu
+	teacherMenu,
+	userInfo
 }

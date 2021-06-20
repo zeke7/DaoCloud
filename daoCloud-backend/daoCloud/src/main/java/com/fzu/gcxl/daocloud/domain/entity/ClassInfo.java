@@ -13,6 +13,8 @@ public class ClassInfo {
 
     private Date createTime;
 
+    private String className;
+
     public Integer getClassinfoId() {
         return classinfoId;
     }
@@ -51,5 +53,13 @@ public class ClassInfo {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className == null ? null : className.trim();
     }
 }

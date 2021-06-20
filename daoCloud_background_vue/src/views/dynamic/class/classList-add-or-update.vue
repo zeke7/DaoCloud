@@ -23,12 +23,6 @@
             placeholder="手机号"
         ></el-input>
       </el-form-item>
-      <el-form-item label="课程编号" prop="classCode">
-        <el-input
-            v-model="dataForm.classCode"
-            placeholder="课程编号"
-        ></el-input>
-      </el-form-item>
       <el-form-item label="学生数量" prop="num">
           <el-input v-model="dataForm.num" placeholder="学生数量"></el-input>
       </el-form-item>
@@ -53,18 +47,15 @@ export default {
       visible: false,
       dataForm: {
         className: '',
-        classCode: '',
         num: '',
         classId: '',
         semester: '',
+        classCode: '',
         userPhone: ''
       },
       dataRule: {
         className: [
           { required: true, message: '课程名称不能为空', trigger: 'blur' }
-        ],
-        classCode: [
-          { required: true, message: '课程编号不能为空', trigger: 'blur' }
         ],
         num: [
           { required: true, message: '学生数量不能为空', trigger: 'blur' }
@@ -80,9 +71,7 @@ export default {
   },
   methods: {
     init (row = {}, userName) {
-      console.log(row.classId)
       this.dataForm.classId = row.classId === undefined ? '' : row.classId
-      console.log(this.dataForm.classId)
       this.visible = true
       this.$nextTick(() => {
         if (this.$refs['dataForm']) {
@@ -90,9 +79,9 @@ export default {
         }
         if (this.dataForm.classId !== '') {
           this.dataForm.className = row.className
-          this.dataForm.classCode = row.classCode
           this.dataForm.num = row.classNum
           this.dataForm.classId = row.classId
+          this.dataForm.classCode = row.classCode
           this.dataForm.semester = row.classSemester
           this.dataForm.userPhone = userName
         } else {
@@ -102,6 +91,7 @@ export default {
             departmentName: '',
             teacher: '',
             num: '',
+            classCode: '',
             classId: '',
             userPhone: ''
           }
@@ -118,8 +108,23 @@ export default {
             classname: this.dataForm.className,
             userphone: this.dataForm.userPhone,
             classmembers: this.dataForm.num,
-            classsemester: this.dataForm.semester,
-            classcode: this.dataForm.classCode
+            classsemester: this.dataForm.semester
+          }
+          if (method === 'post') {
+            data = {
+              classname: this.dataForm.className,
+              userphone: this.dataForm.userPhone,
+              classmembers: this.dataForm.num,
+              classsemester: this.dataForm.semester
+            }
+          } else if (method === 'put') {
+            data = {
+              classname: this.dataForm.className,
+              userphone: this.dataForm.userPhone,
+              classmembers: this.dataForm.num,
+              classcode: this.dataForm.classCode,
+              classsemester: this.dataForm.semester
+            }
           }
           this.$http.classConfig.classCurd(method, data, token).then(res =>{
             if (res) {

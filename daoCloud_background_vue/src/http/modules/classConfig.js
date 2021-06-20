@@ -41,3 +41,14 @@ export function getClassByCode(classCode, token) {
         // data: classCode
     })
 }
+
+
+export function detailTeacherClass(token, userphone) {
+    return http({
+        url: '/classesdto',params:{userphone},
+        method: 'get',
+        headers: {
+            Authorization: token
+        },
+    })
+}

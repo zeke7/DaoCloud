@@ -7,6 +7,8 @@ public class SystemParameter {
 
     private String sysParameter;
 
+    private String sysKey;
+
     public Integer getSysId() {
         return sysId;
     }
@@ -29,5 +31,13 @@ public class SystemParameter {
 
     public void setSysParameter(String sysParameter) {
         this.sysParameter = sysParameter == null ? null : sysParameter.trim();
+    }
+
+    public String getSysKey() {
+        return sysKey;
+    }
+
+    public void setSysKey(String sysKey) {
+        this.sysKey = sysKey == null ? null : sysKey.trim();
     }
 }

@@ -7,10 +7,10 @@
     <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
     <result column="class_code" jdbcType="VARCHAR" property="classCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
   </resultMap>
-
   <sql id="Base_Column_List">
-    classinfo_id, user_name, user_phone, class_code, create_time
+    classinfo_id, user_name, user_phone, class_code, create_time, class_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -18,23 +18,17 @@
     from class_info
     where classinfo_id = #{classinfoId,jdbcType=INTEGER}
   </select>
-
-  <select id="selectUserByphonecode" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from class_info
-    where class_code = #{classcode,jdbcType=VARCHAR} and user_phone = #{userphone,jdbcType=VARCHAR}
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from class_info
     where classinfo_id = #{classinfoId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
     insert into class_info (classinfo_id, user_name, user_phone, 
-      class_code, create_time)
+      class_code, create_time, class_name
+      )
     values (#{classinfoId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR}, 
-      #{classCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+      #{classCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{className,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.ClassInfo">
     insert into class_info
@@ -54,6 +48,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="className != null">
+        class_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="classinfoId != null">
@@ -70,6 +67,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="className != null">
+        #{className,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -88,6 +88,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="className != null">
+        class_name = #{className,jdbcType=VARCHAR},
+      </if>
     </set>
     where classinfo_id = #{classinfoId,jdbcType=INTEGER}
   </update>
@@ -96,7 +99,31 @@
     set user_name = #{userName,jdbcType=VARCHAR},
       user_phone = #{userPhone,jdbcType=VARCHAR},
       class_code = #{classCode,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      class_name = #{className,jdbcType=VARCHAR}
     where classinfo_id = #{classinfoId,jdbcType=INTEGER}
   </update>
+
+
+  <select id="selectUserByphonecode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class_info
+    where class_code = #{classcode,jdbcType=VARCHAR} and user_phone = #{userphone,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllClassInfoByUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class_info
+    where user_phone = #{userphone,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllClassInfoByClassCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class_info
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

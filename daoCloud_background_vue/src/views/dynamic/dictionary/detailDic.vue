@@ -4,7 +4,6 @@
       <div style="margin-top: 15px">
         <el-form
             :inline="true"
-            :model="listQuery"
             size="small"
             label-width="140px"
         >
@@ -24,48 +23,46 @@
 
     <div class="operate-container" shadow="never" style="margin-top: 15px">
       <div slot="header" class="clearfix">
-        <el-button size="mini" class="btn-add" @click="addOrUpdateHandle()"
+        <el-button size="mini" class="btn-add" @click="addOrUpdateHandle('', dicName, dicCode)"
         >新增
         </el-button>
       </div>
       <el-table
-          @selection-change="handleSelectionChange"
           v-loading="listLoading"
-          :data="list"
+          :data="list.slice((this.pageIndex - 1) * this.pageSize, (this.pageIndex - 1) * this.pageSize + this.pageSize)"
           border
           fit
           highlight-current-row
           style="width: 100%;margin-top: 15px"
       >
-        <el-table-column type="selection" width="55"></el-table-column>
 
-        <el-table-column align="center" label="dicCode">
+        <el-table-column align="center" label="名称">
+          <template>
+            <span>{{ dicName }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="关键字">
           <template >
             <span>{{ dicCode }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="detailCode">
+        <el-table-column align="center" label="value">
           <template slot-scope="scope">
-            <span>{{ scope.row.dicdetailCode }}</span>
+            <span>{{ scope.row.dicdetailName }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="数据类型">
+        <el-table-column align="center" label="默认值">
           <template slot-scope="scope">
             <span>{{ scope.row.dicdetailDescription }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="value">
+        <el-table-column align="center" label="数值">
           <template slot-scope="scope">
             <span>{{ scope.row.dicdetailValue }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column align="center" label="名称">
-          <template slot-scope="scope">
-            <span>{{ scope.row.dicdetailName }}</span>
           </template>
         </el-table-column>
 
@@ -86,13 +83,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+          @size-change="sizeChangeHandle"
+          @current-change="currentChangeHandle"
+          :current-page="pageIndex"
+          :page-sizes="[5]"
+          :page-size="pageSize"
+          :total="this.list.length"
+          layout="total, sizes, prev, pager, next, jumper">
+      </el-pagination>
     </div>
-    <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="listQuery.pageNo"
-        :limit.sync="listQuery.pageSize"
-    />
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
@@ -101,60 +101,31 @@
 <script>
 // var _index;
 import AddOrUpdate from './dicDetail-add-or-update'
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
   inject: ['reload'],
   name: "bannerAdvList",
-  components: {Pagination, AddOrUpdate},
+  components: {AddOrUpdate},
   data() {
     return {
       dicCode: '',
+      dicName: '',
       multipleSelection: [], // 当前选择
       list: [], // 当前list
       detailList: [],
       total: 0,
       listLoading: false,
-      listQuery: {
-        // 查询分页
-        name: "",
-        pageNo: 1,
-        pageSize: 10
-      },
-      listQueryname: "",
+      pageIndex: 1,
+      pageSize: 5,
       addFormVisible: false, // 新增界面是否显示
       addLoading: false,
       addFormRules: {
         name: [{required: true, message: "请输入名称", trigger: "blur"}]
       },
       addOrUpdateVisible: false, // 编辑界面是否显示
-      detailVisible: false, // 编辑界面是否显示
-      editLoading: false,
-      // 更新的数据
-      update: [],
-      typeList: []
     };
   },
   computed: {
-    // 用computed监听tables，使用filter过滤数组中包含被搜索的关键词，将匹配到含有关键词的数据筛选出来
-    // 返回给tables，此时tables就是一个新的数组
-    // toLowerCase是转换小写的，因为有大小写的话some方法会失效
-    // 模糊搜索
-    tables() {
-      const listQueryname = this.listQueryname;
-      if (listQueryname) {
-        return this.list.filter(data => {
-          return Object.keys(data).some(key => {
-            return (
-                String(data[key])
-                    .toLowerCase()
-                    .indexOf(listQueryname) > -1
-            );
-          });
-        });
-      }
-      return this.list;
-    }
   },
   created() {
   },
@@ -163,8 +134,10 @@ export default {
   },
   methods: {
     initDataList() {
+      console.log(this.$route.params.row)
       let data = this.$route.params.row.detailist
       this.dicCode = this.$route.params.row.dicCode
+      this.dicName = this.$route.params.row.dicName
       if (data.length === 0) {
         this.list = []
       } else {
@@ -177,10 +150,6 @@ export default {
     clear() {
       this.reload()
     },
-    // 全选
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
     handleAdd: function () {
       // 当点击添加按钮时，addFormVisible为true,即显示弹框
       this.addFormVisible = true;
@@ -189,7 +158,7 @@ export default {
     addOrUpdateHandle: function (row = {}) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row, this.dicCode)
+        this.$refs.addOrUpdate.init(row, this.list, this.dicName, this.dicCode)
       })
     },
     // 删除
@@ -213,6 +182,17 @@ export default {
         })
       }).catch(() => {
       })
+    },
+    // 每页数
+    sizeChangeHandle(val) {
+      this.pageSize = val
+      this.pageIndex = 1
+      this.getDataList()
+    },
+    // 当前页
+    currentChangeHandle(val) {
+      this.pageIndex = val
+      this.getDataList()
     },
     getDataList(id) {
       console.log(id)

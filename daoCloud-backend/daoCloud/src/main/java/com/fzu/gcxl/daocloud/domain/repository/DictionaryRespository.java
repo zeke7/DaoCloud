@@ -25,4 +25,9 @@ public interface DictionaryRespository extends IRepository<Dictionary>{
     int deleteByDetailCode(String dicDetailcode, String dicCode);
 
     List<Dictionary> selectAllDictionaries();
+
+    // 通过Id查找
+    Dictionary selectById(Integer dicId);
+
+    Dictionary selectByName(String dicName);
 }

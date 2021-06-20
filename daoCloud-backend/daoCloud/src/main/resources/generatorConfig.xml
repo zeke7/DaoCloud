@@ -9,7 +9,7 @@
     1.在左侧project边栏的External Libraries中找到mysql的驱动
     2.右键选择copy path
     -->
-    <classPathEntry location="C:\Users\hf\.m2\repository\mysql\mysql-connector-java\8.0.23\mysql-connector-java-8.0.23.jar" />
+    <classPathEntry location="D:\gcxl\mysql\mysql-connector-java\8.0.23\mysql-connector-java-8.0.23.jar" />
 
     <context id="curtain" targetRuntime="MyBatis3">
 
@@ -70,11 +70,7 @@
         </javaClientGenerator>
 
         <!-- 8、配置将哪些表进行逆向工程设置 -->
-        <table tableName="dictionary"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false"></table>
-        <table tableName="dictionarydetail"
+        <table tableName="account"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"></table>

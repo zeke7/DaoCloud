@@ -24,4 +24,8 @@ public interface DictionarydetailRepository {
     List<Dictionarydetail> selectDetialsbyDicCode(String dicCode);
 
     Dictionarydetail selectByDicAndDetialCode(String dicCode, String dicdetailCode);
+
+    Dictionarydetail selectByDicAndDetialName(String dicCode, String dicdetailName);
+
+    Dictionarydetail selectDetialbyName(String detailName);
 }

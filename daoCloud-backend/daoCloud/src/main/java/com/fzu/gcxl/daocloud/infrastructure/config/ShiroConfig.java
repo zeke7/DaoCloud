@@ -43,6 +43,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/verifiedcodes", "anon");
         filterChainDefinitionMap.put("/verifiedcodesfromuser", "anon");
         filterChainDefinitionMap.put("/backpassword", "anon");
+        filterChainDefinitionMap.put("/accountexist", "anon");
 
         //放行Swagger接口
         filterChainDefinitionMap.put("/v2/api-docs","anon");

@@ -5,6 +5,8 @@ import com.fzu.gcxl.daocloud.domain.entity.CheckinRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Mapper
 @Service
 public interface CheckinHistoryRepository extends IRepository<CheckinHistory>{
@@ -19,4 +21,6 @@ public interface CheckinHistoryRepository extends IRepository<CheckinHistory>{
     int updateByPrimaryKeySelective(CheckinHistory record);
 
     int updateByPrimaryKey(CheckinHistory record);
+
+    List<CheckinHistory> selectCheckinHistoryForTeacher(String classCode, String userId);
 }

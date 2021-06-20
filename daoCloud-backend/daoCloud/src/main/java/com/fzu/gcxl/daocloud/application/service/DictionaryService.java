@@ -27,4 +27,8 @@ public interface DictionaryService {
     public BaseResponse selectAllDictionaries();
     public BaseResponse selectAllDictionaryDetails(String dicCode);
 
+    // 返回dto
+    public BaseResponse selectAllDicdto();
+    public BaseResponse selectAllDicdtoBycode(String dicCode);
+
 }

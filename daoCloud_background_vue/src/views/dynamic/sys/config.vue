@@ -7,14 +7,12 @@
       <el-form-item>
         <!-- <el-button @click="getDataList()">查询</el-button> -->
         <el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <!-- <el-button type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button> -->
       </el-form-item>
     </el-form>
     <el-table
         :data="dataList.slice((this.pageIndex - 1) * this.pageSize, (this.pageIndex - 1) * this.pageSize + this.pageSize)"
         border
         v-loading="dataListLoading"
-        @selection-change="selectionChangeHandle"
         style="width: 100%;">
       <el-table-column
           header-align="center"
@@ -51,17 +49,6 @@
           <span>{{ scope.row.sysParameter }}</span>
         </template>
       </el-table-column>
-      <!--<el-table-column-->
-      <!--    prop="status"-->
-      <!--    header-align="center"-->
-      <!--    align="center"-->
-      <!--    label="状态（禁用 / 启用）">-->
-      <!--  <template slot-scope="scope">-->
-      <!--    <el-button size="mini" @click="enable(scope.row.sysId)">-->
-      <!--      {{ scope.row.status == 0 ? "启用" : "禁用" }}-->
-      <!--    </el-button>-->
-      <!--  </template>-->
-      <!--</el-table-column>-->
       <el-table-column
           fixed="right"
           header-align="center"
@@ -78,7 +65,7 @@
         @size-change="sizeChangeHandle"
         @current-change="currentChangeHandle"
         :current-page="pageIndex"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[5]"
         :page-size="pageSize"
         :total="this.dataList.length"
         layout="total, sizes, prev, pager, next, jumper">
@@ -126,15 +113,9 @@ export default {
             this.dataList[i] = res.data.data[i]
           }
         }
-        // if (res) {
-        //   this.dataList = res.rows
-        //   this.totalPage = rese.total
-        // } else {
-        //   this.dataList = []
-        //   this.totalPage = 0
-        // }
         this.dataListLoading = false
       })
+      console.log(this.dataList)
     },
     // 每页数
     sizeChangeHandle(val) {
@@ -146,10 +127,6 @@ export default {
     currentChangeHandle(val) {
       this.pageIndex = val
       this.getDataList()
-    },
-    // 多选
-    selectionChangeHandle(val) {
-      this.dataListSelections = val
     },
     // 新增 / 修改
     addOrUpdateHandle(row) {
@@ -176,9 +153,6 @@ export default {
               duration: 1500,
             })
           }
-          // else {
-          //   this.$message.error()
-          // }
         })
       }).catch(() => {
       })

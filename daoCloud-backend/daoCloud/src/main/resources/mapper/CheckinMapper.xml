@@ -169,10 +169,23 @@
     where class_code = #{classCode,jdbcType=VARCHAR}
   </select>
 
+  <select id="selcetCheckinByClassCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checkin
+    where class_code = #{classCode,jdbcType=VARCHAR}
+  </select>
+
   <select id="selcetIdByClassCodeDate" resultType="java.lang.Integer">
     select <include refid="Base_Column_List" />
     from checkin
     where class_code = #{classCode,jdbcType=VARCHAR} and checkin_date = #{checkinDate,jdbcType=TIMESTAMP}
+  </select>
+
+  <select id="getOpenCheckClass" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from checkin
+    where class_code = #{classCode,jdbcType=VARCHAR} and is_close = #{isClose,jdbcType=INTEGER}
   </select>
 
 </mapper>

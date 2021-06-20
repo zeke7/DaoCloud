@@ -10,7 +10,7 @@ export function getDictionary(token) {
     })
 }
 
-export function dicCurd(method, data, token) {
+export function dicDelCurd(method, data, token) {
     return http({
         url: '/dictionarydetails',
         method: method,
@@ -20,6 +20,18 @@ export function dicCurd(method, data, token) {
         data: data
     })
 }
+
+export function dicCurd(method, data, token) {
+    return http({
+        url: '/dictionaries',
+        method: method,
+        headers: {
+            Authorization: token
+        },
+        data: data
+    })
+}
+
 
 export function delDic(dicCode, token) {
     return http({

@@ -15,6 +15,8 @@ public class CheckinHistory {
 
     private Integer checkinNumrequired;
 
+    private String classCode;
+
     public Integer getCheckinHid() {
         return checkinHid;
     }
@@ -61,5 +63,13 @@ public class CheckinHistory {
 
     public void setCheckinNumrequired(Integer checkinNumrequired) {
         this.checkinNumrequired = checkinNumrequired;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode == null ? null : classCode.trim();
     }
 }

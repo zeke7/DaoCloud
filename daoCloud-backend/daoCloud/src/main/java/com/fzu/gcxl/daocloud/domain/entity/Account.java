@@ -1,24 +1,43 @@
 package com.fzu.gcxl.daocloud.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.io.Serializable;
-
-// 账户表
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Account implements Serializable {
-
+public class Account {
     private Integer accountId;
-    // 登录手机号
-    private String loginPhone;
-    // 登录密码（md5）
+
     private String loginPassword;
 
-    private User user;
+    private String loginPhone;
 
+    private Integer userId;
+
+    public Integer getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getLoginPassword() {
+        return loginPassword;
+    }
+
+    public void setLoginPassword(String loginPassword) {
+        this.loginPassword = loginPassword == null ? null : loginPassword.trim();
+    }
+
+    public String getLoginPhone() {
+        return loginPhone;
+    }
+
+    public void setLoginPhone(String loginPhone) {
+        this.loginPhone = loginPhone == null ? null : loginPhone.trim();
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

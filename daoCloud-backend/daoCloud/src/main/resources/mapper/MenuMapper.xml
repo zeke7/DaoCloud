@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fzu.gcxl.daocloud.domain.repository.MenuRepository">
+  <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.Menu">
+    <id column="menu_id" jdbcType="INTEGER" property="menuId" />
+    <result column="menuname_en" jdbcType="VARCHAR" property="menunameEn" />
+    <result column="menuname_zh" jdbcType="VARCHAR" property="menunameZh" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    menu_id, menuname_en, menuname_zh, order_num, url, icon
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from menu
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from menu
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Menu">
+    insert into menu (menu_id, menuname_en, menuname_zh, 
+      order_num, url, icon
+      )
+    values (#{menuId,jdbcType=INTEGER}, #{menunameEn,jdbcType=VARCHAR}, #{menunameZh,jdbcType=VARCHAR}, 
+      #{orderNum,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Menu">
+    insert into menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="menuId != null">
+        menu_id,
+      </if>
+      <if test="menunameEn != null">
+        menuname_en,
+      </if>
+      <if test="menunameZh != null">
+        menuname_zh,
+      </if>
+      <if test="orderNum != null">
+        order_num,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="menuId != null">
+        #{menuId,jdbcType=INTEGER},
+      </if>
+      <if test="menunameEn != null">
+        #{menunameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="menunameZh != null">
+        #{menunameZh,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null">
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Menu">
+    update menu
+    <set>
+      <if test="menunameEn != null">
+        menuname_en = #{menunameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="menunameZh != null">
+        menuname_zh = #{menunameZh,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null">
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.Menu">
+    update menu
+    set menuname_en = #{menunameEn,jdbcType=VARCHAR},
+      menuname_zh = #{menunameZh,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR}
+    where menu_id = #{menuId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectAllMenu" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from menu
+  </select>
+
+  <select id="selectByEnName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from menu
+    where menuname_en = #{menunameEn,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByZhName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from menu
+    where menuname_zh = #{menunameZh,jdbcType=VARCHAR}
+  </select>
+</mapper>

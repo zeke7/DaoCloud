@@ -155,6 +155,7 @@ public class AccountServiceImp implements AccountService {
                 }else if (userExist){
                     return new BaseResponse(HttpStatus.OK.value(), "用户名已经存在", "");
                 }else{
+                    System.out.println();
                     userRepository.createNewUser(newUser);
                     accountRepository.createNewAccount(newAccount);
                     return new BaseResponse(HttpStatus.OK.value(), "添加成功", "");

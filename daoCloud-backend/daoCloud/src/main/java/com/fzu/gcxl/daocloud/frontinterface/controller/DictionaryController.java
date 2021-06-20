@@ -22,8 +22,8 @@ public class DictionaryController {
     }
 
     @DeleteMapping(path = "/dictionaries")
-    public BaseResponse del(String code){
-        return dictionaryService.deleteDictionaryByCode(code);
+    public BaseResponse del(String dicCode){
+        return dictionaryService.deleteDictionaryByCode(dicCode);
     }
 
     @PutMapping(path = "/dictionaries")
@@ -67,7 +67,15 @@ public class DictionaryController {
         return dictionaryService.selectAllDictionaryDetails(diccode);
     }
 
+    @GetMapping(path = "/dicdto")
+    public BaseResponse getalldicdto(){
+        return dictionaryService.selectAllDicdto();
+    }
 
+    @GetMapping(path = "/singledicdto")
+    public BaseResponse getalldicdtobycode(String dicCode){
+        return dictionaryService.selectAllDicdtoBycode(dicCode);
+    }
 
 
 }

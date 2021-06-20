@@ -146,4 +146,18 @@
     from dictionary
   </select>
 
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionary
+    where dic_id = #{dicId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dictionary
+    where dic_name = #{dicName,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

@@ -13,7 +13,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getSingleClass()">查询</el-button>
         <el-button
             v-if="haveAuth('sys:user:save')"
             type="primary"
@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
     <el-table
-        :data="dataList"
+        :data="dataList.slice((this.pageIndex - 1) * this.pageSize, (this.pageIndex - 1) * this.pageSize + this.pageSize)"
         border
         v-loading="dataListLoading"
         @selection-change="selectionChangeHandle"
@@ -118,41 +118,21 @@
         @size-change="sizeChangeHandle"
         @current-change="currentChangeHandle"
         :current-page="pageIndex"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5]"
         :page-size="pageSize"
-        :total="totalPage"
-        layout="total, sizes, prev, pager, next, jumper"
-    >
+        :total="this.dataList.length"
+        layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update
         v-if="addOrUpdateVisible"
         ref="addOrUpdate"
-        :schoolList="schoolList"
-        :nowSchool="nowSchool"
         @refreshDataList="getDataList"
     ></add-or-update>
-    <el-dialog title="课程列表" :visible.sync="dialogTableVisible">
-      <el-table :data="stuData">
-        <el-table-column
-            property="studentNo"
-            label="学生编号"
-        ></el-table-column>
-        <el-table-column
-            property="studentName"
-            label="学生姓名"
-        ></el-table-column>
-        <el-table-column
-            property="studentPhonenumber"
-            label="手机号"
-        ></el-table-column>
-      </el-table>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {delClass, getClassByCode} from "../../../http/modules/classConfig";
 
 var _index;
 import {isAuth} from '../../../utils'
@@ -166,17 +146,14 @@ export default {
       dataForm: {
         classCode: ''
       },
+      identity: '1',
       dataList: [],
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 5,
       totalPage: 0,
-      dataListLoading: false,
-      dataListSelections: [],
+      dataListLoading: true,
       addOrUpdateVisible: false,
-      schoolList: [],
-      nowSchool: 0,
       dialogTableVisible: false,
-      stuData: []
     }
   },
   components: {
@@ -185,91 +162,66 @@ export default {
   computed: {
     ...mapState('user', ['userName']),
   },
-  // activated() {
-  //   this.getDataList();
-  // },
-  mounted() {
-    let token = this.$cookie.get('token')
-    this.$http.classConfig.getClassInfo(this.userName, token).then(res => {
-      if (res) {
-        console.log(res.data)
-        let temp = []
-        let data = res.data.data
-        let total_len = 0
-        for (let i = 0; i < data.length; i++) {
-          let course = data[i].classes
-          if (course.length >= 1) {
-            let last_len = 0;
-            if (i === 0) {
-              last_len = 0
-            }else {
-              last_len = data[i - 1].classes.length
-            }
-            let now_len = course.length
-            total_len = total_len + now_len
-            let t = 0;
-            for (let j = last_len; j < total_len; j++) {
-              temp[j] = {}
-              temp[j].userSchool = data[i].userSchool
-              temp[j].userDepartment = data[i].userDepartment
-              temp[j].userName = data[i].userName
-              temp[j].className = course[t].className
-              temp[j].classCode = course[t].classCode
-              temp[j].classNum = course[t].classMember
-              temp[j].classId = course[t].classId
-              if (course[t].classSemester === null) {
-                temp[j].classSemester = '暂无'
-              }else {
-                temp[j].classSemester = course[t].classSemester
-              }
-              t++
-            }
-          }
-        }
-        this.dataList = temp
-      }
-    }).catch((err) => {
-      console.log(err)
-      this.$message({
-        type: "info",
-        message: '目前没有班课'
-      })
-    })
-    // this.getSchool().then(() => {
-    //   if (this.$route.query.id !== undefined) {
-    //     this.nowSchool = this.$route.query.id
-    //   } else {
-    //     this.nowSchool = this.schoolList[0].value || 0
-    //   }
-    //
-    //   this.getDataList(this.nowSchool)
-    // })
+  created() {
+    this.getDataList()
   },
   methods: {
-    // 获取数据列表
-    getSchool() {
-      console.log(this.userName)
-      let val = {
-        username: this.userName
-      }
-      this.$http.classConfig.getClassInfo(val).then(res => {
+    getDataList() {
+      this.dataListLoading = true
+      let token = this.$cookie.get('token')
+      this.$http.classConfig.getClassInfo(this.userName, token).then(res => {
         if (res) {
-          console.log(res)
+          console.log(res.data.data)
+          let temp = []
+          let data = res.data.data
+          let total_len = 0
+          let w = 0
+          for (let i = 0; i < data.length; i++) {
+            let course = data[i].classes
+            if (course.length >= 1) {
+              let last_len = 0;
+              if (i === 0) {
+                last_len = 0
+              }else {
+                last_len = data[i - 1].classes.length
+              }
+              let now_len = course.length
+              total_len = total_len + now_len
+              let t = 0;
+              for (let j = w; j < total_len; j++) {
+                temp[j] = {}
+                temp[j].userSchool = data[i].userSchool
+                temp[j].userDepartment = data[i].userDepartment
+                temp[j].userName = data[i].userName
+                temp[j].className = course[t].className
+                temp[j].classCode = course[t].classCode
+                temp[j].classNum = course[t].classMember
+                temp[j].classId = course[t].classId
+                if (course[t].classSemester === null) {
+                  temp[j].classSemester = '暂无'
+                }else {
+                  temp[j].classSemester = course[t].classSemester
+                }
+                t++
+                w++
+              }
+            }
+          }
+          this.dataList = temp
+          this.dataListLoading = false
         }
       })
     },
     getList() {
       this.reload()
     },
-    getDataList() {
+    getSingleClass() {
       let token = this.$cookie.get('token')
       this.$http.classConfig.getClassByCode(this.dataForm.classCode, token).then(res => {
         if (res) {
           console.log(res.data)
           let ans = []
-          console.log(res.data.data.classCode)
           for (let i = 0; i < this.dataList.length; i++) {
-            console.log(this.dataList[i].classCode)
             if (this.dataList[i].classCode === res.data.data.classCode) {
               console.log(this.dataList[i])
               ans[0] = {}
