@@ -34,14 +34,6 @@
 				<view class="title">班课学生人数</view>
 				<input v-model="classmember"></input>
 			</view>
-<!-- 			<view class="cu-form-group">
-				<view class="title">学校院系</view>
-				<picker mode="multiSelector" @change="MultiChange" @columnchange="MultiColumnChange" :value="multiIndex" :range="multiArray">
-					<view class="picker">
-						{{multiArray[0][multiIndex[0]]}}，{{multiArray[1][multiIndex[1]]}}
-					</view>
-				</picker>
-			</view> -->
 			<view class="cu-form-group">
 				<view class="title">学校院系</view>
 				<view v-if="!cur" @click="chooseSchool">去选择 ></view>
@@ -55,10 +47,6 @@
 					</view>
 				</picker>
 			</view>
-			<!-- <view class="cu-form-group">
-				<view class="title">课程学期</view>
-				<view style="color: #999999;">2020-2021-2</view>
-			</view> -->
 		</view>
 		<!--	创建人信息  	-->
 		<view>
@@ -70,7 +58,7 @@
 		</view>
 		
 		<!--	创建班课完成   	-->
-		<button class="button bg-blue"  @click="suc_cre()">创建班课</button>
+		<button class="button bg-blue"  @click="createClass()">创建班课</button>
 	</view>
 </template>
 
@@ -89,11 +77,6 @@
 				schoolCollege:null,
 				cur:false,
 				date: new Date().toISOString().slice(0, 10),
-				// multiArray: [
-				// 	['福州大学', '福建师范大学','福建医科大学'],
-				// 	['数学与计算机科学学院', '土木工程学院', '经济与管理学院', '外国语学院', '化学学院']
-				// ],
-				// multiIndex: [0, 0],
 				picker2:['2020-2021-1','2020-2021-2','2021-2022-1','2021-2022-2'],//选择班课学期
 				index:1,//默认下标为-1,
 				classCode:null,//班课号
@@ -102,21 +85,23 @@
 			}
 		},
 		onShow() {
-			this.schoolCollege=uni.getStorageSync('school')+uni.getStorageSync('college')
-			this.cur=uni.getStorageSync('cur')
+			var that=this;
+			that.schoolCollege=uni.getStorageSync('school')+uni.getStorageSync('college')
+			that.cur=uni.getStorageSync('cur')
 			console.log(this.schoolCollege)
-			console.log(this.cur)
+			console.log(this.cur)			
 		},
 		onLoad() {
 			var that=this;
 			uni.removeStorageSync('school')
 			uni.removeStorageSync('college')
-			uni.removeStorageSync('cur')
-			if(this.date>'2021-07-31'){
-				this.index=2
-			}			
+			uni.removeStorageSync('cur')			
 			that.user=uni.getStorageSync('data')
 			that.userPhone=that.user.userPhone
+			if(that.date>'2021-07-31'){
+				that.index=2
+			}	
+			that.semester=that.picker2[that.index]
 		},
 		methods: {
 			//选择照片
@@ -176,33 +161,7 @@
 				that.index_className = e.detail.value,
 				that.className=that.picker_className[that.index_className]
 			},
-			// //选择学校&院系
-			// MultiChange(e) {
-			// 	this.multiIndex = e.detail.value
-			// },
-			// MultiColumnChange(e) {
-			// 	let data = {
-			// 		multiArray: this.multiArray,
-			// 		multiIndex: this.multiIndex
-			// 	};
-			// 	data.multiIndex[e.detail.column] = e.detail.value;
-			// 	switch (e.detail.column) {
-			// 		case 0:
-			// 			switch (data.multiIndex[0]) {						
-			// 				case 0:
-			// 					data.multiArray[1] = ['数学与计算机科学学院', '土木工程学院', '经济与管理学院', '外国语学院', '化学学院'];
-			// 					break;
-			// 				// case 1:
-			// 				// 	data.multiArray[1] = ;
-			// 				// 	break;
-			// 			}
-			// 			// data.multiIndex[1] = 0;
-			// 			// break;
-			// 	}
-			// 	this.multiArray = data.multiArray;
-			// 	this.multiIndex = data.multiIndex;
-			// },
-			suc_cre(){
+			createClass(){
 				var that=this
 				uni.request({
 					url:'http://112.74.55.61:8081/classes',
@@ -218,17 +177,16 @@
 						console.log(res.data)
 						that.classCode=res.data.data
 						uni.setStorageSync('classCode',that.classCode)
+						uni.navigateTo({
+							url:"QRCode"
+						})
 					},
 					fail: (res) => {
 						console.log(res)
 						console.log("连接失败")
 					}
 				})	
-				uni.navigateTo({
-					url:'suc-creat?classCode='
-				})
-			},
-			
+			}
 		}
 	}
 </script>

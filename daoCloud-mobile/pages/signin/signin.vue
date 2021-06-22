@@ -107,7 +107,9 @@
 					success: (res) => {
 						console.log(res.data)
 						if(res.data.msg==="学生签到超时"){
-							uni.showToast({ title: '老师还没有开始签到或签到已结束', icon: 'none' });
+							uni.showToast({ title: '签到已结束', icon: 'none' });
+						}if(res.data.msg==="学生签到失败"){
+							uni.showToast({ title: '老师还没有开始签到', icon: 'none' });
 						}else if(res.data.msg==="学生签到成功"){
 							uni.showToast({ title: '签到成功！', icon: 'none' });
 							that.getAdd()

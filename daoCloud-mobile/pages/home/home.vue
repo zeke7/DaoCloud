@@ -38,16 +38,16 @@
 		<!--	我创建的班课列表    	-->
 		<view v-if="TabCur==0" class="cu-list menu-avatar">
 			<view v-if="bulidClass.length==0">
-				<image src="../../static/8.png" style="width: 700rpx; height: 450rpx; margin-left: 25rpx;"></image>
-				<view style="text-align: center;">还没有创建的班课</view>
+				<image src="../../static/NoData.png" style="height: 600rpx;margin-left: 50rpx;"></image>
+				<view style="text-align: center;font-size: 30rpx;">还没有创建的班课</view>
 			</view>
 			<view v-else class="cu-item" style="height: 180upx;" v-for="item,index in bulidClass" :key=index>
 				<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
 				<view class="content" >
 					<view class="text-black text-bold">{{item.className}}</view>
 					<view class=" text-sm flex">
-						<view >{{item.classCode}}</view> 
-						<view class="text-gray" style="margin-left: 20upx;">2021-1</view>
+						<view style="font-size: 25rpx;">{{item.classCode}}</view> 
+						<view class="text-gray" style="margin-left: 30upx;font-size: 25rpx;">{{item.classSemester}}</view>
 					</view>
 				</view>
 				<view class="action" >
@@ -57,7 +57,11 @@
 		</view>
 		<!--	我加入的班课列表    	-->
 		<view v-else class="cu-list menu-avatar"  >
-			<view class="cu-item" style="height: 180upx;" v-for="item,index in joinClass" :key=index >
+			<view v-if="joinClass.length==0">
+				<image src="../../static/NoData.png" style="height: 600rpx;margin-left: 50rpx;"></image>
+				<view style="text-align: center;font-size: 30rpx;">还没有加入的班课</view>
+			</view>
+			<view v-else class="cu-item" style="height: 180upx;" v-for="item,index in joinClass" :key=index >
 				<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
 				<view class="content" >
 					<view class="text-black text-bold">{{item.className}}</view>
@@ -136,6 +140,8 @@
 						console.log("连接失败")
 					}
 				})
+			}else{
+				that.bulidClass=[]
 			}
 		},
 		onHide() {
@@ -176,7 +182,7 @@
 				uni.setStorageSync('classType','0')
 				uni.setStorageSync('classIndex',index)
 				uni.navigateTo({
-					url:'../class/class'
+					url:'../class/index'
 				})
 			},
 			//管理班课
@@ -184,7 +190,7 @@
 				uni.setStorageSync('classType','1')
 				uni.setStorageSync('classIndex',index)
 				uni.navigateTo({
-					url:'../class/class'
+					url:'../class/index'
 				})
 			},
 			//创建班课

@@ -212,6 +212,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -268,6 +272,8 @@ var _default =
           console.log("连接失败");
         } });
 
+    } else {
+      that.bulidClass = [];
     }
   },
   onHide: function onHide() {
@@ -308,7 +314,7 @@ var _default =
       uni.setStorageSync('classType', '0');
       uni.setStorageSync('classIndex', index);
       uni.navigateTo({
-        url: '../class/class' });
+        url: '../class/index' });
 
     },
     //管理班课
@@ -316,7 +322,7 @@ var _default =
       uni.setStorageSync('classType', '1');
       uni.setStorageSync('classIndex', index);
       uni.navigateTo({
-        url: '../class/class' });
+        url: '../class/index' });
 
     },
     //创建班课

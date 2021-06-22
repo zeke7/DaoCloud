@@ -128,32 +128,112 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 107));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var _default =
-{
-  data: function data() {
-    return {
-      classNo: "",
-      Class: "工程实践",
-      joinClass: [],
-      mes: null };
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
-  },
-  onLoad: function onLoad() {
-    var that = this;
-    that.mes = uni.getStorageSync('data');
+
+
+
+
+
+
+
+
+
+
+var _joinTips = __webpack_require__(/*! @/common/joinTips.js */ 107); //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var _default = { data: function data() {return { classNo: "", Class: "工程实践", user: null };}, onShow: function onShow() {var that = this;that.user = uni.getStorageSync('data');
   },
   methods: {
+    //根据班课号获取信息
+    getClassById: function getClassById() {
+      var that = this;
+      uni.request({
+        url: 'http://112.74.55.61:8081//codeClasses' + '?classCode=' + that.classNo,
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'GET',
+        success: function success(res) {
+          console.log(res.data);
+          that.Class = res.data.data.className;
+
+        },
+        fail: function fail(res) {
+          console.log(res);
+
+        } });
+
+    },
+    //根据输入的班课号加入班课
+    joinClass: function joinClass() {
+      var that = this;
+      if (that.classNo == '') {
+        that.classNo = '';
+        uni.showToast({
+          title: '请输入班课号',
+          icon: 'none',
+          duration: 2000 });
+
+        return;
+      }
+      uni.request({
+        url: 'http://112.74.55.61:8081//codeClasses' + '?classCode=' + that.classNo,
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'GET',
+        success: function success(res) {
+          console.log(res.data);
+          if (res.data.data == null) {
+            that.classNo = '';
+            uni.showToast({
+              title: '班课不存在',
+              icon: 'none',
+              duration: 2000 });
+
+          } else {
+            that.Class = res.data.data.className;
+            uni.showModal({
+              title: that.Class,
+              content: '是否确定加入该班课',
+              success: function success(res) {
+                if (res.confirm) {
+                  uni.request({
+                    url: 'http://112.74.55.61:8081/inclasses',
+                    header: { Authorization: uni.getStorageSync('token') },
+                    method: 'POST',
+                    data: {
+                      classcode: that.classNo,
+                      username: that.user.userName,
+                      userphone: that.user.userPhone },
+
+                    success: function success(res) {
+                      console.log(res.data);
+                      (0, _joinTips.addInformation)(res.data.msg);
+                      that.classNo = '';
+                    },
+                    fail: function fail(res) {
+                      console.log(res);
+                    } });
+
+                } else if (res.cancel) {
+                  console.log('用户点击取消');
+                }
+              } });
+
+          }
+        },
+        fail: function fail(res) {
+          console.log(res);
+        } });
+
+    },
     scan: function scan() {//扫码验证
       var that = this;
       uni.scanCode({
@@ -163,262 +243,10 @@ var _default =
             title: '扫码成功' });
 
           that.classNo = res.result;
-          if (that.classNo == '111111') {
-            that.classNo = '';
-            uni.showToast({
-              title: '班课不存在',
-              icon: 'none',
-              duration: 2000 });
-
-
-            return;
-
-          }
-          uni.showModal({
-            title: that.Class,
-            content: '是否确定加入该班课',
-            success: function success(res) {
-              if (res.confirm) {
-                uni.request({
-                  url: 'http://112.74.55.61:8081/inclasses',
-                  header: { Authorization: uni.getStorageSync('token') },
-                  method: 'POST',
-                  data: {
-                    classcode: that.classNo,
-                    username: that.mes.userName,
-                    userphone: that.mes.userPhone },
-
-                  success: function success(res) {
-                    console.log(res.data);
-                    if (res.data.msg == "该用户已在该班课中") {
-                      uni.showToast({
-                        title: '已加入该班课',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      that.classNo = "";
-                    } else if (res.data.msg == "班课不允许加入") {
-                      uni.showToast({
-                        title: '班课不允许加入',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      that.classNo = "";
-                    } else if (res.data.msg == "班课加入失败，参数没有通过有效性验证。") {
-                      uni.showToast({
-                        title: '班课已经结束',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      that.classNo = "";
-                    } else {
-                      uni.showToast({
-                        title: '加入成功',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      uni.switchTab({
-                        url: '../home/home' });
-
-                    }
-
-                  },
-                  fail: function fail(res) {
-                    console.log(res);
-                    console.log("连接失败");
-                  } });
-
-              } else if (res.cancel) {
-                console.log('用户点击取消');
-              }
-            } });
-
+          that.joinClass();
         },
         fail: function fail(err) {
           console.log('扫码失败', err);
-          if (that.classNo == '111111') {
-            that.classNo = '';
-            uni.showToast({
-              title: '班课不存在',
-              icon: 'none',
-              duration: 2000 });
-
-
-            return;
-
-          }
-          uni.showModal({
-            title: that.Class,
-            content: '是否确定加入该班课',
-            success: function success(res) {
-              if (res.confirm) {
-                uni.request({
-                  url: 'http://112.74.55.61:8081/inclasses',
-                  header: { Authorization: uni.getStorageSync('token') },
-                  method: 'POST',
-                  data: {
-                    classcode: that.classNo,
-                    username: that.mes.userName,
-                    userphone: that.mes.userPhone },
-
-                  success: function success(res) {
-                    console.log(res.data);
-                    if (res.data.msg == "该用户已在该班课中") {
-                      uni.showToast({
-                        title: '已加入该班课',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      that.classNo = "";
-                    } else if (res.data.msg == "班课不允许加入") {
-                      uni.showToast({
-                        title: '班课不允许加入',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      that.classNo = "";
-                    } else if (res.data.msg == "班课加入失败，参数没有通过有效性验证。") {
-                      uni.showToast({
-                        title: '班课已经结束',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      that.classNo = "";
-                    } else {
-                      uni.showToast({
-                        title: '加入成功',
-                        icon: 'none',
-                        duration: 2000 });
-
-                      uni.switchTab({
-                        url: '../home/home' });
-
-                    }
-
-                  },
-                  fail: function fail(res) {
-                    console.log(res);
-                    console.log("连接失败");
-                  } });
-
-              } else if (res.cancel) {
-                console.log('用户点击取消');
-              }
-            } });
-
-        } });
-
-    },
-    //根据输入的班课号获取信息
-    getClassById: function getClassById() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var that;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
-                that = _this;_context.next = 3;return (
-                  uni.request({
-                    url: 'http://112.74.55.61:8081//codeClasses' + '?classCode=' + that.classNo,
-                    header: { Authorization: uni.getStorageSync('token') },
-                    method: 'GET',
-                    success: function success(res) {
-                      console.log(res.data);
-                      that.Class = res.data.data.className;
-                      console.log(that.Class + "前");
-                    },
-                    fail: function fail(res) {
-                      console.log(res);
-
-                    } }));case 3:case "end":return _context.stop();}}}, _callee);}))();
-
-    },
-    // getAllClass: () => {
-    //     return new Promise((resolve, reject) => {
-    //        var that=this
-    //        uni.request({
-    //        	url:'http://112.74.55.61:8081//codeClasses'+'?classCode='+that.classNo,
-    //        	header: {Authorization:uni.getStorageSync('token')},
-    //        	method:'GET',
-    //        	success: (res) => {
-    //        		console.log(res.data)
-    //        		that.Class=res.data.data.className;
-    //        		console.log(that.Class+"前")
-    //        	},
-    //        	fail: (res) => {
-    //        		console.log(res)
-    //        	}
-    //        })
-    //     })
-    // },
-    //根据输入的班课号加入班课
-    go_home: function go_home() {
-      var that = this;
-      if (that.classNo == '111111') {
-        that.classNo = '';
-        uni.showToast({
-          title: '班课不存在',
-          icon: 'none',
-          duration: 2000 });
-
-
-        return;
-
-      }
-      that.getClassById();
-
-      console.log(that.Class + "后");
-      uni.showModal({
-        title: that.Class,
-        content: '是否确定加入该班课',
-        success: function success(res) {
-          if (res.confirm) {
-            uni.request({
-              url: 'http://112.74.55.61:8081/inclasses',
-              header: { Authorization: uni.getStorageSync('token') },
-              method: 'POST',
-              data: {
-                classcode: that.classNo,
-                username: that.mes.userName,
-                userphone: that.mes.userPhone },
-
-              success: function success(res) {
-                console.log(res.data);
-                if (res.data.msg == "该用户已在该班课中") {
-                  uni.showToast({
-                    title: '已加入该班课',
-                    icon: 'none',
-                    duration: 2000 });
-
-                  that.classNo = "";
-                } else if (res.data.msg == "班课不允许加入") {
-                  uni.showToast({
-                    title: '班课不允许加入',
-                    icon: 'none',
-                    duration: 2000 });
-
-                  that.classNo = "";
-                } else if (res.data.msg == "班课加入失败，参数没有通过有效性验证。") {
-                  uni.showToast({
-                    title: '班课不存在',
-                    icon: 'none',
-                    duration: 2000 });
-
-                  that.classNo = "";
-                } else {
-                  uni.showToast({
-                    title: '加入成功',
-                    icon: 'none',
-                    duration: 2000 });
-
-                  uni.switchTab({
-                    url: '../home/home' });
-
-                }
-
-              },
-              fail: function fail(res) {
-                console.log(res);
-                console.log("连接失败");
-              } });
-
-          } else if (res.cancel) {
-            console.log('用户点击取消');
-          }
         } });
 
     } } };exports.default = _default;

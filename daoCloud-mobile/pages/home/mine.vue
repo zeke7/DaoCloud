@@ -55,7 +55,7 @@
 				</view>
 			</view>
 		</view>
-		<button @click="loginOut">登 出</button>
+		<button @click="loginOut" style="color: red;margin-top: 50rpx;">登 出</button>
 	</view>
 </template>
 <script>
@@ -66,17 +66,26 @@
 				userName:''
 			};
 		},
-		onLoad() {
+		onShow(){
 			var that=this;
 			that.user=uni.getStorageSync('data')
 			that.userName=that.user.userName
 		},
 		methods: {
 			loginOut(){
-				uni.clearStorageSync()
-				uni.navigateTo({
-					url:'../login/login'
-				})
+				uni.showModal({
+						content: '是否退出当前账号',
+						success: function (res) {
+							if (res.confirm) {
+								uni.clearStorageSync()
+								uni.navigateTo({
+									url:'../login/login'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+				});			
 			}
 		}
 	}

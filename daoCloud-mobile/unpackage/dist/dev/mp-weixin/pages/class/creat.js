@@ -195,31 +195,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 var _request = _interopRequireDefault(__webpack_require__(/*! ../../common/request.js */ 84));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -290,52 +266,35 @@ var _default = { data: function data() {return { imgList: [], //班课封面
       courseName: null, //班级名称
       classmember: null, //班课学生人数
       semester: null, //班课学期
-      schoolCollege: null, cur: false, date: new Date().toISOString().slice(0, 10), // multiArray: [
-      // 	['福州大学', '福建师范大学','福建医科大学'],
-      // 	['数学与计算机科学学院', '土木工程学院', '经济与管理学院', '外国语学院', '化学学院']
-      // ],
-      // multiIndex: [0, 0],
-      picker2: ['2020-2021-1', '2020-2021-2', '2021-2022-1', '2021-2022-2'], //选择班课学期
+      schoolCollege: null, cur: false, date: new Date().toISOString().slice(0, 10), picker2: ['2020-2021-1', '2020-2021-2', '2021-2022-1', '2021-2022-2'], //选择班课学期
       index: 1, //默认下标为-1,
       classCode: null, //班课号
       user: null, //用户信息
       userPhone: null //创建者手机号
-    };}, onShow: function onShow() {this.schoolCollege = uni.getStorageSync('school') + uni.getStorageSync('college');this.cur = uni.getStorageSync('cur');console.log(this.schoolCollege);console.log(this.cur);}, onLoad: function onLoad() {var that = this;uni.removeStorageSync('school');uni.removeStorageSync('college');uni.removeStorageSync('cur');if (this.date > '2021-07-31') {this.index = 2;}that.user = uni.getStorageSync('data');that.userPhone = that.user.userPhone;}, methods: { //选择照片
+    };}, onShow: function onShow() {var that = this;that.schoolCollege = uni.getStorageSync('school') + uni.getStorageSync('college');that.cur = uni.getStorageSync('cur');console.log(this.schoolCollege);console.log(this.cur);}, onLoad: function onLoad() {var that = this;uni.removeStorageSync('school');uni.removeStorageSync('college');uni.removeStorageSync('cur');that.user = uni.getStorageSync('data');that.userPhone = that.user.userPhone;if (that.date > '2021-07-31') {that.index = 2;}that.semester = that.picker2[that.index];}, methods: { //选择照片
     ChooseImage: function ChooseImage() {var _this = this;uni.chooseImage({ count: 1, //默认9
         sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
         sourceType: ['album'], //从相册选择
         success: function success(res) {if (_this.imgList.length != 0) {_this.imgList = _this.imgList.concat(res.tempFilePaths);} else {_this.imgList = res.tempFilePaths;}} });}, chooseSchool: function chooseSchool() {uni.navigateTo({ url: 'school' });}, //放大查看照片
     ViewImage: function ViewImage(e) {uni.previewImage({ urls: this.imgList, current: e.currentTarget.dataset.url });}, //删除照片
     DelImg: function DelImg(e) {var _this2 = this;uni.showModal({ title: '', content: '确定要删除这张封面吗？', cancelText: '取消', confirmText: '确定', success: function success(res) {if (res.confirm) {_this2.imgList.splice(e.currentTarget.dataset.index, 1);}} });}, //判断类别
-    SwitchA: function SwitchA(e) {this.switchA = e.detail.value;}, //选择课程学期
-    PickerChange: function PickerChange(e) {var that = this;that.index = e.detail.value, that.semester = that.picker2[that.index];}, //选择课程名
-    Picker_className: function Picker_className(e) {var that = this;that.index_className = e.detail.value, that.className = that.picker_className[that.index_className];}, // //选择学校&院系
-    // MultiChange(e) {
-    // 	this.multiIndex = e.detail.value
-    // },
-    // MultiColumnChange(e) {
-    // 	let data = {
-    // 		multiArray: this.multiArray,
-    // 		multiIndex: this.multiIndex
-    // 	};
-    // 	data.multiIndex[e.detail.column] = e.detail.value;
-    // 	switch (e.detail.column) {
-    // 		case 0:
-    // 			switch (data.multiIndex[0]) {						
-    // 				case 0:
-    // 					data.multiArray[1] = ['数学与计算机科学学院', '土木工程学院', '经济与管理学院', '外国语学院', '化学学院'];
-    // 					break;
-    // 				// case 1:
-    // 				// 	data.multiArray[1] = ;
-    // 				// 	break;
-    // 			}
-    // 			// data.multiIndex[1] = 0;
-    // 			// break;
-    // 	}
-    // 	this.multiArray = data.multiArray;
-    // 	this.multiIndex = data.multiIndex;
-    // },
-    suc_cre: function suc_cre() {var that = this;
+    SwitchA: function SwitchA(e) {
+      this.switchA = e.detail.value;
+    },
+    //选择课程学期
+    PickerChange: function PickerChange(e) {
+      var that = this;
+      that.index = e.detail.value,
+      that.semester = that.picker2[that.index];
+    },
+    //选择课程名
+    Picker_className: function Picker_className(e) {
+      var that = this;
+      that.index_className = e.detail.value,
+      that.className = that.picker_className[that.index_className];
+    },
+    createClass: function createClass() {
+      var that = this;
       uni.request({
         url: 'http://112.74.55.61:8081/classes',
         header: { Authorization: uni.getStorageSync('token') },
@@ -350,14 +309,14 @@ var _default = { data: function data() {return { imgList: [], //班课封面
           console.log(res.data);
           that.classCode = res.data.data;
           uni.setStorageSync('classCode', that.classCode);
+          uni.navigateTo({
+            url: "QRCode" });
+
         },
         fail: function fail(res) {
           console.log(res);
           console.log("连接失败");
         } });
-
-      uni.navigateTo({
-        url: 'suc-creat?classCode=' });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

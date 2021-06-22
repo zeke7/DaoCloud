@@ -208,16 +208,25 @@ var _default =
       userName: '' };
 
   },
-  onLoad: function onLoad() {
+  onShow: function onShow() {
     var that = this;
     that.user = uni.getStorageSync('data');
     that.userName = that.user.userName;
   },
   methods: {
     loginOut: function loginOut() {
-      uni.clearStorageSync();
-      uni.navigateTo({
-        url: '../login/login' });
+      uni.showModal({
+        content: '是否退出当前账号',
+        success: function success(res) {
+          if (res.confirm) {
+            uni.clearStorageSync();
+            uni.navigateTo({
+              url: '../login/login' });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

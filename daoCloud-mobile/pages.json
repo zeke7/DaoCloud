@@ -42,7 +42,7 @@
 		    }		    
 		},	
 		{
-			"path": "pages/class/class",//班课详情
+			"path": "pages/class/index",//班课详情
 			"style": {
 				"navigationBarTitleText": "uni"
 			}
@@ -71,7 +71,7 @@
             }           
         }
 		,{
-		    "path" : "pages/class/suc-creat",//成功创建班课
+		    "path" : "pages/class/QRCode",//成功创建班课
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
