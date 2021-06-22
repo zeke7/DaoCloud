@@ -13,7 +13,8 @@ import merge from 'lodash/merge'
 const http = axios.create({
     // 统一 url 配置，定义访问前缀 baseURL
     baseURL: '/proxyApi',
-    // baseURL: '/api',
+    //本地测试
+    // baseURL: 'http://112.74.55.61:8081',
     // 定义请求超时时间
     timeout: 10000,
     // 请求带上 cookie
