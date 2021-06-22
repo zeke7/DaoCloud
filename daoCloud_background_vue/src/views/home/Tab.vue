@@ -96,7 +96,7 @@
 			closeOtherTabsHandle() {
 				this.updateMainTabs(this.mainTabs.filter(item => item.name === this.mainTabsActiveName))
 			},
-			// 关闭所有标签 
+			// 关闭所有标签
 			closeAllTabsHandle() {
 				// 清空 mainTabs 数组，并跳转到 主页面
 				this.updateMainTabs([])
