@@ -23,19 +23,22 @@
 						<text class="txt">{{menus[0].txt}}</text>
 					</view>
 					<view v-else class="item" >
-						<view class="img_view" :style="{background: menus[0].bg}">
-							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="initiateSignin"></image>
+						<!-- 当前没有签到，教师发起签到 -->
+						<view v-if="startTime==''">
+							<view class="img_view" :style="{background: menus[0].bg}">
+								<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="initiateSignin"></image>
+							</view>
+							<text class="txt">发起签到</text>
 						</view>
-						<text class="txt">发起签到</text>
-					</view>
-				</template>
-				<!-- 教师结束签到 -->
-				<template v-if="classType=='1'">
-					<view class="item" >
-						<view class="img_view" :style="{background: 'linear-gradient(0deg,rgba(205,92,92),rgba(255,0,0))'}">
-							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="endSignin"></image>
+						<!-- 教师结束签到 -->
+						<view v-else>
+							<view class="item">
+								<view class="img_view" :style="{background: 'linear-gradient(0deg,rgba(205,92,92),rgba(255,0,0))'}">
+									<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="endSignin"></image>
+								</view>
+								<text class="txt">结束签到</text>
+							</view>
 						</view>
-						<text class="txt">结束签到</text>
 					</view>
 				</template>
 				<!-- 签到记录 -->
@@ -60,7 +63,7 @@
 				<template>
 					<view v-if="classType=='0'" class="item" >
 						<view class="img_view" :style="{background: menus[2].bg}">
-							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;"@click="test"></image>
+							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
 						</view>
 						<text class="txt">{{menus[2].txt}}</text>
 					</view>
@@ -78,19 +81,18 @@
 			<view class="title">是否允许加入</view>
 			<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
 		</view>
-		
+		<!-- 班课成员信息 -->
 		<view style="display: flex;justify-content: space-between;font-size: 115%;margin-top: 20rpx;" >
 				<view style="color: black;margin-left: 30rpx; font-size: 35rpx;">成员</view>
 				<view style="color: gray;margin-right: 20rpx; ">{{Students.length}} 人</view>
 		</view>	
-			 
 		<view class="cu-list menu-avatar" style="margin-top: 15rpx;" >			
 			<view class="cu-item" v-for="item in Students">
 				<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg)"></view>
 				<view class="content">
 					<view class="text-black">{{item.userName}}</view>
 					<view class="text-gray text-sm flex">
-						<view class="text-cut">
+						<view class="text-cut" style="font-size: 30rpx;color: black;">
 							{{item.userPhone}}
 						</view> 
 					</view>
@@ -113,7 +115,7 @@
 				classCode:'',
 				longitude:'',//地理位置经度（教师发起签到）
 				latitude:'',//地理位置维度（教师发起签到）
-				startTime:'',//开始时间
+				startTime:'',//签到开始时间
 				menus: [{
 						bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))',
 						icon: '/static/signin.png',
@@ -135,8 +137,7 @@
 			}
 		},
 		onLoad() {
-			var that=this;
-			that.user=uni.getStorageSync('data')
+			var that=this;	
 			uni.getLocation({
 				type: 'wgs84',
 				success: function (res) {
@@ -151,6 +152,7 @@
 			var that=this;
 			var allClass=[];
 			var classIndex=0;
+			that.user=uni.getStorageSync('data')
 			that.classType=uni.getStorageSync('classType')
 			classIndex=uni.getStorageSync('classIndex')
 			if(that.classType=='0'){
@@ -163,6 +165,7 @@
 			that.classCode=that.class.classCode
 			uni.setStorageSync('classCode',that.classCode)
 			that.switchA=true?that.class.classIsallowed=='1':false
+			//查看当时是否有签到
 			uni.request({
 				url:'http://112.74.55.61:8081/checkinfo',
 				header: {Authorization:uni.getStorageSync('token')},
@@ -172,13 +175,15 @@
 				}, 
 				success: (res) => {
 					console.log(res.data.data)
-					that.startTime=res.data.data.startTime
+					if(res.data.data!=''){
+						that.startTime=res.data.data.startTime
+					}			
 				},
 				fail: (res) => {
 					console.log(res)
-					console.log("连接失败")
 				}
 			})
+			//获取班级成员
 			uni.request({
 				url:'http://112.74.55.61:8081/studentsfromclass',
 				header: {Authorization:uni.getStorageSync('token')},
@@ -198,9 +203,31 @@
 		methods: {
 			//签到记录
 			signDetail(){
-				uni.navigateTo({
-					url:'../signin/signin-detail'
-				})
+				var that=this
+				if(that.user.roleId=='2'){
+					uni.request({
+						url:'http://112.74.55.61:8081/tcheckninrecords',
+						header: {Authorization:uni.getStorageSync('token')},
+						method:'POST',
+						data:{
+							classcode:that.classCode
+						}, 
+						success: (res) => {
+							console.log(res.data.data)	
+							uni.setStorageSync('signinList',res.data.data)
+							uni.navigateTo({
+								url:"../signin/signinList"
+							})
+						},
+						fail: (res) => {
+							console.log(res)
+						}
+					})
+				}else{
+					uni.navigateTo({
+						url:'../signin/signinDetail'
+					})
+				}	
 			},
 			//教师发起签到
 			initiateSignin(){
@@ -234,9 +261,14 @@
 			},
 			//学生参与签到
 			signin(){
-				uni.navigateTo({
-					url:"../signin/signin"
-				})
+				var that=this
+				if(that.startTime==''){
+					uni.showToast({ title: '老师还没有开始签到或签到已结束', icon: 'none' });
+				}else{
+					uni.navigateTo({
+						url:"../signin/signin"
+					})
+				}
 			},
 			//结束签到
 			endSignin(){
@@ -267,23 +299,7 @@
 				})
 			},
 			test(){
-				var that=this
-				uni.request({
-					url:'http://112.74.55.61:8081/studentsfromclass',
-					header: {Authorization:uni.getStorageSync('token')},
-					method:'GET',
-					data:{
-						classCode:that.classCode
-					}, 
-					success: (res) => {
-						console.log(res.data)
-						console.log(res.data.data)				
-					},
-					fail: (res) => {
-						console.log(res)
-						console.log("连接失败")
-					}
-				})
+				
 			},
 			SwitchA(e) {
 				var that=this
@@ -301,7 +317,7 @@
 					}, 
 					success: (res) => {
 						console.log(res.data)
-						console.log(res.data.data)				
+						console.log(res.data.data)					
 					},
 					fail: (res) => {
 						console.log(res)

@@ -67,7 +67,7 @@
 					<view class="text-black text-bold">{{item.className}}</view>
 					<view class=" text-sm flex">
 						<view >{{item.classCode}}</view> 
-						<view class="text-gray" style="margin-left: 20upx;">2021-1</view>
+						<!-- <view class="text-gray" style="margin-left: 20upx;">2021-1</view> -->
 					</view>
 					<view class="choose" >
 						<view><text class="cuIcon-focus" @click="goSignin(index)"></text>签到</view>
@@ -76,7 +76,7 @@
 					</view>
 				</view>
 				<view class="action" >
-					<text class="cuIcon-right text-gray" @click="go_class(index)" ></text>
+					<text class="cuIcon-right text-gray" @click="onDetail(index)" ></text>
 				</view>
 			</view>
 		</view>
@@ -92,18 +92,15 @@
 				scrollLeft: 0,
 				tabList:["我创建的","我加入的"],
 				modalName: null,//模态框
-				bulidClass:[],//创建的班课
+				bulidClass:[],//创建的班课（教师）
 				joinClass:[],//加入的班课
 				user:null
 			}
 		},
-		onLoad() {
-			var that=this;
-			that.user=uni.getStorageSync('data')
-		},
 		onShow() {
 			var that=this;	
 			that.user=uni.getStorageSync('data')
+			//获取加入的班课
 			uni.request({
 				url:'http://112.74.55.61:8081/classinfodto',
 				header: {Authorization:uni.getStorageSync('token')},
@@ -112,16 +109,15 @@
 					userphone:that.user.userPhone			
 				},
 				success: (res) => {
-					console.log(res.data)
 					console.log(res.data.data)
 					that.joinClass=res.data.data.classinfos
+					uni.setStorageSync('join_class',that.joinClass)
 				},
 				fail: (res) => {
 					console.log(res)
-					console.log("连接失败")
 				}
 			})
-		
+			//如果是教师额外获取创建的班课
 			if(that.user.roleId=='2'){
 				uni.request({
 					url:'http://112.74.55.61:8081/classesdto',
@@ -131,36 +127,22 @@
 						userphone:that.user.userPhone			
 					}, 
 					success: (res) => {
-						console.log(res.data)
 						console.log(res.data.data)
 						that.bulidClass=res.data.data.classes
 					},
 					fail: (res) => {
 						console.log(res)
-						console.log("连接失败")
 					}
 				})
-			}else{
-				that.bulidClass=[]
 			}
 		},
 		onHide() {
 			var that=this
-			uni.setStorage({
-				key:'join_class',			
-				data:that.joinClass,
-				success: function () {
-					//console.log('success');
-				}
-			})
-			this.modalName = null
+			that.modalName = null
 			if(that.user.roleId=='2'){
 				uni.setStorage({
 					key:'bulid_class',			
 					data:that.bulidClass,
-					success: function () {
-						//console.log('success');
-					}
 				})
 			}
 		},
@@ -178,7 +160,7 @@
 				this.modalName = null
 			},
 			//班课详情
-			go_class(index){
+			onDetail(index){
 				uni.setStorageSync('classType','0')
 				uni.setStorageSync('classIndex',index)
 				uni.navigateTo({

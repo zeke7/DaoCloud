@@ -224,18 +224,15 @@ var _default =
       scrollLeft: 0,
       tabList: ["我创建的", "我加入的"],
       modalName: null, //模态框
-      bulidClass: [], //创建的班课
+      bulidClass: [], //创建的班课（教师）
       joinClass: [], //加入的班课
       user: null };
 
   },
-  onLoad: function onLoad() {
-    var that = this;
-    that.user = uni.getStorageSync('data');
-  },
   onShow: function onShow() {
     var that = this;
     that.user = uni.getStorageSync('data');
+    //获取加入的班课
     uni.request({
       url: 'http://112.74.55.61:8081/classinfodto',
       header: { Authorization: uni.getStorageSync('token') },
@@ -244,16 +241,15 @@ var _default =
         userphone: that.user.userPhone },
 
       success: function success(res) {
-        console.log(res.data);
         console.log(res.data.data);
         that.joinClass = res.data.data.classinfos;
+        uni.setStorageSync('join_class', that.joinClass);
       },
       fail: function fail(res) {
         console.log(res);
-        console.log("连接失败");
       } });
 
-
+    //如果是教师额外获取创建的班课
     if (that.user.roleId == '2') {
       uni.request({
         url: 'http://112.74.55.61:8081/classesdto',
@@ -263,36 +259,22 @@ var _default =
           userphone: that.user.userPhone },
 
         success: function success(res) {
-          console.log(res.data);
           console.log(res.data.data);
           that.bulidClass = res.data.data.classes;
         },
         fail: function fail(res) {
           console.log(res);
-          console.log("连接失败");
         } });
 
-    } else {
-      that.bulidClass = [];
     }
   },
   onHide: function onHide() {
     var that = this;
-    uni.setStorage({
-      key: 'join_class',
-      data: that.joinClass,
-      success: function success() {
-        //console.log('success');
-      } });
-
-    this.modalName = null;
+    that.modalName = null;
     if (that.user.roleId == '2') {
       uni.setStorage({
         key: 'bulid_class',
-        data: that.bulidClass,
-        success: function success() {
-          //console.log('success');
-        } });
+        data: that.bulidClass });
 
     }
   },
@@ -310,7 +292,7 @@ var _default =
       this.modalName = null;
     },
     //班课详情
-    go_class: function go_class(index) {
+    onDetail: function onDetail(index) {
       uni.setStorageSync('classType', '0');
       uni.setStorageSync('classIndex', index);
       uni.navigateTo({

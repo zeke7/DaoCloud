@@ -28,39 +28,22 @@
 		data() {
 			return {
 				user:null,//当前用户信息
-				class:'',//课程信息
-				classType:'',//管理班课|查看班课
 				classCode:'',
 				tcLongitude:'',//教师位置经度
 				tcLatitude:'',//教师位置纬度
 				startTime:'',//签到开始时间
-				longitude:'',//地理位置经度
-				latitude:'',//地理位置维度
+				longitude:'',//学生位置经度
+				latitude:'',//学生位置纬度
 				address:'签到以获取地理位置',//地理位置信息
 				time: formateDate(new Date(), 'h:min:s'), //当前时分秒
 				date: (new Date().getMonth()+1).toString()+'.'+new Date().getDate().toString(),//当前日期
 				isclick:false
 			}
 		},
-		onLoad() {
-			var that=this;
-			that.user=uni.getStorageSync('data')
-		
-		},
 		onShow() {
 			var that=this;
-			var allClass=[];
-			var classIndex=0;
 			that.user=uni.getStorageSync('data')
-			that.classType=uni.getStorageSync('classType')
-			classIndex=uni.getStorageSync('classIndex')
-			if(that.classType=='0'){
-				allClass=uni.getStorageSync('join_class')
-			}else if(that.classType=='1'){
-				allClass=uni.getStorageSync('bulid_class')
-			}
-			that.class=allClass[classIndex]
-			that.classCode=that.class.classCode
+			that.classCode=uni.getStorageSync('classCode')
 			console.log(that.classCode)
 			uni.getLocation({
 				type: 'wgs84',
@@ -71,6 +54,28 @@
 					that.latitude=res.latitude
 				}
 			});	
+			//学生是否已经完成签到
+			uni.request({
+				url:'http://112.74.55.61:8081/scheckninrecords',
+				header: {Authorization:uni.getStorageSync('token')},
+				method:'POST',
+				data:{
+					classcode:that.classCode,
+					studentphone:that.user.userPhone,
+				}, 
+				success: (res) => {
+					console.log(res.data.data)	
+					let main=res.data.data
+					if(main[main.length-1].isCheckin=='1'){
+						that.isclick=true
+						that.getAdd()
+					}
+				},
+				fail: (res) => {
+					console.log(res)
+				}
+			})
+			// 获取签到发起的信息
 			uni.request({
 				url:'http://112.74.55.61:8081/checkinfo',
 				header: {Authorization:uni.getStorageSync('token')},
@@ -127,8 +132,7 @@
 			getAdd() {
 				var that =this
 				var url =
-					`https://apis.map.qq.com/ws/geocoder/v1/?location=${that.latitude},${that.longitude}&key=3DABZ-JP5EF-I6EJE-JALWN-IOBP6-A5FDF`;
-			
+					`https://apis.map.qq.com/ws/geocoder/v1/?location=${that.latitude},${that.longitude}&key=3DABZ-JP5EF-I6EJE-JALWN-IOBP6-A5FDF`;		
 				uni.request({
 					url,
 					success(res) {
@@ -139,8 +143,7 @@
 								icon: "none"
 							})
 							return;
-						}
-			
+						}		
 						that.address = res.data.result.address + res.data.result.formatted_addresses.recommend				
 					}
 				})

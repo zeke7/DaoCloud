@@ -236,7 +236,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
 var _util = __webpack_require__(/*! @/common/util.js */ 59); //
+//
+//
 //
 //
 //
@@ -345,11 +349,34 @@ var _default = { data: function data() {return { user: null, //当前用户信�
       className: '', //班课名
       classCode: '', longitude: '', //地理位置经度（教师发起签到）
       latitude: '', //地理位置维度（教师发起签到）
-      startTime: '', //开始时间
+      startTime: '', //签到开始时间
       menus: [{ bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))', icon: '/static/signin.png', txt: '参与签到' }, { bg: 'linear-gradient(0deg,rgb(238, 130, 238),rgb(238, 130, 238))', icon: '/static/Share.png', txt: '分享班课' }, { bg: 'linear-gradient(0deg,rgba(255,126,34,1),rgba(240,184,27,1))', icon: '/static/team.png', txt: '小组方案' }], switchA: true, Students: [] //该班课的学生
-    };}, onLoad: function onLoad() {var that = this;that.user = uni.getStorageSync('data');uni.getLocation({ type: 'wgs84', success: function success(res) {console.log('当前位置的经度：' + res.longitude);console.log('当前位置的纬度：' + res.latitude);that.longitude = res.longitude, that.latitude = res.latitude;} });}, onShow: function onShow() {var that = this;var allClass = [];var classIndex = 0;that.classType = uni.getStorageSync('classType');classIndex = uni.getStorageSync('classIndex');if (that.classType == '0') {allClass = uni.getStorageSync('join_class');} else if (that.classType == '1') {allClass = uni.getStorageSync('bulid_class');}that.class = allClass[classIndex];that.className = that.class.className;that.classCode = that.class.classCode;uni.setStorageSync('classCode', that.classCode);that.switchA = true ? that.class.classIsallowed == '1' : undefined;uni.request({ url: 'http://112.74.55.61:8081/checkinfo', header: { Authorization: uni.getStorageSync('token') }, method: 'GET', data: { classcode: that.classCode }, success: function success(res) {console.log(res.data.data);that.startTime = res.data.data.startTime;}, fail: function fail(res) {console.log(res);console.log("连接失败");} });uni.request({ url: 'http://112.74.55.61:8081/studentsfromclass', header: { Authorization: uni.getStorageSync('token') }, method: 'GET', data: { classCode: that.classCode }, success: function success(res) {console.log(res.data);that.Students = res.data.data;}, fail: function fail(res) {console.log(res);} });}, methods: { //签到记录
-    signDetail: function signDetail() {uni.navigateTo({ url: '../signin/signin-detail' });}, //教师发起签到
-    initiateSignin: function initiateSignin() {var that = this;uni.request({ url: 'http://112.74.55.61:8081/checkinteachers', header: { Authorization: uni.getStorageSync('token') }, method: 'POST', data: { classcode: that.classCode, teacherphone: that.user.userPhone, location_x: that.longitude, location_y: that.latitude }, success: function success(res) {
+    };}, onLoad: function onLoad() {var that = this;uni.getLocation({ type: 'wgs84', success: function success(res) {console.log('当前位置的经度：' + res.longitude);console.log('当前位置的纬度：' + res.latitude);that.longitude = res.longitude, that.latitude = res.latitude;} });}, onShow: function onShow() {var that = this;var allClass = [];var classIndex = 0;that.user = uni.getStorageSync('data');that.classType = uni.getStorageSync('classType');classIndex = uni.getStorageSync('classIndex');if (that.classType == '0') {allClass = uni.getStorageSync('join_class');} else if (that.classType == '1') {allClass = uni.getStorageSync('bulid_class');}that.class = allClass[classIndex];that.className = that.class.className;that.classCode = that.class.classCode;uni.setStorageSync('classCode', that.classCode);that.switchA = true ? that.class.classIsallowed == '1' : undefined; //查看当时是否有签到
+    uni.request({ url: 'http://112.74.55.61:8081/checkinfo', header: { Authorization: uni.getStorageSync('token') }, method: 'GET', data: { classcode: that.classCode }, success: function success(res) {console.log(res.data.data);if (res.data.data != '') {that.startTime = res.data.data.startTime;}}, fail: function fail(res) {console.log(res);} }); //获取班级成员
+    uni.request({ url: 'http://112.74.55.61:8081/studentsfromclass', header: { Authorization: uni.getStorageSync('token') }, method: 'GET', data: { classCode: that.classCode }, success: function success(res) {console.log(res.data);that.Students = res.data.data;}, fail: function fail(res) {console.log(res);} });}, methods: { //签到记录
+    signDetail: function signDetail() {var that = this;if (that.user.roleId == '2') {uni.request({ url: 'http://112.74.55.61:8081/tcheckninrecords', header: { Authorization: uni.getStorageSync('token') }, method: 'POST', data: { classcode: that.classCode }, success: function success(res) {console.log(res.data.data);uni.setStorageSync('signinList', res.data.data);uni.navigateTo({ url: "../signin/signinList" });}, fail: function fail(res) {console.log(res);
+          } });
+
+      } else {
+        uni.navigateTo({
+          url: '../signin/signinDetail' });
+
+      }
+    },
+    //教师发起签到
+    initiateSignin: function initiateSignin() {
+      var that = this;
+      uni.request({
+        url: 'http://112.74.55.61:8081/checkinteachers',
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'POST',
+        data: {
+          classcode: that.classCode,
+          teacherphone: that.user.userPhone,
+          location_x: that.longitude,
+          location_y: that.latitude },
+
+        success: function success(res) {
           console.log(res.data);
           console.log(res.data.data);
           if (res.data.msg == "发起签到失败，已存在") {
@@ -368,9 +395,14 @@ var _default = { data: function data() {return { user: null, //当前用户信�
     },
     //学生参与签到
     signin: function signin() {
-      uni.navigateTo({
-        url: "../signin/signin" });
+      var that = this;
+      if (that.startTime == '') {
+        uni.showToast({ title: '老师还没有开始签到或签到已结束', icon: 'none' });
+      } else {
+        uni.navigateTo({
+          url: "../signin/signin" });
 
+      }
     },
     //结束签到
     endSignin: function endSignin() {
@@ -401,22 +433,6 @@ var _default = { data: function data() {return { user: null, //当前用户信�
 
     },
     test: function test() {
-      var that = this;
-      uni.request({
-        url: 'http://112.74.55.61:8081/studentsfromclass',
-        header: { Authorization: uni.getStorageSync('token') },
-        method: 'GET',
-        data: {
-          classCode: that.classCode },
-
-        success: function success(res) {
-          console.log(res.data);
-          console.log(res.data.data);
-        },
-        fail: function fail(res) {
-          console.log(res);
-          console.log("连接失败");
-        } });
 
     },
     SwitchA: function SwitchA(e) {

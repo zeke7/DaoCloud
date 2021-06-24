@@ -5,7 +5,10 @@
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
+		        "enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false //禁用原生导航栏
+				}
 		    }
 		    
 		},{
@@ -94,14 +97,22 @@
             }           
         },
 		{
-		    "path" : "pages/signin/signin-detail",//签到详情页面
+		    "path" : "pages/signin/signinDetail",//签到详情页面
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }           
-		}
-        ,{
+		},
+		{
+		    "path" : "pages/signin/signinList",//签到清单页面(教师端)
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }           
+		},
+        {
             "path" : "pages/class/school",
             "style" :                                                                                    
             {
