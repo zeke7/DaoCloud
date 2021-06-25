@@ -214,7 +214,7 @@ var _util = __webpack_require__(/*! @/common/util.js */ 59); //
 var _default = { data: function data() {return { scrollHeight: '400px', signinList: [], //签到信息清单
       dates: [], //签到时间
       weeks: [] //星期
-    };}, onShow: function onShow() {var that = this;that.signinList = uni.getStorageSync('signinList');for (var i = 0; i < that.signinList.length; i++) {var date = (0, _util.resolvingDate)(that.signinList[i].checkinDate);var week = (0, _util.getWeek)(that.signinList[i].checkinDate);that.dates[i] = date;that.weeks[i] = week;}}, methods: { onSigninDetail: function onSigninDetail(index) {uni.setStorageSync('signinIndex', index);uni.navigateTo({ url: "signinDetail" });} } };exports.default = _default;
+    };}, onShow: function onShow() {var that = this;that.signinList = uni.getStorageSync('signinList');for (var i = 0; i < that.signinList.length; i++) {var date = (0, _util.resolvingDate)(that.signinList[i].checkinDate);var week = (0, _util.getWeek)(that.signinList[i].checkinDate);that.dates[i] = date;that.weeks[i] = week;}}, methods: { onSigninDetail: function onSigninDetail(index) {var that = this;uni.setStorageSync('signinIndex', index);uni.setStorageSync('checkinDate', that.signinList[index].checkinDate);uni.navigateTo({ url: "signinDetail" });} } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),

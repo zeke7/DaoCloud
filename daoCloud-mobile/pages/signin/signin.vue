@@ -28,7 +28,7 @@
 		data() {
 			return {
 				user:null,//当前用户信息
-				classCode:'',
+				classCode:'',//班课号
 				tcLongitude:'',//教师位置经度
 				tcLatitude:'',//教师位置纬度
 				startTime:'',//签到开始时间
@@ -44,7 +44,6 @@
 			var that=this;
 			that.user=uni.getStorageSync('data')
 			that.classCode=uni.getStorageSync('classCode')
-			console.log(that.classCode)
 			uni.getLocation({
 				type: 'wgs84',
 				success: function (res) {
@@ -88,6 +87,24 @@
 					that.tcLongitude=res.data.data.checkinLocx
 					that.tcLatitude=res.data.data.checkinLocy
 					that.startTime=res.data.data.startTime
+					
+					//计算两地距离
+					let PI = 3.14159265358979323;//圆周率
+					let R = 6371229;//地球半径
+					
+					var lon1 = parseFloat(that.longitude);
+					var lat1 = parseFloat(that.latitude);  
+					
+					var lon2 = parseFloat(that.tcLongitude);
+					var lat2 = parseFloat(that.tcLatitude);
+					let x,y,distance;
+					let lonres = lon1 > lon2?lon1-lon2:lon2-lon1;
+					let latres = lat1 > lat2?lat1-lat2:lat2-lat1;
+					x = (lonres) * PI * R * Math.cos(((lat1 + lat2) / 2) * PI / 180) / 180;
+					y = (lat2 - lat1) * PI * R / 180;
+					distance = Math.hypot(x, y);		
+					console.log(distance)
+					
 				},
 				fail: (res) => {
 					console.log(res)
@@ -153,7 +170,25 @@
 			var that=this
 			var timer=setInterval(()=>{
 				that.time=formateDate(new Date(), 'h:min:s')
-			},1000)
+			},1000)			
+		},
+		getDistance(){
+			var that=this;
+			let PI = 3.14159265358979323;//圆周率
+			let R = 6371229;//地球半径
+			
+			var lon1 = that.longitude;
+			var lat1 = that.latitude;
+			
+			var lon2 = that.tcLongitude;
+			var lat2 = that.tcLatitude;
+			let x,y,distance;
+			let lonres = lon1 > lon2?lon1-lon2:lon2-lon1;
+			let latres = lat1 > lat2?lat1-lat2:lat2-lat1;
+			x = (lonres) * PI * R * Math.cos(((lat1 + lat2) / 2) * PI / 180) / 180;
+			y = (lat2 - lat1) * PI * R / 180;
+			distance = Math.hypot(x, y);		
+			console.log(distance)
 		}
 	}
 </script>

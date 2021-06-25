@@ -20,7 +20,7 @@
 										<view>				
 											<view class="date">{{dates[index]+'  '+weeks[index]}}</view>
 											<view class="time" style="font-size: 30rpx;">
-												<view v-if="item.checkinType=='2'">限时签到</view>
+												<view v-if="item.checkinType=='1'">限时签到</view>
 												<view v-else>一键签到</view>
 											</view>								
 										</view>
@@ -59,9 +59,11 @@
 				that.weeks[i]=week	
 			}
 		},
-		methods: {
+		methods: {		
 			onSigninDetail(index){
+				var that=this;
 				uni.setStorageSync('signinIndex',index)
+				uni.setStorageSync('checkinDate',that.signinList[index].checkinDate)
 				uni.navigateTo({
 					url:"signinDetail"
 				})

@@ -70,7 +70,7 @@
 						<!-- <view class="text-gray" style="margin-left: 20upx;">2021-1</view> -->
 					</view>
 					<view class="choose" >
-						<view><text class="cuIcon-focus" @click="goSignin(index)"></text>签到</view>
+						<view><text class="cuIcon-focus" @click="onSignin(index)"></text>签到</view>
 						<view><text class="cuIcon-flashbuyfill"></text>举手</view>
 						<view><text class="cuIcon-mark"></text>抢答</view>
 					</view>
@@ -89,7 +89,6 @@
 		data() {
 			return {
 				TabCur: 1,//我创建的、我加入的
-				scrollLeft: 0,
 				tabList:["我创建的","我加入的"],
 				modalName: null,//模态框
 				bulidClass:[],//创建的班课（教师）
@@ -111,7 +110,6 @@
 				success: (res) => {
 					console.log(res.data.data)
 					that.joinClass=res.data.data.classinfos
-					uni.setStorageSync('join_class',that.joinClass)
 				},
 				fail: (res) => {
 					console.log(res)
@@ -139,18 +137,11 @@
 		onHide() {
 			var that=this
 			that.modalName = null
-			if(that.user.roleId=='2'){
-				uni.setStorage({
-					key:'bulid_class',			
-					data:that.bulidClass,
-				})
-			}
 		},
 		methods: {
 			//切换操作条  我创建的/我加入的
 			tabSelect(e) {
 				this.TabCur = e.currentTarget.dataset.id;
-				this.scrollLeft = (e.currentTarget.dataset.id - 1) * 60
 			},
 			//模态框对应操作 显示/隐藏
 			showModal(e) {
@@ -161,16 +152,23 @@
 			},
 			//班课详情
 			onDetail(index){
+				var that=this;
 				uni.setStorageSync('classType','0')
-				uni.setStorageSync('classIndex',index)
+				uni.setStorageSync('classCode',that.joinClass[index].classCode)
+				uni.setStorageSync('className',that.joinClass[index].className)
+				uni.setStorageSync('classIsclose',that.bulidClass[index].classIsclose)
 				uni.navigateTo({
 					url:'../class/index'
 				})
 			},
 			//管理班课
 			manage_class(index){
+				var that=this;
 				uni.setStorageSync('classType','1')
-				uni.setStorageSync('classIndex',index)
+				uni.setStorageSync('classCode',that.bulidClass[index].classCode)
+				uni.setStorageSync('className',that.bulidClass[index].className)
+				uni.setStorageSync('classIsclose',that.bulidClass[index].classIsclose)
+				uni.setStorageSync('classIsallowed',that.bulidClass[index].classIsallowed)
 				uni.navigateTo({
 					url:'../class/index'
 				})
@@ -187,9 +185,9 @@
 				}		
 			},
 			//去签到
-			goSignin(index){
-				uni.setStorageSync('classType','0')
-				uni.setStorageSync('classIndex',index)
+			onSignin(index){
+				var that=this;
+				uni.setStorageSync('classCode',that.joinClass[index].classCode)
 				uni.navigateTo({
 					url:"../signin/signin"
 				})

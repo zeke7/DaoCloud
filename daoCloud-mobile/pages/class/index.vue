@@ -1,105 +1,129 @@
 <template>
-	<view class="page_edu">
-		<view class="page_edu_header">
-			<view class="header_content">
-				<view class="left">
-					<text class="title">{{className}}</text>
-					<text class="sub_title" style="font-size: 50rpx;">{{classCode}}</text>
-				</view>
-				<view>
-					<image src="/static/right.png" style="width: 131px;height: 122px;"></image>
-				</view>
+	<view>
+		<view v-if="isClose=='1'">
+			<image src="../../static/classClose.png" style="margin-left: 60rpx;margin-top: 30rpx;"></image>
+			<view style="text-align: center;font-size: 30rpx;">
+				课程已关闭!
 			</view>
 		</view>
-		
-		<view class="page_content">
-			<view class="menu">
-				<!-- 教师发起签到、学生参加签到 -->
-				<template>
-					<view v-if="classType=='0'" class="item" >
-						<view class="img_view" :style="{background: menus[0].bg}">
-							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signin"></image>
-						</view>
-						<text class="txt">{{menus[0].txt}}</text>
+		<view v-else class="page_edu">
+			<view class="page_edu_header">
+				<view class="header_content">
+					<view class="left">
+						<text class="title">{{className}}</text>
+						<text class="sub_title" style="font-size: 50rpx;">{{classCode}}</text>
 					</view>
-					<view v-else class="item" >
-						<!-- 当前没有签到，教师发起签到 -->
-						<view v-if="startTime==''">
+					<view>
+						<image src="/static/right.png" style="width: 131px;height: 122px;"></image>
+					</view>
+				</view>
+			</view>
+			
+			<view class="page_content">
+				<view class="menu">
+					<!-- 教师发起签到、学生参加签到 -->
+					<template>
+						<view v-if="classType=='0'" class="item" >
 							<view class="img_view" :style="{background: menus[0].bg}">
-								<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="initiateSignin"></image>
+								<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signin"></image>
 							</view>
-							<text class="txt">发起签到</text>
+							<text class="txt">{{menus[0].txt}}</text>
 						</view>
-						<!-- 教师结束签到 -->
-						<view v-else>
-							<view class="item">
-								<view class="img_view" :style="{background: 'linear-gradient(0deg,rgba(205,92,92),rgba(255,0,0))'}">
-									<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="endSignin"></image>
+						<view v-else class="item" >
+							<!-- 当前没有签到，教师发起签到 -->
+							<view v-if="startTime==''">
+								<view class="img_view" :style="{background: menus[0].bg}">
+									<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @tap="showModal" data-target="bottomModal"></image>
 								</view>
-								<text class="txt">结束签到</text>
+								<text class="txt">发起签到</text>
+								<!-- 签到方式模态框 -->
+								<view class="cu-modal bottom-modal" :class="modalName=='bottomModal'?'show':''">
+									<view class="cu-dialog">
+										<view class="text-blue" style="padding: 15upx 0upx;" @click="oneclickSignin">
+											一键签到
+										</view> 
+										<view class="text-blue" style="padding: 15upx 0upx;" @click="timeSignin">
+											限时签到							
+										</view>
+										<view class="text-blue" @tap="hideModal" style="padding: 15upx 0upx;">
+											取消
+										</view>
+									</view>
+								</view>
+							</view>
+							<!-- 教师结束签到 -->
+							<view v-else>
+								<view class="item">
+									<view class="img_view" :style="{background: 'linear-gradient(0deg,rgba(205,92,92),rgba(255,0,0))'}">
+										<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="endSignin"></image>
+									</view>
+									<text class="txt">结束签到</text>
+								</view>
 							</view>
 						</view>
-					</view>
-				</template>
-				<!-- 签到记录 -->
-				<template>
-					<view class="item" >
-						<view class="img_view" :style="{background:'linear-gradient(0deg,rgba(65,105,225),rgba(100,149,237))'}">
-							<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signDetail"></image>
+					</template>
+					<!-- 签到记录 -->
+					<template>
+						<view class="item" >
+							<view class="img_view" :style="{background:'linear-gradient(0deg,rgba(65,105,225),rgba(100,149,237))'}">
+								<image :src="menus[0].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="signDetail"></image>
+							</view>
+							<text class="txt">签到记录</text>
 						</view>
-						<text class="txt">签到记录</text>
-					</view>
-				</template>
-				<!-- 分享班课 -->
-				<template>
-					<view class="item" >
-						<view class="img_view" :style="{background: menus[1].bg}">
-							<image :src="menus[1].icon" class="image" style="height: 80rpx; width: 80rpx;"@click="shareClass"></image>
+					</template>
+					<!-- 分享班课 -->
+					<template>
+						<view class="item" >
+							<view class="img_view" :style="{background: menus[1].bg}">
+								<image :src="menus[1].icon" class="image" style="height: 80rpx; width: 80rpx;"@click="shareClass"></image>
+							</view>
+							<text class="txt">{{menus[1].txt}}</text>
 						</view>
-						<text class="txt">{{menus[1].txt}}</text>
-					</view>
-				</template>
-				<!-- 教师结束班课、学生退出班课 -->
-				<template>
-					<view v-if="classType=='0'" class="item" >
-						<view class="img_view" :style="{background: menus[2].bg}">
-							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
+					</template>
+					<!-- 教师结束班课、学生退出班课 -->
+					<template>
+						<view v-if="classType=='0'" class="item" >
+							<view class="img_view" :style="{background: menus[2].bg}">
+								<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;"></image>
+							</view>
+							<text class="txt">{{menus[2].txt}}</text>
 						</view>
-						<text class="txt">{{menus[2].txt}}</text>
-					</view>
-					<view v-else class="item">
-						<view class="img_view" :style="{background: menus[2].bg}">
-							<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="test"></image>
+						<view v-else class="item">
+							<view class="img_view" :style="{background: menus[2].bg}">
+								<image :src="menus[2].icon" class="image" style="height: 80rpx; width: 80rpx;" @click="overClass"></image>
+							</view>
+							<text class="txt">结束班课</text>
 						</view>
-						<text class="txt">结束班课</text>
-					</view>
-				</template>
-			</view>
-		</view>
-		<!-- 教师端设置按钮 -->
-		<view v-if="classType=='1'" class="cu-form-group margin-top">
-			<view class="title">是否允许加入</view>
-			<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
-		</view>
-		<!-- 班课成员信息 -->
-		<view style="display: flex;justify-content: space-between;font-size: 115%;margin-top: 20rpx;" >
-				<view style="color: black;margin-left: 30rpx; font-size: 35rpx;">成员</view>
-				<view style="color: gray;margin-right: 20rpx; ">{{Students.length}} 人</view>
-		</view>	
-		<view class="cu-list menu-avatar" style="margin-top: 15rpx;" >			
-			<view class="cu-item" v-for="item in Students">
-				<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg)"></view>
-				<view class="content">
-					<view class="text-black">{{item.userName}}</view>
-					<view class="text-gray text-sm flex">
-						<view class="text-cut" style="font-size: 30rpx;color: black;">
-							{{item.userPhone}}
-						</view> 
-					</view>
+					</template>
 				</view>
+			</view>
+			<!-- 教师端设置按钮 -->
+			<view v-if="classType=='1'" class="cu-form-group margin-top">
+				<view class="title">是否允许加入</view>
+				<switch @change="SwitchA" :class="switchA?'checked':''" :checked="switchA?true:false"></switch>
+			</view>
+			<!-- 班课成员信息 -->
+			<view style="display: flex;justify-content: space-between;font-size: 115%;margin-top: 20rpx;" >
+					<view style="color: black;margin-left: 30rpx; font-size: 35rpx;">成员</view>
+					<view style="color: gray;margin-right: 20rpx; ">{{Students.length}} 人</view>
 			</view>	
+			<view class="cu-list menu-avatar" style="margin-top: 15rpx;" >			
+				<view class="cu-item" v-for="(item,index) in Students" :key="index">
+					<view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg)"></view>
+					<view class="content">
+						<view class="text-black">{{item.userName}}</view>
+						<view class="text-gray text-sm flex">
+							<view class="text-cut" style="font-size: 30rpx;color: black;">
+								{{item.userPhone}}
+							</view> 
+						</view>
+		<!-- 				<view class="text-cut" style="font-size: 30rpx;color: black;">
+							{{exps[index]}}
+						</view> -->
+					</view>
+				</view>	
+			</view>						
 		</view>
-					
 	</view>
 </template>
 
@@ -108,11 +132,13 @@
 	export default {
 		data() {
 			return {
+				isClose:'',//班课是否关闭
 				user:null,//当前用户信息
-				class:'',//课程信息
+				class:'',//课程信息			
 				classType:'',//管理班课|查看班课
 				className:'',//班课名
-				classCode:'',
+				classCode:'',//班课号
+				modalName: null,//模态框
 				longitude:'',//地理位置经度（教师发起签到）
 				latitude:'',//地理位置维度（教师发起签到）
 				startTime:'',//签到开始时间
@@ -134,6 +160,7 @@
 				],
 				switchA: true,
 				Students:[],//该班课的学生
+				//exps:[0]
 			}
 		},
 		onLoad() {
@@ -148,25 +175,18 @@
 				}
 			});	
 		},
-		onShow() {
+		async onShow() {
 			var that=this;
-			var allClass=[];
-			var classIndex=0;
+			var classIsallowed='1';
+			that.isClose=uni.getStorageSync('classIsclose')
 			that.user=uni.getStorageSync('data')
 			that.classType=uni.getStorageSync('classType')
-			classIndex=uni.getStorageSync('classIndex')
-			if(that.classType=='0'){
-				allClass=uni.getStorageSync('join_class')
-			}else if(that.classType=='1'){
-				allClass=uni.getStorageSync('bulid_class')
-			}
-			that.class=allClass[classIndex]
-			that.className=that.class.className
-			that.classCode=that.class.classCode
-			uni.setStorageSync('classCode',that.classCode)
-			that.switchA=true?that.class.classIsallowed=='1':false
+			that.className=uni.getStorageSync('className')
+			that.classCode=uni.getStorageSync('classCode')
+			classIsallowed=uni.getStorageSync('classIsallowed')
+			that.switchA=true?classIsallowed=='1':false
 			//查看当时是否有签到
-			uni.request({
+			await uni.request({
 				url:'http://112.74.55.61:8081/checkinfo',
 				header: {Authorization:uni.getStorageSync('token')},
 				method:'GET',
@@ -184,7 +204,7 @@
 				}
 			})
 			//获取班级成员
-			uni.request({
+			await uni.request({
 				url:'http://112.74.55.61:8081/studentsfromclass',
 				header: {Authorization:uni.getStorageSync('token')},
 				method:'GET',
@@ -193,12 +213,39 @@
 				}, 
 				success: (res) => {
 					console.log(res.data)
-					that.Students=res.data.data			
+					that.Students=res.data.data
+					//查看班课成员经验值
+					// for(var i=0;i<that.Students.length;i++){
+					// 	console.log(that.classCode) 
+					// 	console.log(that.Students[i].userPhone)
+					// 	uni.request({
+					// 		url:'http://112.74.55.61:8081/stuexp',
+					// 		header: {Authorization:uni.getStorageSync('token')},
+					// 		method:'POST',
+					// 		data:{
+					// 			classcode:that.classCode,
+					// 			studentphone:that.Students[i].userPhone
+					// 		}, 
+					// 		success: (res) => {
+					// 			console.log(res.data)
+					// 			that.exps[i]=res.data.data
+					// 			console.log(that.exps[i])
+					// 		},
+					// 		fail: (res) => {
+					// 			console.log(res)
+					// 		}
+					// 	})
+					// }
+					
 				},
 				fail: (res) => {
 					console.log(res)
 				}
 			})
+		},
+		onHide() {
+			var that=this
+			that.modalName = null
 		},
 		methods: {
 			//签到记录
@@ -229,8 +276,15 @@
 					})
 				}	
 			},
-			//教师发起签到
-			initiateSignin(){
+			//模态框对应操作 显示/隐藏
+			showModal(e) {
+				this.modalName = e.currentTarget.dataset.target
+			},
+			hideModal(e) {
+				this.modalName = null
+			},
+			//教师发起一键签到
+			oneclickSignin(){
 				var that=this;			
 				uni.request({
 					url:'http://112.74.55.61:8081/checkinteachers',
@@ -248,6 +302,65 @@
 						if(res.data.msg=="发起签到失败，已存在"){
 							uni.showToast({ title: '请先结束签到再发起新的签到', icon: 'none' });
 						}else if(res.data.msg=="发起签到成功"){
+							uni.request({
+								url:'http://112.74.55.61:8081/checkinfo',
+								header: {Authorization:uni.getStorageSync('token')},
+								method:'GET',
+								data:{
+									classcode:that.classCode,
+								}, 
+								success: (res) => {
+									console.log(res.data.data)
+									that.startTime=res.data.data.startTime		
+								},
+								fail: (res) => {
+									console.log(res)
+								}
+							})
+							uni.showToast({ title: '发起签到成功，无时间限制', icon: 'none' });
+						}
+					},
+					fail: (res) => {
+						console.log(res)
+						console.log("连接失败")
+					}
+				})
+			},
+			//教师发起限时签到
+			timeSignin(){
+				var that=this;		
+				uni.request({
+					url:'http://112.74.55.61:8081/checkinteachers',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'POST',
+					data:{
+						classcode:that.classCode,
+						teacherphone:that.user.userPhone,
+						location_x:that.longitude,
+						location_y:that.latitude,
+						checkintype:"limited"
+					}, 
+					success: (res) => {
+						console.log(res.data)
+						console.log(res.data.data)	
+						if(res.data.msg=="发起签到失败，已存在"){
+							uni.showToast({ title: '请先结束签到再发起新的签到', icon: 'none' });
+						}else if(res.data.msg=="发起签到成功"){
+							uni.request({
+								url:'http://112.74.55.61:8081/checkinfo',
+								header: {Authorization:uni.getStorageSync('token')},
+								method:'GET',
+								data:{
+									classcode:that.classCode,
+								}, 
+								success: (res) => {
+									console.log(res.data.data)
+									that.startTime=res.data.data.startTime		
+								},
+								fail: (res) => {
+									console.log(res)
+								}
+							})
 							uni.showToast({ title: '发起签到成功，期限为5分钟', icon: 'none' });
 						}
 					},
@@ -256,8 +369,6 @@
 						console.log("连接失败")
 					}
 				})
-				
-				// var time=formateDate(new Date(), 'Y-M-D h:min:s')
 			},
 			//学生参与签到
 			signin(){
@@ -284,7 +395,9 @@
 					}, 
 					success: (res) => {
 						console.log(res.data)
-						console.log(res.data.data)	
+						console.log(res.data.data)
+						that.startTime=''
+						that.modalName=null
 						uni.showToast({ title: '成功结束签到', icon: 'none' });
 					},
 					fail: (res) => {
@@ -298,30 +411,57 @@
 					url:"QRCode"
 				})
 			},
-			test(){
-				
+			//将班课设置为已结束
+			overClass(){
+				var that=this;
+				uni.showModal({
+						content: '是否结束该班课,该操作不可撤回',
+						success: function (res) {
+							if (res.confirm) {
+								uni.request({
+									url:'http://112.74.55.61:8081/classclousres',
+									header: {Authorization:uni.getStorageSync('token')},
+									method:'PUT',
+									data:{
+										classcode:that.classCode,
+										isclose:'1'	
+									}, 
+									success: (res) => {
+										console.log(res.data)
+										uni.switchTab({
+											url:"../home/home"
+										})
+									},
+									fail: (res) => {
+										console.log(res)
+									}
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+				});
 			},
+			//设置班课是否允许加入
 			SwitchA(e) {
 				var that=this
 				that.switchA = e.detail.value
-				console.log(e.detail.value)
 				var type='0'
-				type='1'?that.switchA==true:'0'
+				type=that.switchA==true?'1':'0'
+				console.log(type)
 				uni.request({
 					url:'http://112.74.55.61:8081/classallowed',
 					header: {Authorization:uni.getStorageSync('token')},
-					method:'GET',
+					method:'PUT',
 					data:{
-						classCode:that.classCode,
-						isclose:type	
+						classcode:that.classCode,
+						isallowed:type	
 					}, 
 					success: (res) => {
-						console.log(res.data)
-						console.log(res.data.data)					
+						console.log(res.data)				
 					},
 					fail: (res) => {
 						console.log(res)
-						console.log("连接失败")
 					}
 				})
 			},
@@ -342,6 +482,10 @@
 	
 	.page_edu {
 		width: 100%;
+	}
+	.closeImg{
+		width: 100%;
+		height: 100%;
 	}
 	.page_edu_header {
 		padding-top: var(--status-bar-height);

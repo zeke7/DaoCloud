@@ -132,7 +132,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 158));
 
 
 
@@ -238,123 +238,170 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _util = __webpack_require__(/*! @/common/util.js */ 59); //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var _default = { data: function data() {return { user: null, //当前用户信息
-      class: '', //课程信息
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _util = __webpack_require__(/*! @/common/util.js */ 59);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var _default =
+{
+  data: function data() {
+    return {
+      isClose: '', //班课是否关闭
+      user: null, //当前用户信息
+      class: '', //课程信息			
       classType: '', //管理班课|查看班课
       className: '', //班课名
-      classCode: '', longitude: '', //地理位置经度（教师发起签到）
+      classCode: '', //班课号
+      modalName: null, //模态框
+      longitude: '', //地理位置经度（教师发起签到）
       latitude: '', //地理位置维度（教师发起签到）
       startTime: '', //签到开始时间
-      menus: [{ bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))', icon: '/static/signin.png', txt: '参与签到' }, { bg: 'linear-gradient(0deg,rgb(238, 130, 238),rgb(238, 130, 238))', icon: '/static/Share.png', txt: '分享班课' }, { bg: 'linear-gradient(0deg,rgba(255,126,34,1),rgba(240,184,27,1))', icon: '/static/team.png', txt: '小组方案' }], switchA: true, Students: [] //该班课的学生
-    };}, onLoad: function onLoad() {var that = this;uni.getLocation({ type: 'wgs84', success: function success(res) {console.log('当前位置的经度：' + res.longitude);console.log('当前位置的纬度：' + res.latitude);that.longitude = res.longitude, that.latitude = res.latitude;} });}, onShow: function onShow() {var that = this;var allClass = [];var classIndex = 0;that.user = uni.getStorageSync('data');that.classType = uni.getStorageSync('classType');classIndex = uni.getStorageSync('classIndex');if (that.classType == '0') {allClass = uni.getStorageSync('join_class');} else if (that.classType == '1') {allClass = uni.getStorageSync('bulid_class');}that.class = allClass[classIndex];that.className = that.class.className;that.classCode = that.class.classCode;uni.setStorageSync('classCode', that.classCode);that.switchA = true ? that.class.classIsallowed == '1' : undefined; //查看当时是否有签到
-    uni.request({ url: 'http://112.74.55.61:8081/checkinfo', header: { Authorization: uni.getStorageSync('token') }, method: 'GET', data: { classcode: that.classCode }, success: function success(res) {console.log(res.data.data);if (res.data.data != '') {that.startTime = res.data.data.startTime;}}, fail: function fail(res) {console.log(res);} }); //获取班级成员
-    uni.request({ url: 'http://112.74.55.61:8081/studentsfromclass', header: { Authorization: uni.getStorageSync('token') }, method: 'GET', data: { classCode: that.classCode }, success: function success(res) {console.log(res.data);that.Students = res.data.data;}, fail: function fail(res) {console.log(res);} });}, methods: { //签到记录
-    signDetail: function signDetail() {var that = this;if (that.user.roleId == '2') {uni.request({ url: 'http://112.74.55.61:8081/tcheckninrecords', header: { Authorization: uni.getStorageSync('token') }, method: 'POST', data: { classcode: that.classCode }, success: function success(res) {console.log(res.data.data);uni.setStorageSync('signinList', res.data.data);uni.navigateTo({ url: "../signin/signinList" });}, fail: function fail(res) {console.log(res);
+      menus: [{
+        bg: 'linear-gradient(0deg,rgba(9,216,162,1),rgba(90,242,217,1))',
+        icon: '/static/signin.png',
+        txt: '参与签到' },
+
+      {
+        bg: 'linear-gradient(0deg,rgb(238, 130, 238),rgb(238, 130, 238))',
+        icon: '/static/Share.png',
+        txt: '分享班课' },
+
+      {
+        bg: 'linear-gradient(0deg,rgba(255,126,34,1),rgba(240,184,27,1))',
+        icon: '/static/team.png',
+        txt: '小组方案' }],
+
+
+      switchA: true,
+      Students: [] //该班课的学生
+      //exps:[0]
+    };
+  },
+  onLoad: function onLoad() {
+    var that = this;
+    uni.getLocation({
+      type: 'wgs84',
+      success: function success(res) {
+        console.log('当前位置的经度：' + res.longitude);
+        console.log('当前位置的纬度：' + res.latitude);
+        that.longitude = res.longitude,
+        that.latitude = res.latitude;
+      } });
+
+  },
+  onShow: function onShow() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var that, classIsallowed;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+              that = _this;
+              classIsallowed = '1';
+              that.isClose = uni.getStorageSync('classIsclose');
+              that.user = uni.getStorageSync('data');
+              that.classType = uni.getStorageSync('classType');
+              that.className = uni.getStorageSync('className');
+              that.classCode = uni.getStorageSync('classCode');
+              classIsallowed = uni.getStorageSync('classIsallowed');
+              that.switchA = true ? classIsallowed == '1' : undefined;
+              //查看当时是否有签到
+              _context.next = 11;return uni.request({
+                url: 'http://112.74.55.61:8081/checkinfo',
+                header: { Authorization: uni.getStorageSync('token') },
+                method: 'GET',
+                data: {
+                  classcode: that.classCode },
+
+                success: function success(res) {
+                  console.log(res.data.data);
+                  if (res.data.data != '') {
+                    that.startTime = res.data.data.startTime;
+                  }
+                },
+                fail: function fail(res) {
+                  console.log(res);
+                } });case 11:_context.next = 13;return (
+
+
+                uni.request({
+                  url: 'http://112.74.55.61:8081/studentsfromclass',
+                  header: { Authorization: uni.getStorageSync('token') },
+                  method: 'GET',
+                  data: {
+                    classCode: that.classCode },
+
+                  success: function success(res) {
+                    console.log(res.data);
+                    that.Students = res.data.data;
+                    //查看班课成员经验值
+                    // for(var i=0;i<that.Students.length;i++){
+                    // 	console.log(that.classCode) 
+                    // 	console.log(that.Students[i].userPhone)
+                    // 	uni.request({
+                    // 		url:'http://112.74.55.61:8081/stuexp',
+                    // 		header: {Authorization:uni.getStorageSync('token')},
+                    // 		method:'POST',
+                    // 		data:{
+                    // 			classcode:that.classCode,
+                    // 			studentphone:that.Students[i].userPhone
+                    // 		}, 
+                    // 		success: (res) => {
+                    // 			console.log(res.data)
+                    // 			that.exps[i]=res.data.data
+                    // 			console.log(that.exps[i])
+                    // 		},
+                    // 		fail: (res) => {
+                    // 			console.log(res)
+                    // 		}
+                    // 	})
+                    // }
+
+                  },
+                  fail: function fail(res) {
+                    console.log(res);
+                  } }));case 13:case "end":return _context.stop();}}}, _callee);}))();
+
+  },
+  onHide: function onHide() {
+    var that = this;
+    that.modalName = null;
+  },
+  methods: {
+    //签到记录
+    signDetail: function signDetail() {
+      var that = this;
+      if (that.user.roleId == '2') {
+        uni.request({
+          url: 'http://112.74.55.61:8081/tcheckninrecords',
+          header: { Authorization: uni.getStorageSync('token') },
+          method: 'POST',
+          data: {
+            classcode: that.classCode },
+
+          success: function success(res) {
+            console.log(res.data.data);
+            uni.setStorageSync('signinList', res.data.data);
+            uni.navigateTo({
+              url: "../signin/signinList" });
+
+          },
+          fail: function fail(res) {
+            console.log(res);
           } });
 
       } else {
@@ -363,8 +410,15 @@ var _default = { data: function data() {return { user: null, //当前用户信�
 
       }
     },
-    //教师发起签到
-    initiateSignin: function initiateSignin() {
+    //模态框对应操作 显示/隐藏
+    showModal: function showModal(e) {
+      this.modalName = e.currentTarget.dataset.target;
+    },
+    hideModal: function hideModal(e) {
+      this.modalName = null;
+    },
+    //教师发起一键签到
+    oneclickSignin: function oneclickSignin() {
       var that = this;
       uni.request({
         url: 'http://112.74.55.61:8081/checkinteachers',
@@ -382,6 +436,65 @@ var _default = { data: function data() {return { user: null, //当前用户信�
           if (res.data.msg == "发起签到失败，已存在") {
             uni.showToast({ title: '请先结束签到再发起新的签到', icon: 'none' });
           } else if (res.data.msg == "发起签到成功") {
+            uni.request({
+              url: 'http://112.74.55.61:8081/checkinfo',
+              header: { Authorization: uni.getStorageSync('token') },
+              method: 'GET',
+              data: {
+                classcode: that.classCode },
+
+              success: function success(res) {
+                console.log(res.data.data);
+                that.startTime = res.data.data.startTime;
+              },
+              fail: function fail(res) {
+                console.log(res);
+              } });
+
+            uni.showToast({ title: '发起签到成功，无时间限制', icon: 'none' });
+          }
+        },
+        fail: function fail(res) {
+          console.log(res);
+          console.log("连接失败");
+        } });
+
+    },
+    //教师发起限时签到
+    timeSignin: function timeSignin() {
+      var that = this;
+      uni.request({
+        url: 'http://112.74.55.61:8081/checkinteachers',
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'POST',
+        data: {
+          classcode: that.classCode,
+          teacherphone: that.user.userPhone,
+          location_x: that.longitude,
+          location_y: that.latitude,
+          checkintype: "limited" },
+
+        success: function success(res) {
+          console.log(res.data);
+          console.log(res.data.data);
+          if (res.data.msg == "发起签到失败，已存在") {
+            uni.showToast({ title: '请先结束签到再发起新的签到', icon: 'none' });
+          } else if (res.data.msg == "发起签到成功") {
+            uni.request({
+              url: 'http://112.74.55.61:8081/checkinfo',
+              header: { Authorization: uni.getStorageSync('token') },
+              method: 'GET',
+              data: {
+                classcode: that.classCode },
+
+              success: function success(res) {
+                console.log(res.data.data);
+                that.startTime = res.data.data.startTime;
+              },
+              fail: function fail(res) {
+                console.log(res);
+              } });
+
             uni.showToast({ title: '发起签到成功，期限为5分钟', icon: 'none' });
           }
         },
@@ -390,8 +503,6 @@ var _default = { data: function data() {return { user: null, //当前用户信�
           console.log("连接失败");
         } });
 
-
-      // var time=formateDate(new Date(), 'Y-M-D h:min:s')
     },
     //学生参与签到
     signin: function signin() {
@@ -419,6 +530,8 @@ var _default = { data: function data() {return { user: null, //当前用户信�
         success: function success(res) {
           console.log(res.data);
           console.log(res.data.data);
+          that.startTime = '';
+          that.modalName = null;
           uni.showToast({ title: '成功结束签到', icon: 'none' });
         },
         fail: function fail(res) {
@@ -432,30 +545,57 @@ var _default = { data: function data() {return { user: null, //当前用户信�
         url: "QRCode" });
 
     },
-    test: function test() {
+    //将班课设置为已结束
+    overClass: function overClass() {
+      var that = this;
+      uni.showModal({
+        content: '是否结束该班课,该操作不可撤回',
+        success: function success(res) {
+          if (res.confirm) {
+            uni.request({
+              url: 'http://112.74.55.61:8081/classclousres',
+              header: { Authorization: uni.getStorageSync('token') },
+              method: 'PUT',
+              data: {
+                classcode: that.classCode,
+                isclose: '1' },
+
+              success: function success(res) {
+                console.log(res.data);
+                uni.switchTab({
+                  url: "../home/home" });
+
+              },
+              fail: function fail(res) {
+                console.log(res);
+              } });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
 
     },
+    //设置班课是否允许加入
     SwitchA: function SwitchA(e) {
       var that = this;
       that.switchA = e.detail.value;
-      console.log(e.detail.value);
       var type = '0';
-      type = '1' ? that.switchA == true : undefined;
+      type = that.switchA == true ? '1' : '0';
+      console.log(type);
       uni.request({
         url: 'http://112.74.55.61:8081/classallowed',
         header: { Authorization: uni.getStorageSync('token') },
-        method: 'GET',
+        method: 'PUT',
         data: {
-          classCode: that.classCode,
-          isclose: type },
+          classcode: that.classCode,
+          isallowed: type },
 
         success: function success(res) {
           console.log(res.data);
-          console.log(res.data.data);
         },
         fail: function fail(res) {
           console.log(res);
-          console.log("连接失败");
         } });
 
     } } };exports.default = _default;

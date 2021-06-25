@@ -221,7 +221,6 @@ var _default =
   data: function data() {
     return {
       TabCur: 1, //我创建的、我加入的
-      scrollLeft: 0,
       tabList: ["我创建的", "我加入的"],
       modalName: null, //模态框
       bulidClass: [], //创建的班课（教师）
@@ -243,7 +242,6 @@ var _default =
       success: function success(res) {
         console.log(res.data.data);
         that.joinClass = res.data.data.classinfos;
-        uni.setStorageSync('join_class', that.joinClass);
       },
       fail: function fail(res) {
         console.log(res);
@@ -271,18 +269,11 @@ var _default =
   onHide: function onHide() {
     var that = this;
     that.modalName = null;
-    if (that.user.roleId == '2') {
-      uni.setStorage({
-        key: 'bulid_class',
-        data: that.bulidClass });
-
-    }
   },
   methods: {
     //切换操作条  我创建的/我加入的
     tabSelect: function tabSelect(e) {
       this.TabCur = e.currentTarget.dataset.id;
-      this.scrollLeft = (e.currentTarget.dataset.id - 1) * 60;
     },
     //模态框对应操作 显示/隐藏
     showModal: function showModal(e) {
@@ -293,16 +284,23 @@ var _default =
     },
     //班课详情
     onDetail: function onDetail(index) {
+      var that = this;
       uni.setStorageSync('classType', '0');
-      uni.setStorageSync('classIndex', index);
+      uni.setStorageSync('classCode', that.joinClass[index].classCode);
+      uni.setStorageSync('className', that.joinClass[index].className);
+      uni.setStorageSync('classIsclose', that.bulidClass[index].classIsclose);
       uni.navigateTo({
         url: '../class/index' });
 
     },
     //管理班课
     manage_class: function manage_class(index) {
+      var that = this;
       uni.setStorageSync('classType', '1');
-      uni.setStorageSync('classIndex', index);
+      uni.setStorageSync('classCode', that.bulidClass[index].classCode);
+      uni.setStorageSync('className', that.bulidClass[index].className);
+      uni.setStorageSync('classIsclose', that.bulidClass[index].classIsclose);
+      uni.setStorageSync('classIsallowed', that.bulidClass[index].classIsallowed);
       uni.navigateTo({
         url: '../class/index' });
 
@@ -319,9 +317,9 @@ var _default =
       }
     },
     //去签到
-    goSignin: function goSignin(index) {
-      uni.setStorageSync('classType', '0');
-      uni.setStorageSync('classIndex', index);
+    onSignin: function onSignin(index) {
+      var that = this;
+      uni.setStorageSync('classCode', that.joinClass[index].classCode);
       uni.navigateTo({
         url: "../signin/signin" });
 

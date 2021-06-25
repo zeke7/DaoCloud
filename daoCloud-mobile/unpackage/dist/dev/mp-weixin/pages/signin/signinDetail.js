@@ -224,15 +224,65 @@ var _util = __webpack_require__(/*! @/common/util.js */ 59); //
 //
 //
 var _default = { data: function data() {return { scrollHeight: '400px', user: null, //当前用户信息
-      userRole: '', //学生：
+      classType: '', //学生：
       mainArray: [], //签到信息
       classCode: '', //班课号
       dates: [], //签到时间
       weeks: [], //星期	
       //教师：
-      studentList: [] //学生签到情况
-    };}, onShow: function onShow() {var that = this;that.user = uni.getStorageSync('data');that.classCode = uni.getStorageSync('classCode');that.userRole = that.user.roleId;if (that.userRole == '2') {var signinIndex = 0;var signinList = [];signinIndex = uni.getStorageSync('signinIndex');signinList = uni.getStorageSync('signinList');that.studentList = signinList[signinIndex].studentList;} else if (that.userRole == '3') {uni.request({ url: 'http://112.74.55.61:8081/scheckninrecords', header: { Authorization: uni.getStorageSync('token') }, method: 'POST', data: { classcode: that.classCode, studentphone: that.user.userPhone }, success: function success(res) {console.log(res.data.data);that.mainArray = res.data.data;for (var i = 0; i < that.mainArray.length; i++) {var date = (0, _util.resolvingDate)(that.mainArray[i].checkinDate);var week = (0, _util.getWeek)(that.mainArray[i].checkinDate);that.dates[i] = date;that.weeks[i] = week;}}, fail: function fail(res) {console.log(res);} });}}, methods: {
-    test: function test() {
+      signinList: [], signinIndex: 0, studentList: [], //学生签到情况
+      chechinDate: '' };}, onShow: function onShow() {var that = this;that.user = uni.getStorageSync('data');that.classCode = uni.getStorageSync('classCode');that.classType = uni.getStorageSync('classType'); //教师：获取这次签到所有学生签到情况
+    if (that.classType == '1') {that.signinIndex = uni.getStorageSync('signinIndex');that.signinList = uni.getStorageSync('signinList');that.studentList = that.signinList[that.signinIndex].studentList;that.checkinDate = uni.getStorageSync('checkinDate');} //学生：获取该门课程自身所有签到情况
+    else if (that.classType == '0') {uni.request({ url: 'http://112.74.55.61:8081/scheckninrecords', header: { Authorization: uni.getStorageSync('token') }, method: 'POST', data: { classcode: that.classCode, studentphone: that.user.userPhone }, success: function success(res) {console.log(res.data.data);that.mainArray = res.data.data;for (var i = 0; i < that.mainArray.length; i++) {var date = (0, _util.resolvingDate)(that.mainArray[i].checkinDate);var week = (0, _util.getWeek)(that.mainArray[i].checkinDate);that.dates[i] = date;that.weeks[i] = week;}}, fail: function fail(res) {console.log(res);} });}
+  },
+
+  methods: {
+    //教师为学生补签
+    makeUp: function makeUp(index) {
+      var that = this;
+      uni.showModal({
+        title: that.Class,
+        content: '是否确定加入该班课',
+        success: function success(res) {
+          if (res.confirm) {
+            uni.request({
+              url: 'http://112.74.55.61:8081/makeupscheckninrecords ',
+              header: { Authorization: uni.getStorageSync('token') },
+              method: 'POST',
+              data: {
+                classcode: that.classCode,
+                studentphone: that.studentList[index].studentPhone,
+                checkindate: that.checkinDate },
+
+              success: function success(res) {
+                console.log(res.data);
+                uni.request({
+                  url: 'http://112.74.55.61:8081/tcheckninrecords',
+                  header: { Authorization: uni.getStorageSync('token') },
+                  method: 'POST',
+                  data: {
+                    classcode: that.classCode },
+
+                  success: function success(res) {
+                    console.log(res.data.data);
+                    uni.setStorageSync('signinList', res.data.data);
+                    that.signinList = uni.getStorageSync('signinList');
+                    that.studentList = that.signinList[that.signinIndex].studentList;
+                  },
+                  fail: function fail(res) {
+                    console.log(res);
+                  } });
+
+              },
+              fail: function fail(res) {
+                console.log(res);
+              } });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
+
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

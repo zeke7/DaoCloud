@@ -16,8 +16,8 @@
 									<view class="title">
 										<view @click="test">历史签到记录</view>
 									</view>  
-									<!-- 教师页面：某个签到下学生的签到情况 -->
-									<view v-if="userRole=='3'" class="records" v-for="(item,index) in mainArray" :key="index">							
+									<!-- 学生页面：某个学生的签到情况 -->
+									<view v-if="classType=='0'" class="records" v-for="(item,index) in mainArray" :key="index">							
 										<view>				
 											<view class="date">{{dates[index]}}</view>
 											<view class="time" style="font-size: 30rpx;">{{weeks[index]}}</view>								
@@ -25,14 +25,14 @@
 										<view class="status" v-if="item.isCheckin=='1'" style="color: #0081FF;">已签到</view>
 										<view class="status" v-else style="color: #DD514C;">未签到</view>
 									</view>
-									<!-- 教师页面：某个签到下学生的签到情况 -->
-									<view v-if="userRole=='2'" class="records" v-for="(item,index) in studentList" :key="index">
+									<!-- 教师页面：某个签到下所有学生的签到情况 -->
+									<view v-if="classType=='1'" class="records" v-for="(item,index) in studentList" :key="index">
 										<view>	
 											<view class="date">{{item.studentName}}</view>
 											<view class="time" style="font-size: 30rpx;">{{item.studentPhone}}</view>
 										</view>
 										<view class="status" v-if="item.isCheckin=='1'"style="color: #0081FF;">已签到</view>
-										<view class="status" v-else style="color: #DD514C;">未签到(点击补签)</view>
+										<view class="status" v-else style="color: #DD514C;" @click="makeUp(index)">未签到(点击补签)</view>
 									</view>								
 								</view>
 							</scroll-view>
@@ -51,28 +51,33 @@
 			return {
 				scrollHeight:'400px',
 				user:null,//当前用户信息
-				userRole:'',
+				classType:'',
 				//学生：
 				mainArray:[],//签到信息
 				classCode:'',//班课号
 				dates:[],//签到时间
 				weeks:[],//星期	
 				//教师：
-				studentList:[]//学生签到情况
+				signinList:[],
+				signinIndex:0,
+				studentList:[],//学生签到情况
+				chechinDate:''
 			}
 		},
 		onShow() {
 			var that=this;
 			that.user=uni.getStorageSync('data')
 			that.classCode=uni.getStorageSync('classCode')
-			that.userRole=that.user.roleId			
-			if(that.userRole=='2'){
-				var signinIndex=0;
-				var signinList=[];
-				signinIndex=uni.getStorageSync('signinIndex')
-				signinList=uni.getStorageSync('signinList')
-				that.studentList=signinList[signinIndex].studentList
-			}else if(that.userRole=='3'){
+			that.classType=uni.getStorageSync('classType')	
+			//教师：获取这次签到所有学生签到情况
+			if(that.classType=='1'){
+				that.signinIndex=uni.getStorageSync('signinIndex')
+				that.signinList=uni.getStorageSync('signinList')
+				that.studentList=that.signinList[that.signinIndex].studentList
+				that.checkinDate=uni.getStorageSync('checkinDate')
+			}
+			//学生：获取该门课程自身所有签到情况
+			else if(that.classType=='0'){
 				uni.request({
 					url:'http://112.74.55.61:8081/scheckninrecords',
 					header: {Authorization:uni.getStorageSync('token')},
@@ -100,8 +105,53 @@
 		},
 
 		methods: {
-			test(){
-				
+			//教师为学生补签
+			makeUp(index){
+				var that=this;
+				uni.showModal({
+						title: that.Class,
+						content: '是否确定加入该班课',
+						success: function (res) {
+							if (res.confirm) {
+								uni.request({
+									url:'http://112.74.55.61:8081/makeupscheckninrecords ',
+									header: {Authorization:uni.getStorageSync('token')},
+									method:'POST',
+									data:{
+										classcode:that.classCode,
+										studentphone:that.studentList[index].studentPhone,
+										checkindate:that.checkinDate
+									}, 
+									success: (res) => {
+										console.log(res.data)
+										uni.request({
+											url:'http://112.74.55.61:8081/tcheckninrecords',
+											header: {Authorization:uni.getStorageSync('token')},
+											method:'POST',
+											data:{
+												classcode:that.classCode
+											}, 
+											success: (res) => {
+												console.log(res.data.data)	
+												uni.setStorageSync('signinList',res.data.data)
+												that.signinList=uni.getStorageSync('signinList')
+												that.studentList=that.signinList[that.signinIndex].studentList
+											},
+											fail: (res) => {
+												console.log(res)
+											}
+										})
+									},
+									fail: (res) => {
+										console.log(res)
+									}
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+				});
+		
 			}
 		}
 	}

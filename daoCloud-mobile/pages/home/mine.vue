@@ -11,7 +11,7 @@
 					</view>
 					<view class="box-bd">
 						<view class="item" style="padding-right: 100rpx;">
-							<view style="color: #007AFF;">166</view>
+							<view style="color: #007AFF;">{{exp}}</view>
 							<view class="text">经验值</view>
 						</view>
 						<view class="item" style="padding-right: 50rpx;">
@@ -50,7 +50,7 @@
 			<view class="list">
 				<view class="li noborder" >
 					<view class="icon"><image src="../../static/set.png"></image></view>
-					<view class="text">系统设置</view>
+					<view class="text" @click="test">系统设置</view>
 					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
@@ -63,13 +63,12 @@
 		data() {
 			return {
 				user:null,
-				userName:''
+				userName:'',
+				exp:'10'
 			};
 		},
-		onShow(){
-			var that=this;
-			that.user=uni.getStorageSync('data')
-			that.userName=that.user.userName
+		async onLoad() {					
+			await this.getExp()
 		},
 		methods: {
 			loginOut(){
@@ -86,6 +85,26 @@
 							}
 						}
 				});			
+			},
+			getExp(){
+				this.user=uni.getStorageSync('data')
+				this.userName=this.user.userName
+				uni.request({
+					url:'http://112.74.55.61:8081/allstuexp',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'POST',
+					data:{
+						studentphone:this.user.userPhone
+					}, 
+					success: (res) => {
+						console.log(res.data.data)
+						this.exp=res.data.data
+						
+					},
+					fail: (res) => {
+						console.log(res)
+					}
+				})
 			}
 		}
 	}

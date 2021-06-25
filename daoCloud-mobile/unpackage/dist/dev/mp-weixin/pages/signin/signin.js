@@ -180,7 +180,8 @@ var _util = __webpack_require__(/*! @/common/util.js */ 59); //
 //
 //
 var _default = { data: function data() {return { user: null, //当前用户信息
-      classCode: '', tcLongitude: '', //教师位置经度
+      classCode: '', //班课号
+      tcLongitude: '', //教师位置经度
       tcLatitude: '', //教师位置纬度
       startTime: '', //签到开始时间
       longitude: '', //学生位置经度
@@ -188,10 +189,8 @@ var _default = { data: function data() {return { user: null, //当前用户信�
       address: '签到以获取地理位置', //地理位置信息
       time: (0, _util.formateDate)(new Date(), 'h:min:s'), //当前时分秒
       date: (new Date().getMonth() + 1).toString() + '.' + new Date().getDate().toString(), //当前日期
-      isclick: false };}, onShow: function onShow() {var that = this;that.user = uni.getStorageSync('data');that.classCode = uni.getStorageSync('classCode');console.log(that.classCode);uni.getLocation({ type: 'wgs84', success: function success(res) {console.log('当前位置的经度：' + res.longitude);console.log('当前位置的纬度：' + res.latitude);that.longitude = res.longitude, that.latitude = res.latitude;} }); //学生是否已经完成签到
-    uni.request({ url: 'http://112.74.55.61:8081/scheckninrecords', header: { Authorization: uni.getStorageSync('token') },
-      method: 'POST',
-      data: {
+      isclick: false };}, onShow: function onShow() {var that = this;that.user = uni.getStorageSync('data');that.classCode = uni.getStorageSync('classCode');uni.getLocation({ type: 'wgs84', success: function success(res) {console.log('当前位置的经度：' + res.longitude);console.log('当前位置的纬度：' + res.latitude);that.longitude = res.longitude, that.latitude = res.latitude;} }); //学生是否已经完成签到
+    uni.request({ url: 'http://112.74.55.61:8081/scheckninrecords', header: { Authorization: uni.getStorageSync('token') }, method: 'POST', data: {
         classcode: that.classCode,
         studentphone: that.user.userPhone },
 
@@ -220,6 +219,24 @@ var _default = { data: function data() {return { user: null, //当前用户信�
         that.tcLongitude = res.data.data.checkinLocx;
         that.tcLatitude = res.data.data.checkinLocy;
         that.startTime = res.data.data.startTime;
+
+        //计算两地距离
+        var PI = 3.14159265358979323; //圆周率
+        var R = 6371229; //地球半径
+
+        var lon1 = parseFloat(that.longitude);
+        var lat1 = parseFloat(that.latitude);
+
+        var lon2 = parseFloat(that.tcLongitude);
+        var lat2 = parseFloat(that.tcLatitude);
+        var x, y, distance;
+        var lonres = lon1 > lon2 ? lon1 - lon2 : lon2 - lon1;
+        var latres = lat1 > lat2 ? lat1 - lat2 : lat2 - lat1;
+        x = lonres * PI * R * Math.cos((lat1 + lat2) / 2 * PI / 180) / 180;
+        y = (lat2 - lat1) * PI * R / 180;
+        distance = Math.hypot(x, y);
+        console.log(distance);
+
       },
       fail: function fail(res) {
         console.log(res);
@@ -286,6 +303,24 @@ var _default = { data: function data() {return { user: null, //当前用户信�
     var timer = setInterval(function () {
       that.time = (0, _util.formateDate)(new Date(), 'h:min:s');
     }, 1000);
+  },
+  getDistance: function getDistance() {
+    var that = this;
+    var PI = 3.14159265358979323; //圆周率
+    var R = 6371229; //地球半径
+
+    var lon1 = that.longitude;
+    var lat1 = that.latitude;
+
+    var lon2 = that.tcLongitude;
+    var lat2 = that.tcLatitude;
+    var x, y, distance;
+    var lonres = lon1 > lon2 ? lon1 - lon2 : lon2 - lon1;
+    var latres = lat1 > lat2 ? lat1 - lat2 : lat2 - lat1;
+    x = lonres * PI * R * Math.cos((lat1 + lat2) / 2 * PI / 180) / 180;
+    y = (lat2 - lat1) * PI * R / 180;
+    distance = Math.hypot(x, y);
+    console.log(distance);
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
