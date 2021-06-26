@@ -64,19 +64,17 @@ export default {
   inject: ['reload'],
   data() {
     const validator = (rule, value, callback) => {
-      console.log(rule)
       if (rule.required === false)
       {
         callback()
       }
-      let list = this.list
-      console.log(list)
-      if (value === undefined) {
+      let list = this.dataList
+      if (value === '') {
         callback(new Error('数值不能为空'))
       }
       let count = 0
       for (let i = 0; i < list.length; i++) {
-        if (value + '' === list[i].num) {
+        if (value + '' === list[i].dicdetailValue) {
           count++
         }
       }
@@ -88,6 +86,7 @@ export default {
     }
     return {
       inner: '添加字典明细',
+      dataList: [],
       oldN: false,
       locked: -1,
       Num: 0,
@@ -195,15 +194,19 @@ export default {
             }
 
             this.$http.dicConfig.dicCurd(method, data, token).then(res => {
-              if (res) {
+              if (res.data.code === 500 && res.data.msg === '添加字典类别失败，code已经存在') {
+                this.$message({
+                  message: '字典类别已存在',
+                  type: 'warning',
+                  duration: 1500
+                })
+              } else if (res.data.code === 200 && res.data.msg === '添加字典类别成功'){
                 this.reload()
                 this.$message({
                   message: '操作成功',
                   type: 'success',
                   duration: 1500
                 })
-              } else {
-                this.$message.error(res.msg)
               }
             })
           }
@@ -224,7 +227,6 @@ export default {
             // for (let i = 0; i < this.list.length; i++) {
             //   for (let j = 0;j < this.list.detailList)
             // }
-            console.log(this.dataForm.dicKey)
             let data = {}
             if (method === 'post'){
               data = {
@@ -251,15 +253,19 @@ export default {
             }
 
             this.$http.dicConfig.dicDelCurd(method, data, token).then(res => {
-              if (res) {
-                this.reload()
+              if (res.data.code === 200) {
+                this.$router.back(-1)
                 this.$message({
                   message: '操作成功',
                   type: 'success',
                   duration: 1500
                 })
-              } else {
-                this.$message.error(res.msg)
+              } else if (res.data.code === 500 && res.data.msg === '添加字典详情失败，已经存在。') {
+                this.$message({
+                  message: '该记录已存在',
+                  type: 'warning',
+                  duration: 1500
+                })
               }
             })
           }
@@ -268,7 +274,6 @@ export default {
 
     },
     show() {
-      console.log(this.dataForm.dicKey !== '')
       this.locked = 1
       if (this.inner === '添加字典明细') {
         this.inner = '取消'
@@ -280,7 +285,11 @@ export default {
       if (this.dataForm.dicKey !== '') {
         let token = this.$cookie.get('token')
         this.$http.dicConfig.selectDic(token, this.dataForm.dicKey).then(res =>{
-          this.dataForm.num = res.data.data.detailist.length
+          console.log(res)
+          if (res.data.code === 200) {
+            this.dataList = res.data.data.detailist
+            this.dataForm.num = res.data.data.detailist.length
+          }
         }).catch((err) =>{
           console.log(err)
         })

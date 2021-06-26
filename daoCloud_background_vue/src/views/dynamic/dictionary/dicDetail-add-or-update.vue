@@ -13,7 +13,7 @@
     >
       <el-form-item label="名称" prop="dicName">
         <el-input
-            v-model="dataForm.dicName"
+            v-model="dicName"
             placeholder="名称"
             :disabled="dicKeyDisabled"
         >{{ dicName }}
@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item label="关键字" prop="dicKey">
         <el-input
-            v-model="dataForm.dicCode"
+            v-model="dicCode"
             placeholder="关键字"
             :disabled="dicKeyDisabled"
         >{{ dicCode }}
@@ -58,17 +58,16 @@ export default {
   inject: ['reload'],
   data() {
     const validator = (rule, value, callback) => {
-      console.log(rule)
       if (rule.required === false) {
         callback()
       }
       let list = this.list
-      if (value === undefined) {
+      if (value === '') {
         callback(new Error('数值不能为空'))
       }
       let count = 0
       for (let i = 0; i < list.length; i++) {
-        if (value + '' === list[i].num) {
+        if (value + '' === list[i].dicdetailValue) {
           count++
         }
       }
@@ -118,7 +117,6 @@ export default {
       this.dicCode = dicCode
       this.dicName = dicName
       this.rNum = row.dicDetailCode
-      console.log(row)
       this.inner = '添加字典明细'
       this.list = list
       this.dataForm.dicId = row.dictionarydetailId === undefined ? null : row.dictionarydetailId
@@ -177,7 +175,6 @@ export default {
             let a = Math.random()
             this.dicDetailCode = a
           }
-          console.log(this.dataForm.dicKey)
           let data = {
             dictionarycode: this.dicCode,
             dicdetailcode: this.dicDetailCode,
@@ -186,17 +183,20 @@ export default {
             dicdetaildiscp: type,
 
           }
-          console.log(data)
           this.$http.dicConfig.dicDelCurd(method, data, token).then(res => {
-            if (res) {
+            if (res.data.code === 200) {
               this.$router.back(-1)
               this.$message({
                 message: '操作成功',
                 type: 'success',
                 duration: 1500
               })
-            } else {
-              this.$message.error(res.msg)
+            } else if (res.data.code === 500 && res.data.msg === '添加字典详情失败，已经存在。') {
+              this.$message({
+                message: '该记录已存在',
+                type: 'warning',
+                duration: 1500
+              })
             }
           })
         }

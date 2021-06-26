@@ -8,7 +8,8 @@ module.exports = {
   dev: {
 
     // Paths
-    assetsSubDirectory: 'static',
+    publicPath:'/',
+    assetsSubDirectory: '',
     assetsPublicPath: '/',
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {

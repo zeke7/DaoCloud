@@ -57,7 +57,7 @@ export function getCaptcha(userphone, type) {
 
 export function modifyPassword(username, password, newpassword, token) {
     return http({
-        url: '/reset-password',
+        url: '/resetpassword',
         method: 'post',
         header: token,
         data: {

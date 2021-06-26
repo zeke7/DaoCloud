@@ -157,15 +157,13 @@ router.beforeEach((to, from, next) => {
 							// 获取动态菜单数据
 							let results = fnAddDynamicMenuRoutes(identity, response.data.data)
 							// 如果动态菜单数据存在，对其进行处理
-							console.log(results)
 							if (results && results.length > 0) {
 								// 遍历第一层数据
 								results.map(value => {
-									console.log(value)
 									// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
 									if (!value.path) {
-										// value.path = `/DynamicRoutes-${value.meta.menuId}`
-										// value.name = `DynamicHome-${value.meta.menuId}`
+										value.path = `/DynamicRoutes-${value.meta.menuId}`
+										value.name = `DynamicHome-${value.meta.menuId}`
 										value.component = () => import('../views/Home.vue')
 									}
 								})
@@ -191,8 +189,8 @@ router.beforeEach((to, from, next) => {
 								results.map(value => {
 									// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
 									if (!value.path) {
-										// value.path = `/DynamicRoutes-${value.meta.menuId}`
-										// value.name = `DynamicHome-${value.meta.menuId}`
+										value.path = `/DynamicRoutes-${value.meta.menuId}`
+										value.name = `DynamicHome-${value.meta.menuId}`
 										value.component = () => import('../views/Home.vue')
 									}
 								})
