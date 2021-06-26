@@ -64,7 +64,7 @@ public class SystemparametersServiceImp implements SystemparametersService {
         systemParameter.setSysId(sid);
         systemParameter.setSysKey(syskey);
 
-        if (systemParameterRepository.selectBysname(sysname) != null){
+        if (systemParameterRepository.selectByPrimaryKey(sid) != null){
             System.out.println(systemParameterRepository.selectBysname(sysname));
             int res = systemParameterRepository.updateByPrimaryKeySelective(systemParameter);
             if (res == -1)

@@ -35,4 +35,6 @@ public interface ClassService {
 
     public BaseResponse getStudentCountsByClassCode(String classCode);
 
+    public BaseResponse getStudentByClassCode(String classCode);
+
 }

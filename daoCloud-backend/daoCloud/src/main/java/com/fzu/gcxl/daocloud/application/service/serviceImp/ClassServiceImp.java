@@ -276,4 +276,15 @@ public class ClassServiceImp implements ClassService {
             throw new UserFriendException("查询人数失败");
         }
     }
+
+    @Override
+    public BaseResponse getStudentByClassCode(String classCode) {
+        try{
+            List<ClassInfo> classInfoList = classInfoRepository.selectAllClassInfoByClassCode(classCode);
+            return new BaseResponse(200, "查询班级成员成功", classInfoList);
+        }catch (Exception e){
+            System.out.println(e);
+            throw new UserFriendException("查询失败");
+        }
+    }
 }

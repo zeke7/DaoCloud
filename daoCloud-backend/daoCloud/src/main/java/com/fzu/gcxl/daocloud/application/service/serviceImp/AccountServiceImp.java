@@ -171,12 +171,14 @@ public class AccountServiceImp implements AccountService {
     public BaseResponse resetPassword(JSONObject usertomodfiypwd){
         String username = usertomodfiypwd.getString("username");
         String oldPassword = usertomodfiypwd.getString("password");
+        ByteSource salt = ByteSource.Util.bytes(username);
+        String oldPasswordhex = new SimpleHash("MD5", oldPassword, salt, 3).toHex();
         String newPassword = usertomodfiypwd.getString("newpassword");
 
-        if (oldPassword.equals(accountRepository.findAccountByPhone(username).getLoginPassword())){
+        if (oldPasswordhex.equals(accountRepository.findAccountByPhone(username).getLoginPassword())){
             Account modPwd = new Account();
             modPwd.setLoginPhone(username);
-            ByteSource salt = ByteSource.Util.bytes(username);
+//            ByteSource salt1 = ByteSource.Util.bytes(username);
             String newPsd = new SimpleHash("MD5", newPassword, salt, 3).toHex();
             modPwd.setLoginPassword(newPsd);
 

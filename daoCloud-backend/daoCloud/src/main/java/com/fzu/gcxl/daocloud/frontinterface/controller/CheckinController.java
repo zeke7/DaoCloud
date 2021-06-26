@@ -15,6 +15,13 @@ public class CheckinController {
     @Autowired
     CheckinService checkinService;
 
+    @CrossOrigin
+    @GetMapping("/checkinfo")
+//    @RequiresRoles("teacher")
+    public BaseResponse CheckinInfo(String classcode){
+        return checkinService.getCheckinfo(classcode);
+    }
+
     // 教师发起签到
     @CrossOrigin
     @PostMapping("/checkinteachers")
@@ -59,7 +66,7 @@ public class CheckinController {
     }
 
     @CrossOrigin
-    @PutMapping("/makeupscheckninrecords")
+    @PostMapping("/makeupscheckninrecords")
     public BaseResponse sCheckinRecordsmakeup(@RequestBody JSONObject checkinrecord){
         return checkinService.recordModifiedByTeacher(checkinrecord);
     }
@@ -68,6 +75,12 @@ public class CheckinController {
     @PostMapping("/stuexp")
     public BaseResponse studentexp(@RequestBody JSONObject checkinrecord){
         return checkinService.stuexp(checkinrecord);
+    }
+
+    @CrossOrigin
+    @PostMapping("/allstuexp")
+    public BaseResponse studentexpaall(@RequestBody JSONObject checkinrecord){
+        return checkinService.stuexpall(checkinrecord);
     }
 
 
