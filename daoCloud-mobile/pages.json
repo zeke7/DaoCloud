@@ -5,7 +5,10 @@
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
+		        "enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false //禁用原生导航栏
+				}
 		    }
 		    
 		},{
@@ -20,14 +23,15 @@
 		    "path" : "pages/login/forget-password",//忘记密码
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "忘记密码",
 		        "enablePullDownRefresh": false
 		    }
 		    
 		},{
 		    "path" : "pages/home/home",//首页
 		    "style" :                                                                                    
-		    {	       
+		    {	
+				"navigationBarTitleText": "我的班课",
 				"app-plus":{
 					"titleNView":false
 				}
@@ -35,16 +39,17 @@
 		},{
 		    "path" : "pages/home/mine",//我的
 		    "style" :                                                                                    
-		    {	       
+		    {	  
+				"navigationBarTitleText": "我的信息",
 				"app-plus":{
 					"titleNView":false
 				}
 		    }		    
 		},	
 		{
-			"path": "pages/class/class",//班课详情
+			"path": "pages/class/index",//班课详情
 			"style": {
-				"navigationBarTitleText": "uni"
+				"navigationBarTitleText": "班课详情"
 			}
 		},
 		{
@@ -57,7 +62,7 @@
             "path" : "pages/test/test",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "选择学校",
                 "enablePullDownRefresh": false
             }
             
@@ -66,12 +71,12 @@
             "path" : "pages/class/creat",//创建班课
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "创建班课",
                 "enablePullDownRefresh": false
             }           
         }
 		,{
-		    "path" : "pages/class/suc-creat",//成功创建班课
+		    "path" : "pages/class/QRCode",//成功创建班课
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
@@ -94,12 +99,36 @@
             }           
         },
 		{
-		    "path" : "pages/signin/signin-detail",//签到详情页面
+		    "path" : "pages/signin/signinDetail",//签到详情页面
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }           
+		},
+		{
+		    "path" : "pages/signin/signinList",//签到清单页面(教师端)
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }           
+		},
+        {
+            "path" : "pages/class/school",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }         
+        },
+		{
+		    "path" : "pages/class/college",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }         
 		}
     ],
 	"globalStyle": {

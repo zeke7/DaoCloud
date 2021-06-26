@@ -276,10 +276,6 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
     //短信验证码登录(快速注册)
     login_code: function login_code() {
       var that = this;
-      // if(checkPwd(this.password)){
-      // 	return
-      // };
-      //账号存在，正常登录
       uni.request({
         url: 'http://112.74.55.61:8081/loginbysms',
         method: 'POST',
@@ -291,11 +287,11 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
 
         success: function success(res) {
           console.log(res.data);
-          console.log(that.userphone);
           // //验证码输入错误
           if (res.data.data !== 'failed') {
             console.log("登录成功");
             console.log(res.data);
+            uni.setStorageSync('token', res.header.Authorization);
             uni.switchTab({
               url: "../home/home" });
 
@@ -316,7 +312,6 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
       if ((0, _common.checkPhone)(this.username)) {
         return;
       }
-
       uni.request({
         url: 'http://112.74.55.61:8081/login',
         method: 'POST',
@@ -325,9 +320,11 @@ var _default = { data: function data() {return { cur: false, //当前登录方�
           password: that.password },
 
         success: function success(res) {
+          console.log(res);
           console.log(res.data);
-          if (res.data.data === '201') {
-            console.log("登录成功");
+          if (res.data.msg === '登录成功(Login Success.)') {
+            uni.setStorageSync('token', res.header.Authorization);
+            uni.setStorageSync('data', res.data.data); //保存用户信息
             uni.switchTab({
               url: "../home/home" });
 

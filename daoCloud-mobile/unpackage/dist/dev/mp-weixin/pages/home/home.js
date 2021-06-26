@@ -215,54 +215,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 var _default =
 {
   data: function data() {
     return {
       TabCur: 1, //我创建的、我加入的
-      scrollLeft: 0,
       tabList: ["我创建的", "我加入的"],
       modalName: null, //模态框
-      bulidClass: [], //创建的班课
-      joinClass: [{ name: '工程训练', teacher: '池芝标' }, { name: '工程英语', teacher: '陈勃' }] //加入的班课
-    };
+      bulidClass: [], //创建的班课（教师）
+      joinClass: [], //加入的班课
+      user: null };
+
   },
-  // onLoad() {
-  // 	var that=this;
-  // 	uni.getStorage({
-  // 		key:'join_class',
-  // 		success: function (res) {
-  // 			console.log(res.data)
-  // 			that.joinClass=res.data
-  // 		},				
-  // 	})
-  // },
   onShow: function onShow() {
     var that = this;
-    uni.getStorage({
-      key: 'join_class',
+    that.user = uni.getStorageSync('data');
+    //获取加入的班课
+    uni.request({
+      url: 'http://112.74.55.61:8081/classinfodto',
+      header: { Authorization: uni.getStorageSync('token') },
+      method: 'GET',
+      data: {
+        userphone: that.user.userPhone },
+
       success: function success(res) {
-        //console.log(res.data)
-        that.joinClass = res.data;
+        console.log(res.data.data);
+        that.joinClass = res.data.data.classinfos;
+      },
+      fail: function fail(res) {
+        console.log(res);
       } });
 
+    //如果是教师额外获取创建的班课
+    if (that.user.roleId == '2') {
+      uni.request({
+        url: 'http://112.74.55.61:8081/classesdto',
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'GET',
+        data: {
+          userphone: that.user.userPhone },
+
+        success: function success(res) {
+          console.log(res.data.data);
+          that.bulidClass = res.data.data.classes;
+        },
+        fail: function fail(res) {
+          console.log(res);
+        } });
+
+    }
   },
   onHide: function onHide() {
     var that = this;
-    uni.setStorage({
-      key: 'join_class',
-      data: that.joinClass,
-      success: function success() {
-        console.log('success');
-      } });
-
-    this.modalName = null;
+    that.modalName = null;
   },
   methods: {
     //切换操作条  我创建的/我加入的
     tabSelect: function tabSelect(e) {
       this.TabCur = e.currentTarget.dataset.id;
-      this.scrollLeft = (e.currentTarget.dataset.id - 1) * 60;
     },
     //模态框对应操作 显示/隐藏
     showModal: function showModal(e) {
@@ -272,19 +283,43 @@ var _default =
       this.modalName = null;
     },
     //班课详情
-    go_class: function go_class() {
+    onDetail: function onDetail(index) {
+      var that = this;
+      uni.setStorageSync('classType', '0');
+      uni.setStorageSync('classCode', that.joinClass[index].classCode);
+      uni.setStorageSync('className', that.joinClass[index].className);
+      uni.setStorageSync('classIsclose', that.bulidClass[index].classIsclose);
       uni.navigateTo({
-        url: '../class/class' });
+        url: '../class/index' });
+
+    },
+    //管理班课
+    manage_class: function manage_class(index) {
+      var that = this;
+      uni.setStorageSync('classType', '1');
+      uni.setStorageSync('classCode', that.bulidClass[index].classCode);
+      uni.setStorageSync('className', that.bulidClass[index].className);
+      uni.setStorageSync('classIsclose', that.bulidClass[index].classIsclose);
+      uni.setStorageSync('classIsallowed', that.bulidClass[index].classIsallowed);
+      uni.navigateTo({
+        url: '../class/index' });
 
     },
     //创建班课
-    go_addclass: function go_addclass() {
-      uni.navigateTo({
-        url: "../class/creat" });
+    goAddclass: function goAddclass() {
+      var that = this;
+      if (that.user.roleId == '3') {
+        uni.showToast({ title: '未拥有创建班课的权限', icon: 'none' });
+      } else {
+        uni.navigateTo({
+          url: "../class/creat" });
 
+      }
     },
-    //加入班课
-    go_signin: function go_signin() {
+    //去签到
+    onSignin: function onSignin(index) {
+      var that = this;
+      uni.setStorageSync('classCode', that.joinClass[index].classCode);
       uni.navigateTo({
         url: "../signin/signin" });
 

@@ -5,14 +5,17 @@
     "pages/login/forget-password",
     "pages/home/home",
     "pages/home/mine",
-    "pages/class/class",
+    "pages/class/index",
     "pages/index/index",
     "pages/test/test",
     "pages/class/creat",
-    "pages/class/suc-creat",
+    "pages/class/QRCode",
     "pages/class/join",
     "pages/signin/signin",
-    "pages/signin/signin-detail"
+    "pages/signin/signinDetail",
+    "pages/signin/signinList",
+    "pages/class/school",
+    "pages/class/college"
   ],
   "subPackages": [],
   "window": {

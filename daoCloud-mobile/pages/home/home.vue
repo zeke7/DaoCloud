@@ -10,7 +10,7 @@
 				<image src="../../static/Add.png" style="width: 75upx;height: 75upx;padding:15upx 15upx 0 0;margin-left: 30upx;" @tap="showModal" data-target="bottomModal"></image>
 				<view class="cu-modal bottom-modal" :class="modalName=='bottomModal'?'show':''">
 					<view class="cu-dialog">
-						<view class="text-blue" style="padding: 15upx 0upx;" @click="go_addclass()">
+						<view class="text-blue" style="padding: 15upx 0upx;" @click="goAddclass()">
 							创建班课
 						</view> 
 						<view class="text-blue" style="padding: 15upx 0upx;">
@@ -36,46 +36,47 @@
 		</view>
 		</view>
 		<!--	我创建的班课列表    	-->
-		<view v-if="TabCur==0" class="cu-list menu-avatar"  >
+		<view v-if="TabCur==0" class="cu-list menu-avatar">
 			<view v-if="bulidClass.length==0">
-				<image src="../../static/8.png" style="width: 700rpx; height: 450rpx; margin-left: 25rpx;"></image>
-				<view style="text-align: center;">当前没有创建班课</view>
+				<image src="../../static/NoData.png" style="height: 600rpx;margin-left: 50rpx;"></image>
+				<view style="text-align: center;font-size: 30rpx;">还没有创建的班课</view>
 			</view>
-			<view v-else>
-				<view class="cu-item" style="height: 180upx;" >
-					<!-- <view class="cu-avatar radius lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view> -->
-					<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
-					<view class="content" >
-						<view class="text-black text-bold">2</view>
-						<view class=" text-sm flex">
-							<view >池芝标</view> 
-							<view class="text-gray" style="margin-left: 20upx;">2021-1</view>
-						</view> 
+			<view v-else class="cu-item" style="height: 180upx;" v-for="item,index in bulidClass" :key=index>
+				<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
+				<view class="content" >
+					<view class="text-black text-bold">{{item.className}}</view>
+					<view class=" text-sm flex">
+						<view style="font-size: 25rpx;">{{item.classCode}}</view> 
+						<view class="text-gray" style="margin-left: 30upx;font-size: 25rpx;">{{item.classSemester}}</view>
 					</view>
-					<view class="action">
-						<text class="cuIcon-right text-gray" ></text>
-					</view>
+				</view>
+				<view class="action" >
+					<text class="cuIcon-right text-gray" @click="manage_class(index)" ></text>
 				</view>
 			</view>
 		</view>
 		<!--	我加入的班课列表    	-->
 		<view v-else class="cu-list menu-avatar"  >
-			<view class="cu-item" style="height: 180upx;" v-for="item in joinClass" >
+			<view v-if="joinClass.length==0">
+				<image src="../../static/NoData.png" style="height: 600rpx;margin-left: 50rpx;"></image>
+				<view style="text-align: center;font-size: 30rpx;">还没有加入的班课</view>
+			</view>
+			<view v-else class="cu-item" style="height: 180upx;" v-for="item,index in joinClass" :key=index >
 				<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
 				<view class="content" >
-					<view class="text-black text-bold">{{item.name}}</view>
+					<view class="text-black text-bold">{{item.className}}</view>
 					<view class=" text-sm flex">
-						<view >{{item.teacher}}</view> 
-						<view class="text-gray" style="margin-left: 20upx;">2021-1</view>
+						<view >{{item.classCode}}</view> 
+						<!-- <view class="text-gray" style="margin-left: 20upx;">2021-1</view> -->
 					</view>
 					<view class="choose" >
-						<view><text class="cuIcon-focus" @click="go_signin"></text>签到</view>
+						<view><text class="cuIcon-focus" @click="onSignin(index)"></text>签到</view>
 						<view><text class="cuIcon-flashbuyfill"></text>举手</view>
 						<view><text class="cuIcon-mark"></text>抢答</view>
 					</view>
 				</view>
 				<view class="action" >
-					<text class="cuIcon-right text-gray" @click="go_class()" ></text>
+					<text class="cuIcon-right text-gray" @click="onDetail(index)" ></text>
 				</view>
 			</view>
 		</view>
@@ -88,49 +89,59 @@
 		data() {
 			return {
 				TabCur: 1,//我创建的、我加入的
-				scrollLeft: 0,
 				tabList:["我创建的","我加入的"],
 				modalName: null,//模态框
-				bulidClass:[],//创建的班课
-				joinClass:[{name:'工程训练',teacher:'池芝标'},{name:'工程英语',teacher:'陈勃'}],//加入的班课
+				bulidClass:[],//创建的班课（教师）
+				joinClass:[],//加入的班课
+				user:null
 			}
 		},
-		// onLoad() {
-		// 	var that=this;
-		// 	uni.getStorage({
-		// 		key:'join_class',
-		// 		success: function (res) {
-		// 			console.log(res.data)
-		// 			that.joinClass=res.data
-		// 		},				
-		// 	})
-		// },
 		onShow() {
-			var that=this;
-			uni.getStorage({
-				key:'join_class',
-				success: function (res) {
-					//console.log(res.data)
-					that.joinClass=res.data
-				},				
-			})			
+			var that=this;	
+			that.user=uni.getStorageSync('data')
+			//获取加入的班课
+			uni.request({
+				url:'http://112.74.55.61:8081/classinfodto',
+				header: {Authorization:uni.getStorageSync('token')},
+				method:'GET',
+				data:{
+					userphone:that.user.userPhone			
+				},
+				success: (res) => {
+					console.log(res.data.data)
+					that.joinClass=res.data.data.classinfos
+				},
+				fail: (res) => {
+					console.log(res)
+				}
+			})
+			//如果是教师额外获取创建的班课
+			if(that.user.roleId=='2'){
+				uni.request({
+					url:'http://112.74.55.61:8081/classesdto',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'GET',
+					data:{
+						userphone:that.user.userPhone			
+					}, 
+					success: (res) => {
+						console.log(res.data.data)
+						that.bulidClass=res.data.data.classes
+					},
+					fail: (res) => {
+						console.log(res)
+					}
+				})
+			}
 		},
 		onHide() {
 			var that=this
-			uni.setStorage({
-				key:'join_class',			
-				data:that.joinClass,
-				success: function () {
-					console.log('success');
-				}
-			})
-			this.modalName = null
+			that.modalName = null
 		},
 		methods: {
 			//切换操作条  我创建的/我加入的
 			tabSelect(e) {
 				this.TabCur = e.currentTarget.dataset.id;
-				this.scrollLeft = (e.currentTarget.dataset.id - 1) * 60
 			},
 			//模态框对应操作 显示/隐藏
 			showModal(e) {
@@ -140,19 +151,43 @@
 				this.modalName = null
 			},
 			//班课详情
-			go_class(){
+			onDetail(index){
+				var that=this;
+				uni.setStorageSync('classType','0')
+				uni.setStorageSync('classCode',that.joinClass[index].classCode)
+				uni.setStorageSync('className',that.joinClass[index].className)
+				uni.setStorageSync('classIsclose',that.bulidClass[index].classIsclose)
 				uni.navigateTo({
-					url:'../class/class'
+					url:'../class/index'
+				})
+			},
+			//管理班课
+			manage_class(index){
+				var that=this;
+				uni.setStorageSync('classType','1')
+				uni.setStorageSync('classCode',that.bulidClass[index].classCode)
+				uni.setStorageSync('className',that.bulidClass[index].className)
+				uni.setStorageSync('classIsclose',that.bulidClass[index].classIsclose)
+				uni.setStorageSync('classIsallowed',that.bulidClass[index].classIsallowed)
+				uni.navigateTo({
+					url:'../class/index'
 				})
 			},
 			//创建班课
-			go_addclass(){
-				uni.navigateTo({
-					url:"../class/creat"
-				})
+			goAddclass(){
+				var that=this
+				if(that.user.roleId=='3'){
+					uni.showToast({ title: '未拥有创建班课的权限', icon: 'none' });
+				}else{
+					uni.navigateTo({
+						url:"../class/creat"
+					})
+				}		
 			},
-			//加入班课
-			go_signin(){
+			//去签到
+			onSignin(index){
+				var that=this;
+				uni.setStorageSync('classCode',that.joinClass[index].classCode)
 				uni.navigateTo({
 					url:"../signin/signin"
 				})

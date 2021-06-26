@@ -160,6 +160,35 @@ function isSameDay(timeStampA) {
 	let dateB = new Date();
 	return (dateA.setHours(0, 0, 0, 0) == dateB.setHours(0, 0, 0, 0));
 }
+//转换后台返回的这种时间格式2019-04-24T02:30:00.000+0000
+function resolvingDate(date){ 
+//date是传入的时间
+    let d = new Date(date);
+
+	let month = (d.getMonth() + 1) < 10 ? '0'+(d.getMonth() + 1) : (d.getMonth() + 1);
+	let day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+	let hours = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
+	let min = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
+	let sec = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
+
+	let times=d.getFullYear() + '-' + month + '-' + day + ' ' + hours + ':' + min + ':' + sec;
+
+	return times
+}
+//根据后台返回的这种时间格式2019-04-24T02:30:00.000+0000获取星期几
+function getWeek(date){
+	let d = new Date(date);
+    var date;
+	let month = (d.getMonth() + 1) < 10 ? '0'+(d.getMonth() + 1) : (d.getMonth() + 1);
+	let day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+	var dateString=d.getFullYear() + '-' + month + '-' + day
+	var dateArray = dateString.split("-");
+	date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
+
+    //var weeks = new Array("日", "一", "二", "三", "四", "五", "六");
+    //return "星期" + weeks[date.getDay()];
+    return "星期" + "日一二三四五六".charAt(date.getDay());
+};
 module.exports = {
 	formatTime,
 	formatLocation,
@@ -168,5 +197,7 @@ module.exports = {
 	deteleObject,
 	randomNum,
 	pointInsideCircle,
-	isSameDay
+	isSameDay,
+	resolvingDate,
+	getWeek
 }

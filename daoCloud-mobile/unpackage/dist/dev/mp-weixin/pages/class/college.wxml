@@ -1,0 +1,1 @@
+<view style="font-size:40rpx;text-align:center;"><block wx:for="{{college}}" wx:for-item="item" wx:for-index="index" wx:key="index"><view data-event-opts="{{[['tap',[['backCreat',[index]]]]]}}" style="margin-top:30rpx;padding:25rpx 0;background-color:white;" bindtap="__e">{{''+college[index]+''}}</view></block></view>

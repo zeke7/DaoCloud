@@ -1,9 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '../views/Home.vue'
-import {
-	getToken
-} from '@/http/auth.js'
 import http from '../http/http.js'
 import {
 	isURL,
@@ -67,7 +63,7 @@ const routes = [
 	{
 		path: '/classList',
 		name: 'classList',
-		component: () => import('../views/dynamic/sys/classList')
+		component: () => import('../views/dynamic/class/classList')
 	},
 	{
 		path: '/config',
@@ -83,6 +79,16 @@ const routes = [
 		path: '/detailDictionary',
 		name: 'detailDictionary',
 		component: () => import('../views/dynamic/dictionary/detailDic')
+	},
+	{
+		path: '/userInfo',
+		name: 'userInfo',
+		component: () => import('../views/dynamic/user/userInfo')
+	},
+	{
+		path: '/studentInfo',
+		name: 'studentInfo',
+		component: () => import('../views/dynamic/user/studentInfo'),
 	},
 	{
 		path: '/Home',
@@ -115,7 +121,7 @@ const router = new VueRouter({
 	// routes 用于定义 路由跳转 规则
 	routes,
 	// mode 用于去除地址中的 #
-	mode: 'hash',
+	mode: 'history',
 	// scrollBehavior 用于定义路由切换时，页面滚动。
 	scrollBehavior: () => ({
 		y: 0
@@ -141,24 +147,25 @@ router.beforeEach((to, from, next) => {
 			// token 存在时，判断是否已经获取过 动态菜单，未获取，即 false 时，需要获取
 			if (!router.options.isAddDynamicMenuRoutes) {
 				let identity = Vue.cookie.get("identity")
-				console.log(identity)
-				if (identity === 'admin'){
+				if (identity === '1'){
 					http.adminMenu.getMenus().then((response => {
 						// 数据返回成功时
 						if (response && response.data.code === 200) {
-							console.log(response)
+							console.log(response.data)
 							// 设置动态菜单为 true，表示不用再次获取
 							router.options.isAddDynamicMenuRoutes = true
 							// 获取动态菜单数据
-							let results = fnAddDynamicMenuRoutes(response.data.data)
+							let results = fnAddDynamicMenuRoutes(identity, response.data.data)
 							// 如果动态菜单数据存在，对其进行处理
+							console.log(results)
 							if (results && results.length > 0) {
 								// 遍历第一层数据
 								results.map(value => {
+									console.log(value)
 									// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
 									if (!value.path) {
-										value.path = `/DynamicRoutes-${value.meta.menuId}`
-										value.name = `DynamicHome-${value.meta.menuId}`
+										// value.path = `/DynamicRoutes-${value.meta.menuId}`
+										// value.name = `DynamicHome-${value.meta.menuId}`
 										value.component = () => import('../views/Home.vue')
 									}
 								})
@@ -169,22 +176,23 @@ router.beforeEach((to, from, next) => {
 							router.addRoutes(results)
 						}
 					}))
-				}else if (identity === 'teacher'){
+				}else if (identity === '2'){
 					http.teacherMenu.getMenus1().then((response => {
 						// 数据返回成功时
 						if (response && response.data.code === 200) {
+							console.log(response.data)
 							// 设置动态菜单为 true，表示不用再次获取
 							router.options.isAddDynamicMenuRoutes = true
 							// 获取动态菜单数据
-							let results = fnAddDynamicMenuRoutes(response.data.data)
+							let results = fnAddDynamicMenuRoutes(identity, response.data.data)
 							// 如果动态菜单数据存在，对其进行处理
 							if (results && results.length > 0) {
 								// 遍历第一层数据
 								results.map(value => {
 									// 如果 path 值不存在，则对其赋值，并指定 component 为 Home.vue
 									if (!value.path) {
-										value.path = `/DynamicRoutes-${value.meta.menuId}`
-										value.name = `DynamicHome-${value.meta.menuId}`
+										// value.path = `/DynamicRoutes-${value.meta.menuId}`
+										// value.name = `DynamicHome-${value.meta.menuId}`
 										value.component = () => import('../views/Home.vue')
 									}
 								})
@@ -203,7 +211,7 @@ router.beforeEach((to, from, next) => {
 })
 
 // 用于处理动态菜单数据，将其转为 route 形式
-function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
+function fnAddDynamicMenuRoutes(identity, menuList = [], routes = []) {
 	// 用于保存普通路由数据
 	let temp = []
 	// 用于保存存在子路由的路由数据
@@ -211,16 +219,18 @@ function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
 	// 遍历数据
 	for (let i = 0; i < menuList.length; i++) {
 		// 存在子路由，则递归遍历，并返回数据作为 children 保存
-		if (menuList[i].subMenuList && menuList[i].subMenuList.length > 0) {
+		if (menuList[i].subMenusList && menuList[i].subMenusList.length > 0) {
 			// 获取路由的基本格式
-			route = getRoute(menuList[i])
+			route = getRoute(identity, menuList[i])
 			// 递归处理子路由数据，并返回，将其作为路由的 children 保存
-			route.children = fnAddDynamicMenuRoutes(menuList[i].subMenuList)
+			route.children = fnAddDynamicMenuRoutes(identity, menuList[i].subMenusList)
 			// 保存存在子路由的路由
 			routes.push(route)
 		} else {
 			// 保存普通路由
-			temp.push(getRoute(menuList[i]))
+			if (getRoute(identity, menuList[i]) !== undefined) {
+				temp.push(getRoute(identity, menuList[i]))
+			}
 		}
 	}
 	// 返回路由结果
@@ -228,7 +238,10 @@ function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
 }
 
 // 返回路由的基本格式
-function getRoute(item) {
+function getRoute(identity, item) {
+	if (item.nameZh === '学生班课管理' && identity === '1') {
+		return
+	}
 	// 路由基本格式
 	let route = {
 		// 路由的路径
@@ -247,8 +260,7 @@ function getRoute(item) {
 			// 开启动态路由标志
 			isDynamic: true,
 			// 动态菜单名称（nameZH 显示中文， nameEN 显示英文）
-			name_zh: item.name_zh,
-			name_en: item.name_en,
+			nameZh: item.nameZh,
 			// 动态菜单项的图标
 			icon: item.icon,
 			// 菜单项的 ID
@@ -258,7 +270,7 @@ function getRoute(item) {
 			// 菜单项排序依据
 			orderNum: item.orderNum,
 			// 菜单项类型（0: 目录，1: 菜单项，2: 按钮）
-			type: item.type
+			// type: item.type
 		},
 		// 路由的子路由
 		children: []

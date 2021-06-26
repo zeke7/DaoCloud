@@ -173,4 +173,17 @@ page {
   width: 40rpx;
   height: 40rpx;
 }
+.button {
+  width: 600rpx;
+  font-size: 28rpx;
+  background: #5677fc;
+  color: #fff;
+  height: 90rpx;
+  line-height: 90rpx;
+  margin-top: 160rpx;
+  -webkit-border-radius: 50rpx;
+          border-radius: 50rpx;
+  -webkit-box-shadow: 0 5px 7px 0 rgba(86, 119, 252, 0.2);
+          box-shadow: 0 5px 7px 0 rgba(86, 119, 252, 0.2);
+}
 

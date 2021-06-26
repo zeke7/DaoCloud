@@ -95,16 +95,16 @@
 			// 监视路由的变化，每次点击菜单项时会触发
 			$route(route) {
 				// 路由变化时，修改当前选中的菜单项
-				this.updateMenuActiveName(route.name)
+				this.updateMenuActiveName(route.meta.nameZh)
 				// 是否显示标签页
 				if (route.meta.isTab) {
 					// 判断当前标签页数组中是否存在当前选中的标签，根据标签名匹配
-					let tab = this.mainTabs.filter(item => item.name === route.name)[0]
+					let tab = this.mainTabs.filter(item => item.name === route.meta.nameZh)[0]
 					// 若当前标签页数组不存在该标签，则向数组中添加标签
 					if (!tab) {
 						// 设置标签页数据
 						tab = {
-							name: route.name,
+							name: route.meta.nameZh,
 							params: route.params,
 							query: route.query,
 							type: isURL(route.meta.iframeUrl) ? 'iframe' : 'module',
@@ -114,7 +114,7 @@
 						this.updateMainTabs(this.mainTabs.concat(tab))
 					}
 					// 保存标签页中当前选中的标签名
-					this.updateMainTabsActiveName(route.name)
+					this.updateMainTabsActiveName(route.meta.nameZh)
 				}
 			}
 		}

@@ -24,6 +24,9 @@
           <el-form-item prop="userSno">
             <el-input v-model="dataForm.userSno"  placeholder="用户工号"></el-input>
           </el-form-item>
+          <el-form-item prop="userRole">
+            <el-input v-model="dataForm.userRole" placeholder="用户身份"></el-input>
+          </el-form-item>
           <el-form-item prop="userPhone">
             <el-input v-model="dataForm.userPhone" placeholder="手机号"></el-input>
           </el-form-item>
@@ -45,7 +48,6 @@
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
-      console.log(value)
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
@@ -92,6 +94,9 @@ export default {
         userSchool: [
           { required: true, message: '请输入您的学校', trigger: 'blur' }
         ],
+        userRole: [
+          { required: true, message: '请输入您的身份', trigger: 'blur' }
+        ],
         userDepartment: [
           { required: true, message: '请输入您的院系', trigger: 'blur' }
         ],
@@ -111,7 +116,7 @@ export default {
           let userSchool = this.dataForm.userSchool + ''
           let userDepartment = this.dataForm.userDepartment + ''
           let usersno = this.dataForm.userSno
-          let userole = "admin"
+          let userole = this.dataForm.userRole
           let codeFromUser = this.dataForm.captcha
           let mobileDevice = 'BACKEND'
           let type =  'S1'
@@ -203,7 +208,7 @@ export default {
   bottom: 0;
   left: 0;
   margin: auto;
-  height: 600px;
+  height: 650px;
   width: 400px;
   background-color: #112234;
   opacity: .8;

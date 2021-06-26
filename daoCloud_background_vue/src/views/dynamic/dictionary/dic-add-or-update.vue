@@ -21,6 +21,7 @@
         <el-input
             v-model="dataForm.dicKey"
             placeholder="关键字"
+            :disabled="dicKeyDisabled"
         ></el-input>
       </el-form-item>
       <el-form-item label="数值" prop="num" v-if="showDetail" >
@@ -97,6 +98,7 @@ export default {
       update: false,
       visible: false,
       disable: true,
+      dicKeyDisabled: true,
       dataForm: {
         dicId: null,
         dicName: '',
@@ -142,7 +144,7 @@ export default {
             this.dataForm.dicId !== undefined &&
             this.dataForm.dicId !== null
         ) {
-          this.showDetail = true
+          this.dicKeyDisabled = true
           this.update = false
           this.disable = true
           this.dataRule.num[0].required = false
@@ -157,6 +159,7 @@ export default {
             this.locked = 1
           }
         } else {
+          this.dicKeyDisabled = false
           this.showDetail = false
           this.update = true
           this.disable = false
@@ -166,70 +169,106 @@ export default {
             dicKey: '',
             value: '',
             dicCode: '',
-            num: list.length
+            num: 0
           }
         }
       })
     },
     // 表单提交
     dataFormSubmit() {
-      this.$refs['dataForm'].validate(valid => {
-        if (valid) {
-          let token = this.$cookie.get('token')
-          let method = this.dataForm.dicId === null ? 'post' : 'put'
-          let type = ''
-          if (this.locked === 2) {
-            type = '是'
-          } else if (this.locked === 1) {
-            type = '否'
-          }
-          let a = Math.random()
-          let n = 0;
-          // for (let i = 0; i < this.list.length; i++) {
-          //   for (let j = 0;j < this.list.detailList)
-          // }
-          console.log(this.dataForm.dicKey)
-          let data = {}
-          if (method === 'post'){
-            data = {
-              dictionarycode: this.dataForm.dicKey,
-              dicname: this.dataForm.dicName,
-              dicdiscp: '1',
-              dicdetailname: this.dataForm.value,
-              dicdetaildiscp: type,
-              dicdetailcode: a + '',
-              dicvalue: '1',
-              dicdetailvalue: this.dataForm.num + ''
+      if (this.showDetail === false) {
+        this.$refs['dataForm'].validate(valid => {
+          if (valid) {
+            let token = this.$cookie.get('token')
+            let method = this.dataForm.dicId === null ? 'post' : 'put'
+            let data = {}
+            if (method === 'post'){
+              data = {
+                dictionarycode: this.dataForm.dicKey,
+                dicname: this.dataForm.dicName,
+              }
+            }else if (method === 'put') {
+              data = {
+                dictionarycode: this.dataForm.dicKey,
+                dicname: this.dataForm.dicName,
+              }
             }
-          }else if (method === 'put') {
-            data = {
-              dictionarycode: this.dataForm.dicKey,
-              dicname: this.dataForm.dicName,
-              dicdiscp: '1',
-              dicdetailname: this.dataForm.value,
-              dicdetaildiscp: type,
-              dicdetailcode: this.rNum + '',
-              dicvalue: '1',
-              dicdetailvalue: this.dataForm.num + ''
-            }
-          }
 
-          this.$http.dicConfig.dicCurd(method, data, token).then(res => {
-            if (res) {
-              this.reload()
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500
-              })
-            } else {
-              this.$message.error(res.msg)
+            this.$http.dicConfig.dicCurd(method, data, token).then(res => {
+              if (res) {
+                this.reload()
+                this.$message({
+                  message: '操作成功',
+                  type: 'success',
+                  duration: 1500
+                })
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        })
+      }else {
+        this.$refs['dataForm'].validate(valid => {
+          if (valid) {
+            let token = this.$cookie.get('token')
+            let method = this.dataForm.dicId === null ? 'post' : 'put'
+            let type = ''
+            if (this.locked === 2) {
+              type = '是'
+            } else if (this.locked === 1) {
+              type = '否'
             }
-          })
-        }
-      })
+            let a = Math.random()
+            let n = 0;
+            // for (let i = 0; i < this.list.length; i++) {
+            //   for (let j = 0;j < this.list.detailList)
+            // }
+            console.log(this.dataForm.dicKey)
+            let data = {}
+            if (method === 'post'){
+              data = {
+                dictionarycode: this.dataForm.dicKey,
+                dicname: this.dataForm.dicName,
+                dicdiscp: '1',
+                dicdetailname: this.dataForm.value,
+                dicdetaildiscp: type,
+                dicdetailcode: a + '',
+                dicvalue: '1',
+                dicdetailvalue: this.dataForm.num + ''
+              }
+            }else if (method === 'put') {
+              data = {
+                dictionarycode: this.dataForm.dicKey,
+                dicname: this.dataForm.dicName,
+                dicdiscp: '1',
+                dicdetailname: this.dataForm.value,
+                dicdetaildiscp: type,
+                dicdetailcode: this.rNum + '',
+                dicvalue: '1',
+                dicdetailvalue: this.dataForm.num + ''
+              }
+            }
+
+            this.$http.dicConfig.dicDelCurd(method, data, token).then(res => {
+              if (res) {
+                this.reload()
+                this.$message({
+                  message: '操作成功',
+                  type: 'success',
+                  duration: 1500
+                })
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+          }
+        })
+      }
+
     },
     show() {
+      console.log(this.dataForm.dicKey !== '')
       this.locked = 1
       if (this.inner === '添加字典明细') {
         this.inner = '取消'
@@ -237,6 +276,16 @@ export default {
       } else if (this.inner === '取消') {
         this.inner = '添加字典明细'
         this.showDetail = false;
+      }
+      if (this.dataForm.dicKey !== '') {
+        let token = this.$cookie.get('token')
+        this.$http.dicConfig.selectDic(token, this.dataForm.dicKey).then(res =>{
+          this.dataForm.num = res.data.data.detailist.length
+        }).catch((err) =>{
+          console.log(err)
+        })
+      } else {
+        this.dataForm.num = 0
       }
     },
     changeRadio(val) {

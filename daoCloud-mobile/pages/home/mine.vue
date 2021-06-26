@@ -7,11 +7,11 @@
 						<view class="avator">
 							<img src="../../static/face.png">
 						</view>
-						<view style="text-align: center; width: 100%;">13055766787</view>
+						<view style="text-align: center; width: 100%;">{{userName}}</view>
 					</view>
 					<view class="box-bd">
 						<view class="item" style="padding-right: 100rpx;">
-							<view style="color: #007AFF;">166</view>
+							<view style="color: #007AFF;">{{exp}}</view>
 							<view class="text">经验值</view>
 						</view>
 						<view class="item" style="padding-right: 50rpx;">
@@ -27,46 +27,85 @@
 				<view class="li noborder" >
 					<view class="icon"><image src="../../static/cc-card1.png"></image></view>
 					<view class="text">我的信息</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
 			<view class="list">
 				<view class="li " >
 					<view class="icon"><image src="../../static/help.png"></image></view>
 					<view class="text">帮助中心</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 				<view class="li " >
 					<view class="icon"><image src="../../static/about.png"></image></view>
 					<view class="text">关于我们</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 				<view class="li " >
 					<view class="icon"><image src="../../static/opinion.png"></image></view>
 					<view class="text">意见反馈</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
 			<view class="list">
 				<view class="li noborder" >
 					<view class="icon"><image src="../../static/set.png"></image></view>
-					<view class="text">系统设置</view>
-					<image class="to" src="../../static/user/to.png"></image>
+					<view class="text" @click="test">系统设置</view>
+					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
 		</view>
+		<button @click="loginOut" style="color: red;margin-top: 50rpx;">登 出</button>
 	</view>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				user:null,
+				userName:'',
+				exp:'10'
 			};
 		},
-		onLoad() {
+		async onLoad() {					
+			await this.getExp()
 		},
 		methods: {
-
+			loginOut(){
+				uni.showModal({
+						content: '是否退出当前账号',
+						success: function (res) {
+							if (res.confirm) {
+								uni.clearStorageSync()
+								uni.navigateTo({
+									url:'../login/login'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+				});			
+			},
+			getExp(){
+				this.user=uni.getStorageSync('data')
+				this.userName=this.user.userName
+				uni.request({
+					url:'http://112.74.55.61:8081/allstuexp',
+					header: {Authorization:uni.getStorageSync('token')},
+					method:'POST',
+					data:{
+						studentphone:this.user.userPhone
+					}, 
+					success: (res) => {
+						console.log(res.data.data)
+						this.exp=res.data.data
+						
+					},
+					fail: (res) => {
+						console.log(res)
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -185,5 +224,17 @@ page{
 			height:40upx;
 		}
 	}
+}
+
+.button {
+	width: 600rpx;
+	font-size: 28rpx;
+	background: #5677fc;
+	color: #fff;
+	height: 90rpx;
+	line-height: 90rpx;
+	margin-top: 160rpx;
+	border-radius: 50rpx;
+	box-shadow: 0 5px 7px 0 rgba(86, 119, 252, 0.2);
 }
 </style>

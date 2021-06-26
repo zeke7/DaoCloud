@@ -28,7 +28,7 @@
 <script>
 import {mapActions} from 'vuex'
 import {setToken} from '@/http/auth.js'
-// import axios from "axios";
+
 export default {
   data() {
     const rightPhone = (rule, value, callback) =>{
@@ -104,14 +104,6 @@ export default {
         this.$message.error('请输入您的手机号')
         return false
       } else {
-        // this.$http.commonUser.getCaptcha1().then(res =>{
-        //   if (res.status === 200 && res.data.msg === 'ok') {
-        //     console.log(res)
-        //   }else if (res.data.msg === '验证码已存在，还未过期') {
-        //     console.log(res)
-        //     this.$message.error('验证码获取频繁，请稍后在获取')
-        //   }
-        // })
         this.$http.commonUser.getCaptcha(this.dataForm.userPhone, "L0").then(res =>{
           console.log(res)
           if (res.status === 200 && res.data.msg === 'ok') {
@@ -134,8 +126,10 @@ export default {
                 message: '登录成功',
                 type: 'success'
               })
+              console.log(response)
               // 保存 token
               this.$cookie.set('token', response.headers.authorization, 1)
+              this.$cookie.set('identity', response.data.data.roleId,1)
               this.updateName(this.dataForm.userPhone)
               this.$router.push({
                 name: 'Home'

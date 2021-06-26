@@ -14,14 +14,15 @@
 							<scroll-view  scroll-y="true" :style="{ 'height':scrollHeight }">
 								<view class="item">
 									<view class="title">
-										<view>历史签到记录</view>
+										<view @click="test">历史签到记录</view>
 									</view>  
 									<view class="records" v-for="(item,index) in mainArray" :key="index">							
 										<view>				
-											<view class="date">{{item.name}}</view>
-											<view class="time">{{item.no}}</view>								
+											<view class="date">{{item.checkinDate}}</view>
+											<view class="time" style="font-size: 30rpx;">{{weeks[index]}}</view>								
 										</view>
-										<view class="status" >已签到</view>
+										<view class="status" v-if="item.isCheckin=='1'">已签到</view>
+										<view class="status" v-else>未签到</view>
 									</view>
 								</view>
 							</scroll-view>
@@ -40,19 +41,40 @@
 </template>
 
 <script>
+	import {resolvingDate,getWeek} from "@/common/util.js" 
 	export default {
 		data() {
 			return {
 				scrollHeight:'400px',
-				mainArray:[]
+				mainArray:[],//当前用户签到信息
+				user:null,//当前用户信息
+				classCode:'',//班课号
+				class:'',//课程信息
+				classType:'',//管理班课|查看班课
+				className:'',//班课名
+				weeks:[]
 			}
 		},
+		onShow() {
+			var that=this;
+			var allClass=[];
+			var classIndex=0;
+			that.user=uni.getStorageSync('data')
+			that.classType=uni.getStorageSync('classType')
+			classIndex=uni.getStorageSync('classIndex')
+			if(that.classType=='0'){
+				allClass=uni.getStorageSync('join_class')
+			}else if(that.classType=='1'){
+				allClass=uni.getStorageSync('bulid_class')
+			}
+			that.class=allClass[classIndex]
+			that.className=that.class.className
+			that.classCode=that.class.classCode
+			
+		},
 		mounted(){
-			/* 等待DOM挂载完成 */
 			this.$nextTick(()=>{
-				/* 在非H5平台，nextTick回调后有概率获取到错误的元素高度，则添加200ms的延迟来减少BUG的产生 */
 				setTimeout(()=>{
-					/* 等待滚动区域初始化完成 */
 					this.initScrollView().then(()=>{
 						this.getListData();
 					})
@@ -74,21 +96,52 @@
 			},
 			/* 获取列表数据 */
 			getListData(){
+				var that=this
 				// Promise 为 ES6 新增的API ，有疑问的请自行学习该方法的使用。
 				new Promise((resolve,reject)=>{
 					uni.showLoading(); 
 					setTimeout(()=>{
-						let main=[{name:'2021-04-27 星期二',no:'12:00'},{name:'2021-04-27 星期二',no:'11:21'}];		 						 	 
+							 						 	 
 						// 将请求接口返回的数据传递给 Promise 对象的 then 函数。
-						resolve({main});
+						uni.request({
+							url:'http://112.74.55.61:8081/scheckninrecords',
+							header: {Authorization:uni.getStorageSync('token')},
+							method:'POST',
+							data:{
+								classcode:that.classCode,
+								studentphone:that.user.userPhone,
+							}, 
+							success: (res) => {
+								console.log(res.data)
+								console.log(res.data.data)	
+								//let main=[{name:'2021-04-27 星期二',no:'12:00'},{name:'2021-04-27 星期二',no:'11:21'}];
+								let main=res.data.data
+								resolve({main});
+							},
+							fail: (res) => {
+								console.log(res)
+								console.log("连接失败")
+							}
+						})					
 					},500); 
 				}).then((res)=>{
 					console.log('-----------请求接口返回数据示例-------------');
 					console.log(res);	
 					uni.hideLoading();
 					this.mainArray=res.main;
+					for (var i=0;i<this.mainArray.length;i++)
+					{ 
+					    var time=resolvingDate(this.mainArray[i].checkinDate)
+						var week=getWeek(this.mainArray[i].checkinDate)
+						this.mainArray[i].checkinDate=time
+						this.weeks[i]=week				
+					}
 				});
 			},
+			test(){
+				
+				
+			}
 		}
 	}
 </script>

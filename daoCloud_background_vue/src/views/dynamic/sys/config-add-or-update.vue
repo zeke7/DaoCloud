@@ -21,6 +21,7 @@
         <el-input
             v-model="dataForm.keyword"
             placeholder="关键字"
+            :disabled="disabled"
         ></el-input>
       </el-form-item>
       <el-form-item label="参数值" prop="sysParameter">
@@ -29,12 +30,6 @@
             placeholder="参数值"
         ></el-input>
       </el-form-item>
-      <!--      <el-form-item label="状态">-->
-      <!--        <el-select v-model="dataForm.status">-->
-      <!--          <el-option label="启用" value="0"></el-option>-->
-      <!--          <el-option label="禁用" value="1"></el-option>-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -48,6 +43,12 @@ export default {
   inject: ['reload'],
   data() {
     const validator = (rule, value, callback) => {
+      if (rule.required === false) {
+        callback()
+      }
+      if (value === '') {
+        callback(new Error('关键字不能为空'))
+      }
       let list = this.dataList
       let num = 0
       for (let i = 0; i < list.length; i++) {
@@ -70,6 +71,7 @@ export default {
         sysParameter: '',
         keyword: ''
       },
+      disabled: false,
       dataRule: {
         sysName: [
           {required: true, message: '参数名不能为空', trigger: 'blur'}
@@ -78,8 +80,7 @@ export default {
           {required: true, message: '参数值不能为空', trigger: 'blur'}
         ],
         keyword: [
-          {required: true, message: '参数值不能为空', trigger: 'blur'},
-          {validator: validator}
+          {required: true, validator: validator, trigger: 'blur'},
         ]
       }
     }
@@ -93,14 +94,20 @@ export default {
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate()
         }
+        console.log(this.dataForm.sysId !== null)
         if (
-            this.dataForm.sysId !== '' ||
-            this.dataForm.sysId !== null
+            this.dataForm.sysId !== ''
         ) {
+          console.log("in")
           this.dataForm.sysName = row.sysName
           this.dataForm.sysParameter = row.sysParameter
           this.dataForm.keyword = row.sysKey
+          this.dataRule.keyword[0].required = false
+          this.disabled = true
         } else {
+          console.log("in")
+          this.disabled = false
+          this.dataRule.keyword[0].required = true
           this.dataForm = {
             sysId: '',
             sysName: '',
@@ -132,7 +139,6 @@ export default {
               sysKey: this.dataForm.keyword
             }
           }
-          console.log(data)
           this.$http.systemConfig.systemCurd(method, data, token).then(res => {
             if (res) {
               this.reload()
@@ -142,7 +148,7 @@ export default {
                 duration: 1500
               })
             } else {
-              this.$message.error(res.msg)
+              this.$message.error(res.data.msg)
             }
           })
         }

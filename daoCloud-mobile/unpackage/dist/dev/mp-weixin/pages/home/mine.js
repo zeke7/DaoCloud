@@ -140,7 +140,8 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 158));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
+//
 //
 //
 //
@@ -202,12 +203,52 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 var _default =
 {
   data: function data() {
-    return {};
+    return {
+      user: null,
+      userName: '',
+      exp: '10' };
 
   },
-  onLoad: function onLoad() {
+  onLoad: function onLoad() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
+                _this.getExp());case 2:case "end":return _context.stop();}}}, _callee);}))();
   },
-  methods: {} };exports.default = _default;
+  methods: {
+    loginOut: function loginOut() {
+      uni.showModal({
+        content: '是否退出当前账号',
+        success: function success(res) {
+          if (res.confirm) {
+            uni.clearStorageSync();
+            uni.navigateTo({
+              url: '../login/login' });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
+
+    },
+    getExp: function getExp() {var _this2 = this;
+      this.user = uni.getStorageSync('data');
+      this.userName = this.user.userName;
+      uni.request({
+        url: 'http://112.74.55.61:8081/allstuexp',
+        header: { Authorization: uni.getStorageSync('token') },
+        method: 'POST',
+        data: {
+          studentphone: this.user.userPhone },
+
+        success: function success(res) {
+          console.log(res.data.data);
+          _this2.exp = res.data.data;
+
+        },
+        fail: function fail(res) {
+          console.log(res);
+        } });
+
+    } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
