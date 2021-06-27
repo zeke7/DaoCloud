@@ -70,7 +70,7 @@
         </javaClientGenerator>
 
         <!-- 8、配置将哪些表进行逆向工程设置 -->
-        <table tableName="account"
+        <table tableName="checkin_record"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"></table>

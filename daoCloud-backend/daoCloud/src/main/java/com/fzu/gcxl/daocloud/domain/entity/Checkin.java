@@ -7,8 +7,10 @@ import java.util.Date;
 public class Checkin {
     private Integer checkinId;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd hh:mm:ss")
     private Date checkinDate;
+
+    private String classCode;
 
     private Integer duration;
 
@@ -18,17 +20,17 @@ public class Checkin {
 
     private Long classMembers;
 
-    private String classCode;
-
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd hh:mm:ss")
     private Date startTime;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format =  "yyyy-MM-dd hh:mm:ss")
     private Date endTime;
 
-    private String checkinLocation;
+    private String checkinLocx;
 
     private String userId;
+
+    private String checkinLocy;
 
     public Integer getCheckinId() {
         return checkinId;
@@ -44,6 +46,14 @@ public class Checkin {
 
     public void setCheckinDate(Date checkinDate) {
         this.checkinDate = checkinDate;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode == null ? null : classCode.trim();
     }
 
     public Integer getDuration() {
@@ -78,14 +88,6 @@ public class Checkin {
         this.classMembers = classMembers;
     }
 
-    public String getClassCode() {
-        return classCode;
-    }
-
-    public void setClassCode(String classCode) {
-        this.classCode = classCode == null ? null : classCode.trim();
-    }
-
     public Date getStartTime() {
         return startTime;
     }
@@ -102,12 +104,12 @@ public class Checkin {
         this.endTime = endTime;
     }
 
-    public String getCheckinLocation() {
-        return checkinLocation;
+    public String getCheckinLocx() {
+        return checkinLocx;
     }
 
-    public void setCheckinLocation(String checkinLocation) {
-        this.checkinLocation = checkinLocation == null ? null : checkinLocation.trim();
+    public void setCheckinLocx(String checkinLocx) {
+        this.checkinLocx = checkinLocx == null ? null : checkinLocx.trim();
     }
 
     public String getUserId() {
@@ -116,5 +118,13 @@ public class Checkin {
 
     public void setUserId(String userId) {
         this.userId = userId == null ? null : userId.trim();
+    }
+
+    public String getCheckinLocy() {
+        return checkinLocy;
+    }
+
+    public void setCheckinLocy(String checkinLocy) {
+        this.checkinLocy = checkinLocy == null ? null : checkinLocy.trim();
     }
 }

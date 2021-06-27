@@ -4,19 +4,20 @@
   <resultMap id="BaseResultMap" type="com.fzu.gcxl.daocloud.domain.entity.Checkin">
     <id column="checkin_id" jdbcType="INTEGER" property="checkinId" />
     <result column="checkin_date" jdbcType="TIMESTAMP" property="checkinDate" />
+    <result column="class_code" jdbcType="VARCHAR" property="classCode" />
     <result column="duration" jdbcType="INTEGER" property="duration" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="is_close" jdbcType="INTEGER" property="isClose" />
     <result column="class_members" jdbcType="BIGINT" property="classMembers" />
-    <result column="class_code" jdbcType="VARCHAR" property="classCode" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="checkin_location" jdbcType="VARCHAR" property="checkinLocation" />
+    <result column="checkin_locx" jdbcType="VARCHAR" property="checkinLocx" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="checkin_locy" jdbcType="VARCHAR" property="checkinLocy" />
   </resultMap>
   <sql id="Base_Column_List">
-    checkin_id, checkin_date, duration, type, is_close, class_members, class_code, start_time, 
-    end_time, checkin_location, user_id
+    checkin_id, checkin_date, class_code, duration, type, is_close, class_members, start_time, 
+    end_time, checkin_locx, user_id, checkin_locy
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -29,14 +30,16 @@
     where checkin_id = #{checkinId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.fzu.gcxl.daocloud.domain.entity.Checkin">
-    insert into checkin (checkin_id, checkin_date, duration, 
-      type, is_close, class_members, 
-      class_code, start_time, end_time, 
-      checkin_location, user_id)
-    values (#{checkinId,jdbcType=INTEGER}, #{checkinDate,jdbcType=TIMESTAMP}, #{duration,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{isClose,jdbcType=INTEGER}, #{classMembers,jdbcType=BIGINT}, 
-      #{classCode,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{checkinLocation,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR})
+    insert into checkin (checkin_id, checkin_date, class_code, 
+      duration, type, is_close, 
+      class_members, start_time, end_time, 
+      checkin_locx, user_id, checkin_locy
+      )
+    values (#{checkinId,jdbcType=INTEGER}, #{checkinDate,jdbcType=TIMESTAMP}, #{classCode,jdbcType=VARCHAR}, 
+      #{duration,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{isClose,jdbcType=INTEGER}, 
+      #{classMembers,jdbcType=BIGINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{checkinLocx,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{checkinLocy,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.fzu.gcxl.daocloud.domain.entity.Checkin">
     insert into checkin
@@ -46,6 +49,9 @@
       </if>
       <if test="checkinDate != null">
         checkin_date,
+      </if>
+      <if test="classCode != null">
+        class_code,
       </if>
       <if test="duration != null">
         duration,
@@ -59,20 +65,20 @@
       <if test="classMembers != null">
         class_members,
       </if>
-      <if test="classCode != null">
-        class_code,
-      </if>
       <if test="startTime != null">
         start_time,
       </if>
       <if test="endTime != null">
         end_time,
       </if>
-      <if test="checkinLocation != null">
-        checkin_location,
+      <if test="checkinLocx != null">
+        checkin_locx,
       </if>
       <if test="userId != null">
         user_id,
+      </if>
+      <if test="checkinLocy != null">
+        checkin_locy,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -81,6 +87,9 @@
       </if>
       <if test="checkinDate != null">
         #{checkinDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classCode != null">
+        #{classCode,jdbcType=VARCHAR},
       </if>
       <if test="duration != null">
         #{duration,jdbcType=INTEGER},
@@ -94,20 +103,20 @@
       <if test="classMembers != null">
         #{classMembers,jdbcType=BIGINT},
       </if>
-      <if test="classCode != null">
-        #{classCode,jdbcType=VARCHAR},
-      </if>
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
       </if>
       <if test="endTime != null">
         #{endTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="checkinLocation != null">
-        #{checkinLocation,jdbcType=VARCHAR},
+      <if test="checkinLocx != null">
+        #{checkinLocx,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinLocy != null">
+        #{checkinLocy,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -116,6 +125,9 @@
     <set>
       <if test="checkinDate != null">
         checkin_date = #{checkinDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classCode != null">
+        class_code = #{classCode,jdbcType=VARCHAR},
       </if>
       <if test="duration != null">
         duration = #{duration,jdbcType=INTEGER},
@@ -129,20 +141,20 @@
       <if test="classMembers != null">
         class_members = #{classMembers,jdbcType=BIGINT},
       </if>
-      <if test="classCode != null">
-        class_code = #{classCode,jdbcType=VARCHAR},
-      </if>
       <if test="startTime != null">
         start_time = #{startTime,jdbcType=TIMESTAMP},
       </if>
       <if test="endTime != null">
         end_time = #{endTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="checkinLocation != null">
-        checkin_location = #{checkinLocation,jdbcType=VARCHAR},
+      <if test="checkinLocx != null">
+        checkin_locx = #{checkinLocx,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
         user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinLocy != null">
+        checkin_locy = #{checkinLocy,jdbcType=VARCHAR},
       </if>
     </set>
     where checkin_id = #{checkinId,jdbcType=INTEGER}
@@ -150,17 +162,20 @@
   <update id="updateByPrimaryKey" parameterType="com.fzu.gcxl.daocloud.domain.entity.Checkin">
     update checkin
     set checkin_date = #{checkinDate,jdbcType=TIMESTAMP},
+      class_code = #{classCode,jdbcType=VARCHAR},
       duration = #{duration,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       is_close = #{isClose,jdbcType=INTEGER},
       class_members = #{classMembers,jdbcType=BIGINT},
-      class_code = #{classCode,jdbcType=VARCHAR},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
-      checkin_location = #{checkinLocation,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR}
+      checkin_locx = #{checkinLocx,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      checkin_locy = #{checkinLocy,jdbcType=VARCHAR}
     where checkin_id = #{checkinId,jdbcType=INTEGER}
   </update>
+
+
 
   <select id="selcetByClassCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -186,6 +201,13 @@
     select <include refid="Base_Column_List" />
     from checkin
     where class_code = #{classCode,jdbcType=VARCHAR} and is_close = #{isClose,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getLimitedCheckin" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from checkin
+    where class_code = #{classCode,jdbcType=VARCHAR} and end_time is not null
   </select>
 
 </mapper>

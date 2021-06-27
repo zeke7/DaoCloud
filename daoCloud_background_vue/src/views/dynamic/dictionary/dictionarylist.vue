@@ -157,6 +157,12 @@ export default {
             this.list[0].dicDetailType = data.detailist[0].dicdetailDescription
           }
         }
+      }).catch((err) =>{
+        this.list = []
+        this.$message({
+          type: "warning",
+          message: '没有此纪录'
+        })
       })
     },
     clear() {

@@ -24,14 +24,24 @@
           <el-form-item prop="userSno">
             <el-input v-model="dataForm.userSno"  placeholder="用户工号"></el-input>
           </el-form-item>
-          <el-form-item prop="userRole">
-            <el-input v-model="dataForm.userRole" placeholder="用户身份"></el-input>
-          </el-form-item>
+<!--          <el-form-item prop="userRole">-->
+<!--            <el-input v-model="dataForm.userRole" placeholder="用户身份"></el-input>-->
+<!--          </el-form-item>-->
           <el-form-item prop="userPhone">
             <el-input v-model="dataForm.userPhone" placeholder="手机号"></el-input>
           </el-form-item>
           <el-form-item prop="captcha">
             <el-input v-model="dataForm.captcha" placeholder="输入验证码"></el-input>
+          </el-form-item>
+          <el-form-item prop="userRole">
+            <el-select v-model="dataForm.userRole" placeholder="请选择您的身份">
+              <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-button class="login-btn-submit" type="primary" @click="backToLogin()">返回</el-button>
@@ -66,6 +76,14 @@ export default {
     }
     return {
       activeName: 'second',
+      options: [{
+        value: 'admin',
+        label: '管理员'
+      }, {
+        value: 'teacher',
+        label: '教师'
+      }],
+      value: '',
       dataForm: {
         userPhone: '',
         userName: '',
@@ -124,11 +142,17 @@ export default {
             if (res.status === 200 && res.data.msg === '账户已经存在'){
               console.log(res)
               this.$message({
-                type: 'info',
+                type: 'warning',
                 message: '账户已经存在',
                 duration: 1000
               })
-            }else if (res.status === 200 && res.data.msg === '添加成功') {
+            } else if (res.status === 200 && res.data.msg === '验证码错误') {
+              this.$message({
+                type: 'warning',
+                message: '验证码错误',
+                duration: 1000
+              })
+            } else if (res.status === 200 && res.data.msg === '添加成功') {
                 this.$message({
                   type: 'success',
                   message: '注册成功',

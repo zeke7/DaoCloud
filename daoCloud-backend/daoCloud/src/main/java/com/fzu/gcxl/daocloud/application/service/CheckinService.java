@@ -23,8 +23,10 @@ public interface CheckinService {
     // 教师获取某门课的签到记录
     public BaseResponse recordCheckinteacher(@RequestBody JSONObject tcheckin);
 
+    //-->> 修改 教师获取全部的签到记录
     public BaseResponse CheckinHistoryteacher(@RequestBody JSONObject tcheckin);
-    // 学生 获取签到记录
+
+    // 学生 获取签到记录  -->> 修改 学生签到记录 （已签到 未签到）
     public BaseResponse recordCheckinstudent(@RequestBody JSONObject tcheckin);
 
     // 教师修改签到记录
@@ -32,5 +34,12 @@ public interface CheckinService {
 
     // 教师修改签到记录
     public BaseResponse stuexp(@RequestBody JSONObject tcheckin);
+
+    public BaseResponse getCheckinfo(String cinfo);
+
+    public BaseResponse stuexpall(JSONObject tcheckin);
+
+
+
 
 }

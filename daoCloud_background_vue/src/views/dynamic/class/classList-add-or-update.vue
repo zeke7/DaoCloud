@@ -17,10 +17,11 @@
             placeholder="课程名称"
         ></el-input>
       </el-form-item>
-      <el-form-item label="创建者机号" prop="userPhone">
+      <el-form-item label="手机号" prop="userPhone">
         <el-input
             v-model="dataForm.userPhone"
             placeholder="手机号"
+            disabled="true"
         ></el-input>
       </el-form-item>
       <el-form-item label="学生数量" prop="num">
@@ -71,6 +72,7 @@ export default {
   },
   methods: {
     init (row = {}, userName) {
+      console.log(row)
       this.dataForm.classId = row.classId === undefined ? '' : row.classId
       this.visible = true
       this.$nextTick(() => {
@@ -83,7 +85,7 @@ export default {
           this.dataForm.classId = row.classId
           this.dataForm.classCode = row.classCode
           this.dataForm.semester = row.classSemester
-          this.dataForm.userPhone = userName
+          this.dataForm.userPhone = row.userPhone
         } else {
           this.dataForm = {
             className: '',

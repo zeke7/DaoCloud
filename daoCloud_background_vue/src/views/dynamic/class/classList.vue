@@ -193,6 +193,7 @@ export default {
                 temp[j].userSchool = data[i].userSchool
                 temp[j].userDepartment = data[i].userDepartment
                 temp[j].userName = data[i].userName
+                temp[j].userPhone = data[0].classes[0].userPhone
                 temp[j].className = course[t].className
                 temp[j].classCode = course[t].classCode
                 temp[j].classNum = course[t].classMember

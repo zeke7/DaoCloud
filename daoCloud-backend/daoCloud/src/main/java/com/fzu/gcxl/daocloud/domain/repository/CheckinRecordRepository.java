@@ -31,5 +31,7 @@ public interface CheckinRecordRepository extends IRepository<CheckinRecord>{
 
     List<CheckinRecord> selectCheckinRecordsForStudent(String classCode, String studentId);
 
+    CheckinRecord selectSingleCheckinRecordsForTeacher(String classCode, Date checkinStartdate, String userId);
+
 
 }

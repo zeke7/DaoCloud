@@ -7,7 +7,7 @@ public class CheckinRecord {
 
     private Date checkinTime;
 
-    private String checkinLocation;
+    private String checkinLocx;
 
     private String userId;
 
@@ -16,6 +16,8 @@ public class CheckinRecord {
     private Date checkinStartdate;
 
     private String teacherId;
+
+    private String checkinLocy;
 
     public Integer getCheckinId() {
         return checkinId;
@@ -33,12 +35,12 @@ public class CheckinRecord {
         this.checkinTime = checkinTime;
     }
 
-    public String getCheckinLocation() {
-        return checkinLocation;
+    public String getCheckinLocx() {
+        return checkinLocx;
     }
 
-    public void setCheckinLocation(String checkinLocation) {
-        this.checkinLocation = checkinLocation == null ? null : checkinLocation.trim();
+    public void setCheckinLocx(String checkinLocx) {
+        this.checkinLocx = checkinLocx == null ? null : checkinLocx.trim();
     }
 
     public String getUserId() {
@@ -71,5 +73,13 @@ public class CheckinRecord {
 
     public void setTeacherId(String teacherId) {
         this.teacherId = teacherId == null ? null : teacherId.trim();
+    }
+
+    public String getCheckinLocy() {
+        return checkinLocy;
+    }
+
+    public void setCheckinLocy(String checkinLocy) {
+        this.checkinLocy = checkinLocy == null ? null : checkinLocy.trim();
     }
 }

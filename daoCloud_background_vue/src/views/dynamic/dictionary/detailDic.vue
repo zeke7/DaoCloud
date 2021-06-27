@@ -134,7 +134,6 @@ export default {
   },
   methods: {
     initDataList() {
-      console.log(this.$route.params.row)
       let data = this.$route.params.row.detailist
       this.dicCode = this.$route.params.row.dicCode
       this.dicName = this.$route.params.row.dicName

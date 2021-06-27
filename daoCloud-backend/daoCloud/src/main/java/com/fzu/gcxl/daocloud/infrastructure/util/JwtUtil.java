@@ -50,7 +50,7 @@ public class JwtUtil {
             // 帐号加JWT私钥加密
             String secret = account + Base64ConvertUtil.decode(encryptJWTKey);
             // 此处过期时间是以毫秒为单位，所以乘以1000
-            Date date = new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpireTime) * 1000 * 24);
+            Date date = new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpireTime) * 1000 * 24 * 7);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带account帐号信息
             return JWT.create()

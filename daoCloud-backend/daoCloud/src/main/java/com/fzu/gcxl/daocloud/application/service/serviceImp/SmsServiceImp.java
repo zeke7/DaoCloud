@@ -62,7 +62,7 @@ public class SmsServiceImp implements SmsService {
                         templateId, params, smsSign, "", "");
                 // {"result":0,"errmsg":"OK","ext":"","sid":"2019:5422519775373183868","fee":1,"isocode":"CN"}
                 if (result.result == 0){
-                    redisTemplate.opsForValue().set(phone+type, verifycode.toString(), 600*60, TimeUnit.SECONDS);
+                    redisTemplate.opsForValue().set(phone+type, verifycode.toString(), 60, TimeUnit.SECONDS);
                     System.out.println(result);
                     return new BaseResponse(result.result, result.errMsg, "");
                 }else {

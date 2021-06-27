@@ -58,9 +58,9 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/toSignup", "anon");
 //        filterChainDefinitionMap.put("/logout", "logout");//登出url，登出操作shiro已经写好，只需要在前端跳转到该url
 //        filterChainDefinitionMap.put("/**", "authc"); //剩下的所有页面都需要认证过才能访问。这一行必须放在最后，放在前面所有的资源都被拦截了
-        filterChainDefinitionMap.put("/**", "anon");
+//        filterChainDefinitionMap.put("/**", "anon");
         //shiroFilterFactoryBean.setUnauthorizedUrl("/403");
-//        filterChainDefinitionMap.put("/**", "jwt");
+        filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }

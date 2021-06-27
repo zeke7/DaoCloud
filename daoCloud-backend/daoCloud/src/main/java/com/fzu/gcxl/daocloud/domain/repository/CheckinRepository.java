@@ -31,4 +31,5 @@ public interface CheckinRepository extends IRepository<Checkin>{
 
     int selcetIdByClassCodeDate(String classCode, Date checkinDate);
 
+    List<Checkin> getLimitedCheckin(String classCode);
 }

@@ -97,6 +97,12 @@ public class ClassController {
         return classService.getStudentCountsByClassCode(classCode);
     }
 
+    @CrossOrigin
+    @GetMapping("/studentsfromclass")
+    public BaseResponse getClassStudents(String classCode){
+        return classService.getStudentByClassCode(classCode);
+    }
+
 //    @CrossOrigin
 //    @GetMapping("/classesdtobynums")
 //    public BaseResponse getallClassesDto(String userphone, Integer counts){

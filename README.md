@@ -4,12 +4,13 @@
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud-doc/116_%E5%88%B0%E4%BA%91%E7%A7%BB%E5%8A%A8%E7%AB%AF%E4%BA%A7%E5%93%81%E9%9C%80%E6%B1%82%E6%96%87%E6%A1%A3.docx  
 后台管理系统文档链接：  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud-doc/116_%E5%88%B0%E4%BA%91%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E4%BA%A7%E5%93%81%E9%9C%80%E6%B1%82%E6%96%87%E6%A1%A3.docx  
+项目开发总结报告:  
+https://github.com/zeke7/DaoCloud/blob/main/daoCloud-doc/116_%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%80%BB%E7%BB%93%E6%8A%A5%E5%91%8A.docx  
 列表页链接：  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud_background_vue/src/views/modules/student/classList.vue  
 编辑页链接：  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud_background_vue/src/views/modules/student/school-add-or-update.vue  
 HTTP拦截器链接：  
 https://github.com/zeke7/DaoCloud/blob/main/daoCloud-backend/daoCloud/src/main/java/com/fzu/gcxl/daocloud/infrastructure/config/ShiroConfig.java  
-https://github.com/zeke7/DaoCloud/blob/main/daoCloud-mobile/common/index.js  
 客户端调用REST API链接：  
 https://github.com/zeke7/DaoCloud/tree/main/daoCloud-backend/daoCloud/src/main/java/com/fzu/gcxl/daocloud/frontinterface/controller   
