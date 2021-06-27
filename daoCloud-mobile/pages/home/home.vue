@@ -36,10 +36,10 @@
 		</view>
 		</view>
 		<!--	我创建的班课列表    	-->
-		<view v-if="TabCur==0" class="cu-list menu-avatar">
+		<view v-if="TabCur==0" class="cu-list menu-avatar"> 
 			<view v-if="bulidClass.length==0">
-				<image src="../../static/NoData.png" style="height: 600rpx;margin-left: 50rpx;"></image>
-				<view style="text-align: center;font-size: 30rpx;">还没有创建的班课</view>
+				<image src="../../static/NoClass.png" style="height: 350rpx;margin-top: 200rpx;margin-bottom: 50rpx;margin-left: 55rpx;"></image>
+				<view style="text-align: center;font-size: 35rpx;">还没有创建的班课</view>
 			</view>
 			<view v-else class="cu-item" style="height: 180upx;" v-for="item,index in bulidClass" :key=index>
 				<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
@@ -58,8 +58,8 @@
 		<!--	我加入的班课列表    	-->
 		<view v-else class="cu-list menu-avatar"  >
 			<view v-if="joinClass.length==0">
-				<image src="../../static/NoData.png" style="height: 600rpx;margin-left: 50rpx;"></image>
-				<view style="text-align: center;font-size: 30rpx;">还没有加入的班课</view>
+				<image src="../../static/NoClass.png" style="height: 350rpx;margin-top: 200rpx;margin-bottom: 50rpx;margin-left: 55rpx;"></image>
+				<view style="text-align: center;font-size: 35rpx;">还没有加入的班课</view>
 			</view>
 			<view v-else class="cu-item" style="height: 180upx;" v-for="item,index in joinClass" :key=index >
 				<image class="cu-avatar radius lg" src="../../static/yunbanke.png" style="width: 110upx;height: 110upx;"></image>
@@ -156,7 +156,7 @@
 				uni.setStorageSync('classType','0')
 				uni.setStorageSync('classCode',that.joinClass[index].classCode)
 				uni.setStorageSync('className',that.joinClass[index].className)
-				uni.setStorageSync('classIsclose',that.bulidClass[index].classIsclose)
+				uni.setStorageSync('classIsclose',that.joinClass[index].classIsclose)
 				uni.navigateTo({
 					url:'../class/index'
 				})
@@ -187,6 +187,7 @@
 			//去签到
 			onSignin(index){
 				var that=this;
+				uni.setStorageSync('classType','0')
 				uni.setStorageSync('classCode',that.joinClass[index].classCode)
 				uni.navigateTo({
 					url:"../signin/signin"

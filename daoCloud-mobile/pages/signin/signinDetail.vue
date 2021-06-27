@@ -110,7 +110,7 @@
 				var that=this;
 				uni.showModal({
 						title: that.Class,
-						content: '是否确定加入该班课',
+						content: '是否确定为该学生补签',
 						success: function (res) {
 							if (res.confirm) {
 								uni.request({

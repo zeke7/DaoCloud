@@ -1,1 +1,1 @@
-<view class="content"><image class="logo" src="/static/logo.png"></image><view class="text-area"><text class="title">{{title}}</text></view></view>
+<view class="img data-v-57280228"><image style="width:750rpx;height:1202rpx;z-index:-1;" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.huabanimg.com%2Fe6a8af63cacdb15e09efb6e373e2065ca91c1aa49744-14qOXb_fw658&refer=http%3A%2F%2Fhbimg.huabanimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1627374537&t=437b8bbd25273ea803c1751fd57bec05" class="data-v-57280228"></image></view>

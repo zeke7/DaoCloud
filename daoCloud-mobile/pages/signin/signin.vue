@@ -35,6 +35,7 @@
 				longitude:'',//学生位置经度
 				latitude:'',//学生位置纬度
 				address:'签到以获取地理位置',//地理位置信息
+				canSign:true,//是否在签到范围
 				time: formateDate(new Date(), 'h:min:s'), //当前时分秒
 				date: (new Date().getMonth()+1).toString()+'.'+new Date().getDate().toString(),//当前日期
 				isclick:false
@@ -102,9 +103,11 @@
 					let latres = lat1 > lat2?lat1-lat2:lat2-lat1;
 					x = (lonres) * PI * R * Math.cos(((lat1 + lat2) / 2) * PI / 180) / 180;
 					y = (lat2 - lat1) * PI * R / 180;
-					distance = Math.hypot(x, y);		
+					distance = Math.hypot(x, y);	
 					console.log(distance)
-					
+					if(distance>1000){
+						that.canSign=false
+					}					
 				},
 				fail: (res) => {
 					console.log(res)
@@ -115,6 +118,10 @@
 		methods: {
 			clickSign(){
 				var that=this
+				if(!that.canSign){
+					uni.showToast({ title: '当前不在签到范围内！', icon: 'none' });
+					return;
+				}
 				uni.request({
 					url:'http://112.74.55.61:8081/checkninstudents',
 					header: {Authorization:uni.getStorageSync('token')},

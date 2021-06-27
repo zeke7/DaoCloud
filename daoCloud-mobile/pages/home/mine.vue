@@ -11,7 +11,7 @@
 					</view>
 					<view class="box-bd">
 						<view class="item" style="padding-right: 100rpx;">
-							<view style="color: #007AFF;">{{exp}}</view>
+							<view style="color: #007AFF;">166</view>
 							<view class="text">经验值</view>
 						</view>
 						<view class="item" style="padding-right: 50rpx;">

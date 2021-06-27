@@ -822,7 +822,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -1927,7 +1927,95 @@ function normalizeComponent (
 
 /***/ }),
 
-/***/ 107:
+/***/ 100:
+/*!*************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/galois.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * The Galois field exponent table.
+                                                                                                                      *
+                                                                                                                      * @public
+                                                                                                                      * @static
+                                                                                                                      * @type {number[]}
+                                                                                                                      * @memberof Galois
+                                                                                                                      */
+  EXPONENT: [
+  0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1d, 0x3a, 0x74, 0xe8, 0xcd, 0x87, 0x13, 0x26,
+  0x4c, 0x98, 0x2d, 0x5a, 0xb4, 0x75, 0xea, 0xc9, 0x8f, 0x03, 0x06, 0x0c, 0x18, 0x30, 0x60, 0xc0,
+  0x9d, 0x27, 0x4e, 0x9c, 0x25, 0x4a, 0x94, 0x35, 0x6a, 0xd4, 0xb5, 0x77, 0xee, 0xc1, 0x9f, 0x23,
+  0x46, 0x8c, 0x05, 0x0a, 0x14, 0x28, 0x50, 0xa0, 0x5d, 0xba, 0x69, 0xd2, 0xb9, 0x6f, 0xde, 0xa1,
+  0x5f, 0xbe, 0x61, 0xc2, 0x99, 0x2f, 0x5e, 0xbc, 0x65, 0xca, 0x89, 0x0f, 0x1e, 0x3c, 0x78, 0xf0,
+  0xfd, 0xe7, 0xd3, 0xbb, 0x6b, 0xd6, 0xb1, 0x7f, 0xfe, 0xe1, 0xdf, 0xa3, 0x5b, 0xb6, 0x71, 0xe2,
+  0xd9, 0xaf, 0x43, 0x86, 0x11, 0x22, 0x44, 0x88, 0x0d, 0x1a, 0x34, 0x68, 0xd0, 0xbd, 0x67, 0xce,
+  0x81, 0x1f, 0x3e, 0x7c, 0xf8, 0xed, 0xc7, 0x93, 0x3b, 0x76, 0xec, 0xc5, 0x97, 0x33, 0x66, 0xcc,
+  0x85, 0x17, 0x2e, 0x5c, 0xb8, 0x6d, 0xda, 0xa9, 0x4f, 0x9e, 0x21, 0x42, 0x84, 0x15, 0x2a, 0x54,
+  0xa8, 0x4d, 0x9a, 0x29, 0x52, 0xa4, 0x55, 0xaa, 0x49, 0x92, 0x39, 0x72, 0xe4, 0xd5, 0xb7, 0x73,
+  0xe6, 0xd1, 0xbf, 0x63, 0xc6, 0x91, 0x3f, 0x7e, 0xfc, 0xe5, 0xd7, 0xb3, 0x7b, 0xf6, 0xf1, 0xff,
+  0xe3, 0xdb, 0xab, 0x4b, 0x96, 0x31, 0x62, 0xc4, 0x95, 0x37, 0x6e, 0xdc, 0xa5, 0x57, 0xae, 0x41,
+  0x82, 0x19, 0x32, 0x64, 0xc8, 0x8d, 0x07, 0x0e, 0x1c, 0x38, 0x70, 0xe0, 0xdd, 0xa7, 0x53, 0xa6,
+  0x51, 0xa2, 0x59, 0xb2, 0x79, 0xf2, 0xf9, 0xef, 0xc3, 0x9b, 0x2b, 0x56, 0xac, 0x45, 0x8a, 0x09,
+  0x12, 0x24, 0x48, 0x90, 0x3d, 0x7a, 0xf4, 0xf5, 0xf7, 0xf3, 0xfb, 0xeb, 0xcb, 0x8b, 0x0b, 0x16,
+  0x2c, 0x58, 0xb0, 0x7d, 0xfa, 0xe9, 0xcf, 0x83, 0x1b, 0x36, 0x6c, 0xd8, 0xad, 0x47, 0x8e, 0x00],
+
+
+  /**
+                                                                                                    * The Galois field log table.
+                                                                                                    *
+                                                                                                    * @public
+                                                                                                    * @static
+                                                                                                    * @type {number[]}
+                                                                                                    * @memberof Galois
+                                                                                                    */
+  LOG: [
+  0xff, 0x00, 0x01, 0x19, 0x02, 0x32, 0x1a, 0xc6, 0x03, 0xdf, 0x33, 0xee, 0x1b, 0x68, 0xc7, 0x4b,
+  0x04, 0x64, 0xe0, 0x0e, 0x34, 0x8d, 0xef, 0x81, 0x1c, 0xc1, 0x69, 0xf8, 0xc8, 0x08, 0x4c, 0x71,
+  0x05, 0x8a, 0x65, 0x2f, 0xe1, 0x24, 0x0f, 0x21, 0x35, 0x93, 0x8e, 0xda, 0xf0, 0x12, 0x82, 0x45,
+  0x1d, 0xb5, 0xc2, 0x7d, 0x6a, 0x27, 0xf9, 0xb9, 0xc9, 0x9a, 0x09, 0x78, 0x4d, 0xe4, 0x72, 0xa6,
+  0x06, 0xbf, 0x8b, 0x62, 0x66, 0xdd, 0x30, 0xfd, 0xe2, 0x98, 0x25, 0xb3, 0x10, 0x91, 0x22, 0x88,
+  0x36, 0xd0, 0x94, 0xce, 0x8f, 0x96, 0xdb, 0xbd, 0xf1, 0xd2, 0x13, 0x5c, 0x83, 0x38, 0x46, 0x40,
+  0x1e, 0x42, 0xb6, 0xa3, 0xc3, 0x48, 0x7e, 0x6e, 0x6b, 0x3a, 0x28, 0x54, 0xfa, 0x85, 0xba, 0x3d,
+  0xca, 0x5e, 0x9b, 0x9f, 0x0a, 0x15, 0x79, 0x2b, 0x4e, 0xd4, 0xe5, 0xac, 0x73, 0xf3, 0xa7, 0x57,
+  0x07, 0x70, 0xc0, 0xf7, 0x8c, 0x80, 0x63, 0x0d, 0x67, 0x4a, 0xde, 0xed, 0x31, 0xc5, 0xfe, 0x18,
+  0xe3, 0xa5, 0x99, 0x77, 0x26, 0xb8, 0xb4, 0x7c, 0x11, 0x44, 0x92, 0xd9, 0x23, 0x20, 0x89, 0x2e,
+  0x37, 0x3f, 0xd1, 0x5b, 0x95, 0xbc, 0xcf, 0xcd, 0x90, 0x87, 0x97, 0xb2, 0xdc, 0xfc, 0xbe, 0x61,
+  0xf2, 0x56, 0xd3, 0xab, 0x14, 0x2a, 0x5d, 0x9e, 0x84, 0x3c, 0x39, 0x53, 0x47, 0x6d, 0x41, 0xa2,
+  0x1f, 0x2d, 0x43, 0xd8, 0xb7, 0x7b, 0xa4, 0x76, 0xc4, 0x17, 0x49, 0xec, 0x7f, 0x0c, 0x6f, 0xf6,
+  0x6c, 0xa1, 0x3b, 0x52, 0x29, 0x9d, 0x55, 0xaa, 0xfb, 0x60, 0x86, 0xb1, 0xbb, 0xcc, 0x3e, 0x5a,
+  0xcb, 0x59, 0x5f, 0xb0, 0x9c, 0xa9, 0xa0, 0x51, 0x0b, 0xf5, 0x16, 0xeb, 0x7a, 0x75, 0x2c, 0xd7,
+  0x4f, 0xae, 0xd5, 0xe9, 0xe6, 0xe7, 0xad, 0xe8, 0x74, 0xd6, 0xf4, 0xea, 0xa8, 0x50, 0x58, 0xaf] };exports.default = _default;
+
+/***/ }),
+
+/***/ 101:
+/*!**************************************************************************!*\
+  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/version.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  /**
+                                                                                                                      * The version pattern block.
+                                                                                                                      *
+                                                                                                                      * @public
+                                                                                                                      * @static
+                                                                                                                      * @type {number[]}
+                                                                                                                      * @memberof Version
+                                                                                                                      */
+  BLOCK: [
+  0xc94, 0x5bc, 0xa99, 0x4d3, 0xbf6, 0x762, 0x847, 0x60d, 0x928, 0xb78, 0x45d, 0xa17, 0x532,
+  0x9a6, 0x683, 0x8c9, 0x7ec, 0xec4, 0x1e1, 0xfab, 0x08e, 0xc1a, 0x33f, 0xd75, 0x250, 0x9d5,
+  0x6f0, 0x8ba, 0x79f, 0xb0b, 0x42e, 0xa64, 0x541, 0xc69] };exports.default = _default;
+
+/***/ }),
+
+/***/ 110:
 /*!********************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/joinTips.js ***!
   \********************************************************************/
@@ -1967,797 +2055,6 @@ function normalizeComponent (
 module.exports = {
   addInformation: addInformation };
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 158:
-/*!**********************************************************!*\
-  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! regenerator-runtime */ 159);
-
-/***/ }),
-
-/***/ 159:
-/*!************************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(/*! ./runtime */ 160);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-  }
-}
-
-
-/***/ }),
-
-/***/ 160:
-/*!*****************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
 
 /***/ }),
 
@@ -8343,7 +7640,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8364,14 +7661,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -8457,7 +7754,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_NAME":"daocloud","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -8914,11 +8211,802 @@ module.exports = g;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/static/face.png";
+module.exports = "data:image/png;base64,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"
 
 /***/ }),
 
-/***/ 59:
+/***/ 51:
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ 52);
+
+/***/ }),
+
+/***/ 52:
+/*!************************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// This method of obtaining a reference to the global object needs to be
+// kept identical to the way it is obtained in runtime.js
+var g = (function() {
+  return this || (typeof self === "object" && self);
+})() || Function("return this")();
+
+// Use `getOwnPropertyNames` because not all browsers support calling
+// `hasOwnProperty` on the global `self` object in a worker. See #183.
+var hadRuntime = g.regeneratorRuntime &&
+  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
+
+// Save the old regeneratorRuntime in case it needs to be restored later.
+var oldRuntime = hadRuntime && g.regeneratorRuntime;
+
+// Force reevalutation of runtime.js.
+g.regeneratorRuntime = undefined;
+
+module.exports = __webpack_require__(/*! ./runtime */ 53);
+
+if (hadRuntime) {
+  // Restore the original runtime.
+  g.regeneratorRuntime = oldRuntime;
+} else {
+  // Remove the global property added by runtime.js.
+  try {
+    delete g.regeneratorRuntime;
+  } catch(e) {
+    g.regeneratorRuntime = undefined;
+  }
+}
+
+
+/***/ }),
+
+/***/ 53:
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // In sloppy mode, unbound `this` refers to the global object, fallback to
+  // Function constructor if we're in global strict mode. That is sadly a form
+  // of indirect eval which violates Content Security Policy.
+  (function() {
+    return this || (typeof self === "object" && self);
+  })() || Function("return this")()
+);
+
+
+/***/ }),
+
+/***/ 62:
 /*!****************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/util.js ***!
   \****************************************************************/
@@ -9130,7 +9218,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 84:
+/***/ 87:
 /*!*******************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/request.js ***!
   \*******************************************************************/
@@ -9169,7 +9257,7 @@ var http = function http(options) {
 
 /***/ }),
 
-/***/ 93:
+/***/ 96:
 /*!*************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/qrcode.js ***!
   \*************************************************************************/
@@ -9177,7 +9265,7 @@ var http = function http(options) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _frame = _interopRequireDefault(__webpack_require__(/*! ./frame.js */ 94));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _frame = _interopRequireDefault(__webpack_require__(/*! ./frame.js */ 97));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
 
 Qrcode = /*#__PURE__*/function () {
   function Qrcode(params) {_classCallCheck(this, Qrcode);
@@ -9248,7 +9336,7 @@ Qrcode;exports.default = _default;
 
 /***/ }),
 
-/***/ 94:
+/***/ 97:
 /*!************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/frame.js ***!
   \************************************************************************/
@@ -9256,10 +9344,10 @@ Qrcode;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _correction = _interopRequireDefault(__webpack_require__(/*! ./correction.js */ 95));
-var _alignment = _interopRequireDefault(__webpack_require__(/*! ./alignment.js */ 96));
-var _galois = _interopRequireDefault(__webpack_require__(/*! ./galois.js */ 97));
-var _version = _interopRequireDefault(__webpack_require__(/*! ./version.js */ 98));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _correction = _interopRequireDefault(__webpack_require__(/*! ./correction.js */ 98));
+var _alignment = _interopRequireDefault(__webpack_require__(/*! ./alignment.js */ 99));
+var _galois = _interopRequireDefault(__webpack_require__(/*! ./galois.js */ 100));
+var _version = _interopRequireDefault(__webpack_require__(/*! ./version.js */ 101));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
 
 Frame = /*#__PURE__*/function () {_createClass(Frame, [{ key: "_addAlignment", value: function _addAlignment(
 
@@ -10132,7 +10220,7 @@ Frame;exports.default = _default;
 
 /***/ }),
 
-/***/ 95:
+/***/ 98:
 /*!*****************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/correction.js ***!
   \*****************************************************************************/
@@ -10230,7 +10318,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 96:
+/***/ 99:
 /*!****************************************************************************!*\
   !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/alignment.js ***!
   \****************************************************************************/
@@ -10251,94 +10339,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   0, 11, 15, 19, 23, 27, 31,
   16, 18, 20, 22, 24, 26, 28, 20, 22, 24, 24, 26, 28, 28, 22, 24, 24,
   26, 26, 28, 28, 24, 24, 26, 26, 26, 28, 28, 24, 26, 26, 26, 28, 28] };exports.default = _default;
-
-/***/ }),
-
-/***/ 97:
-/*!*************************************************************************!*\
-  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/galois.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  /**
-                                                                                                                      * The Galois field exponent table.
-                                                                                                                      *
-                                                                                                                      * @public
-                                                                                                                      * @static
-                                                                                                                      * @type {number[]}
-                                                                                                                      * @memberof Galois
-                                                                                                                      */
-  EXPONENT: [
-  0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1d, 0x3a, 0x74, 0xe8, 0xcd, 0x87, 0x13, 0x26,
-  0x4c, 0x98, 0x2d, 0x5a, 0xb4, 0x75, 0xea, 0xc9, 0x8f, 0x03, 0x06, 0x0c, 0x18, 0x30, 0x60, 0xc0,
-  0x9d, 0x27, 0x4e, 0x9c, 0x25, 0x4a, 0x94, 0x35, 0x6a, 0xd4, 0xb5, 0x77, 0xee, 0xc1, 0x9f, 0x23,
-  0x46, 0x8c, 0x05, 0x0a, 0x14, 0x28, 0x50, 0xa0, 0x5d, 0xba, 0x69, 0xd2, 0xb9, 0x6f, 0xde, 0xa1,
-  0x5f, 0xbe, 0x61, 0xc2, 0x99, 0x2f, 0x5e, 0xbc, 0x65, 0xca, 0x89, 0x0f, 0x1e, 0x3c, 0x78, 0xf0,
-  0xfd, 0xe7, 0xd3, 0xbb, 0x6b, 0xd6, 0xb1, 0x7f, 0xfe, 0xe1, 0xdf, 0xa3, 0x5b, 0xb6, 0x71, 0xe2,
-  0xd9, 0xaf, 0x43, 0x86, 0x11, 0x22, 0x44, 0x88, 0x0d, 0x1a, 0x34, 0x68, 0xd0, 0xbd, 0x67, 0xce,
-  0x81, 0x1f, 0x3e, 0x7c, 0xf8, 0xed, 0xc7, 0x93, 0x3b, 0x76, 0xec, 0xc5, 0x97, 0x33, 0x66, 0xcc,
-  0x85, 0x17, 0x2e, 0x5c, 0xb8, 0x6d, 0xda, 0xa9, 0x4f, 0x9e, 0x21, 0x42, 0x84, 0x15, 0x2a, 0x54,
-  0xa8, 0x4d, 0x9a, 0x29, 0x52, 0xa4, 0x55, 0xaa, 0x49, 0x92, 0x39, 0x72, 0xe4, 0xd5, 0xb7, 0x73,
-  0xe6, 0xd1, 0xbf, 0x63, 0xc6, 0x91, 0x3f, 0x7e, 0xfc, 0xe5, 0xd7, 0xb3, 0x7b, 0xf6, 0xf1, 0xff,
-  0xe3, 0xdb, 0xab, 0x4b, 0x96, 0x31, 0x62, 0xc4, 0x95, 0x37, 0x6e, 0xdc, 0xa5, 0x57, 0xae, 0x41,
-  0x82, 0x19, 0x32, 0x64, 0xc8, 0x8d, 0x07, 0x0e, 0x1c, 0x38, 0x70, 0xe0, 0xdd, 0xa7, 0x53, 0xa6,
-  0x51, 0xa2, 0x59, 0xb2, 0x79, 0xf2, 0xf9, 0xef, 0xc3, 0x9b, 0x2b, 0x56, 0xac, 0x45, 0x8a, 0x09,
-  0x12, 0x24, 0x48, 0x90, 0x3d, 0x7a, 0xf4, 0xf5, 0xf7, 0xf3, 0xfb, 0xeb, 0xcb, 0x8b, 0x0b, 0x16,
-  0x2c, 0x58, 0xb0, 0x7d, 0xfa, 0xe9, 0xcf, 0x83, 0x1b, 0x36, 0x6c, 0xd8, 0xad, 0x47, 0x8e, 0x00],
-
-
-  /**
-                                                                                                    * The Galois field log table.
-                                                                                                    *
-                                                                                                    * @public
-                                                                                                    * @static
-                                                                                                    * @type {number[]}
-                                                                                                    * @memberof Galois
-                                                                                                    */
-  LOG: [
-  0xff, 0x00, 0x01, 0x19, 0x02, 0x32, 0x1a, 0xc6, 0x03, 0xdf, 0x33, 0xee, 0x1b, 0x68, 0xc7, 0x4b,
-  0x04, 0x64, 0xe0, 0x0e, 0x34, 0x8d, 0xef, 0x81, 0x1c, 0xc1, 0x69, 0xf8, 0xc8, 0x08, 0x4c, 0x71,
-  0x05, 0x8a, 0x65, 0x2f, 0xe1, 0x24, 0x0f, 0x21, 0x35, 0x93, 0x8e, 0xda, 0xf0, 0x12, 0x82, 0x45,
-  0x1d, 0xb5, 0xc2, 0x7d, 0x6a, 0x27, 0xf9, 0xb9, 0xc9, 0x9a, 0x09, 0x78, 0x4d, 0xe4, 0x72, 0xa6,
-  0x06, 0xbf, 0x8b, 0x62, 0x66, 0xdd, 0x30, 0xfd, 0xe2, 0x98, 0x25, 0xb3, 0x10, 0x91, 0x22, 0x88,
-  0x36, 0xd0, 0x94, 0xce, 0x8f, 0x96, 0xdb, 0xbd, 0xf1, 0xd2, 0x13, 0x5c, 0x83, 0x38, 0x46, 0x40,
-  0x1e, 0x42, 0xb6, 0xa3, 0xc3, 0x48, 0x7e, 0x6e, 0x6b, 0x3a, 0x28, 0x54, 0xfa, 0x85, 0xba, 0x3d,
-  0xca, 0x5e, 0x9b, 0x9f, 0x0a, 0x15, 0x79, 0x2b, 0x4e, 0xd4, 0xe5, 0xac, 0x73, 0xf3, 0xa7, 0x57,
-  0x07, 0x70, 0xc0, 0xf7, 0x8c, 0x80, 0x63, 0x0d, 0x67, 0x4a, 0xde, 0xed, 0x31, 0xc5, 0xfe, 0x18,
-  0xe3, 0xa5, 0x99, 0x77, 0x26, 0xb8, 0xb4, 0x7c, 0x11, 0x44, 0x92, 0xd9, 0x23, 0x20, 0x89, 0x2e,
-  0x37, 0x3f, 0xd1, 0x5b, 0x95, 0xbc, 0xcf, 0xcd, 0x90, 0x87, 0x97, 0xb2, 0xdc, 0xfc, 0xbe, 0x61,
-  0xf2, 0x56, 0xd3, 0xab, 0x14, 0x2a, 0x5d, 0x9e, 0x84, 0x3c, 0x39, 0x53, 0x47, 0x6d, 0x41, 0xa2,
-  0x1f, 0x2d, 0x43, 0xd8, 0xb7, 0x7b, 0xa4, 0x76, 0xc4, 0x17, 0x49, 0xec, 0x7f, 0x0c, 0x6f, 0xf6,
-  0x6c, 0xa1, 0x3b, 0x52, 0x29, 0x9d, 0x55, 0xaa, 0xfb, 0x60, 0x86, 0xb1, 0xbb, 0xcc, 0x3e, 0x5a,
-  0xcb, 0x59, 0x5f, 0xb0, 0x9c, 0xa9, 0xa0, 0x51, 0x0b, 0xf5, 0x16, 0xeb, 0x7a, 0x75, 0x2c, 0xd7,
-  0x4f, 0xae, 0xd5, 0xe9, 0xe6, 0xe7, 0xad, 0xe8, 0x74, 0xd6, 0xf4, 0xea, 0xa8, 0x50, 0x58, 0xaf] };exports.default = _default;
-
-/***/ }),
-
-/***/ 98:
-/*!**************************************************************************!*\
-  !*** C:/Users/zhin98_2/Desktop/DaoCloud-mobile/common/qrcode/version.js ***!
-  \**************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  /**
-                                                                                                                      * The version pattern block.
-                                                                                                                      *
-                                                                                                                      * @public
-                                                                                                                      * @static
-                                                                                                                      * @type {number[]}
-                                                                                                                      * @memberof Version
-                                                                                                                      */
-  BLOCK: [
-  0xc94, 0x5bc, 0xa99, 0x4d3, 0xbf6, 0x762, 0x847, 0x60d, 0x928, 0xb78, 0x45d, 0xa17, 0x532,
-  0x9a6, 0x683, 0x8c9, 0x7ec, 0xec4, 0x1e1, 0xfab, 0x08e, 0xc1a, 0x33f, 0xd75, 0x250, 0x9d5,
-  0x6f0, 0x8ba, 0x79f, 0xb0b, 0x42e, 0xa64, 0x541, 0xc69] };exports.default = _default;
 
 /***/ })
 

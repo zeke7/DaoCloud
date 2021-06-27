@@ -288,7 +288,7 @@ var _default =
       uni.setStorageSync('classType', '0');
       uni.setStorageSync('classCode', that.joinClass[index].classCode);
       uni.setStorageSync('className', that.joinClass[index].className);
-      uni.setStorageSync('classIsclose', that.bulidClass[index].classIsclose);
+      uni.setStorageSync('classIsclose', that.joinClass[index].classIsclose);
       uni.navigateTo({
         url: '../class/index' });
 
@@ -319,6 +319,7 @@ var _default =
     //去签到
     onSignin: function onSignin(index) {
       var that = this;
+      uni.setStorageSync('classType', '0');
       uni.setStorageSync('classCode', that.joinClass[index].classCode);
       uni.navigateTo({
         url: "../signin/signin" });

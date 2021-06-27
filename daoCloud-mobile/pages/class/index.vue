@@ -285,7 +285,8 @@
 			},
 			//教师发起一键签到
 			oneclickSignin(){
-				var that=this;			
+				var that=this;	
+				console.log(that.longitude)
 				uni.request({
 					url:'http://112.74.55.61:8081/checkinteachers',
 					header: {Authorization:uni.getStorageSync('token')},

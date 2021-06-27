@@ -32,7 +32,7 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">班课学生人数</view>
-				<input v-model="classmember"></input>
+				<input v-model="classmember" type="number"></input>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">学校院系</view>
@@ -161,31 +161,38 @@
 				that.index_className = e.detail.value,
 				that.className=that.picker_className[that.index_className]
 			},
+			//创建班课
 			createClass(){
 				var that=this
-				uni.request({
-					url:'http://112.74.55.61:8081/classes',
-					header: {Authorization:uni.getStorageSync('token')},
-					method:'POST',
-					data:{
-						classname:that.className,
-						userphone:that.userPhone,
-						classmembers:that.classmember,
-						classsemester:that.semester
-					},
-					success: (res) => {
-						console.log(res.data)
-						that.classCode=res.data.data
-						uni.setStorageSync('classCode',that.classCode)
-						uni.navigateTo({
-							url:"QRCode"
-						})
-					},
-					fail: (res) => {
-						console.log(res)
-						console.log("连接失败")
-					}
-				})	
+				if (!/^[0-9]*$/.test(that.classmember)) {
+					uni.showToast({ title: '班课必须是数字形式', icon: 'none' });				
+				}else if(that.className==null||that.courseName==null){
+					uni.showToast({ title: '班级名或班课名不能为空', icon: 'none' });	
+				}else{
+					uni.request({
+						url:'http://112.74.55.61:8081/classes',
+						header: {Authorization:uni.getStorageSync('token')},
+						method:'POST',
+						data:{
+							classname:that.className,
+							userphone:that.userPhone,
+							classmembers:that.classmember,
+							classsemester:that.semester
+						},
+						success: (res) => {
+							console.log(res.data)
+							that.classCode=res.data.data
+							uni.setStorageSync('classCode',that.classCode)
+							uni.navigateTo({
+								url:"QRCode"
+							})
+						},
+						fail: (res) => {
+							console.log(res)
+							console.log("连接失败")
+						}
+					})	
+				}		
 			}
 		}
 	}

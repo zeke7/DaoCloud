@@ -1,12 +1,12 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/login/login",
     "pages/login/register",
     "pages/login/forget-password",
     "pages/home/home",
     "pages/home/mine",
     "pages/class/index",
-    "pages/index/index",
     "pages/test/test",
     "pages/class/creat",
     "pages/class/QRCode",
@@ -36,12 +36,6 @@
         "selectedIconPath": "static/cloud1.png"
       },
       {
-        "pagePath": "pages/home/home",
-        "text": "发现",
-        "iconPath": "static/eye.png",
-        "selectedIconPath": "static/eye1.png"
-      },
-      {
         "pagePath": "pages/home/mine",
         "text": "我的",
         "iconPath": "static/cc-card.png",
@@ -49,6 +43,5 @@
       }
     ]
   },
-  "usingComponents": {},
-  "sitemapLocation": "sitemap.json"
+  "usingComponents": {}
 }

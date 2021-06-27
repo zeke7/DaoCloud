@@ -1,6 +1,17 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/index/index",//欢迎页
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": false //禁用原生导航栏
+				}
+		    }	    
+		},
+		{
 		    "path" : "pages/login/login",//登录页
 		    "style" :                                                                                    
 		    {
@@ -17,8 +28,7 @@
 		    {
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
-		    }
-		    
+		    }	    
 		},{
 		    "path" : "pages/login/forget-password",//忘记密码
 		    "style" :                                                                                    
@@ -50,12 +60,6 @@
 			"path": "pages/class/index",//班课详情
 			"style": {
 				"navigationBarTitleText": "班课详情"
-			}
-		},
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
 			}
 		},
 		{
@@ -148,12 +152,6 @@
 				"selectedIconPath": "static/cloud1.png"
 			},
 			{
-				"pagePath": "pages/home/home",
-				"text": "发现",
-				"iconPath": "static/eye.png",
-				"selectedIconPath": "static/eye1.png"
-			},
-			{
 				"pagePath": "pages/home/mine",
 				"text": "我的",
 				"iconPath":"static/cc-card.png",
@@ -171,32 +169,12 @@
 	            "path": "pages/login/register"
 	        },
 			{
-			    "name": "forget-password",
-			    "path": "pages/login/forget-password"
-			},
-			{
-			    "name": "test",
-			    "path": "pages/test/test"
-			},
-			{
-			    "name": "creatclass",
-			    "path": "pages/class/creat"
-			},
-			{
 				"name":"home",
 				"path":"pages/home/home"
 			},
 			{
-				"name":"suc",
-				"path":"pages/class/suc-creat"
-			},
-			{
-				"name":"class",
-				"path":"pages/class/class"
-			},
-			{
-				"name":"detail",
-				"path":"pages/signin/signin-detail"
+				"name":"index",
+				"path":"pages/index/index"
 			}
 	    ]
 	}
