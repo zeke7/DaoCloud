@@ -14,7 +14,7 @@
 			</view>
 		</view>
 		<!-- 地理位置 -->
-		<view style="margin: 200rpx 50rpx 0 50rpx;border-radius: 20px; background-color:#F5F5F5;height: 50rpx;">
+		<view v-if="!isSign" style="margin: 200rpx 50rpx 0 50rpx;border-radius: 20px; background-color:#F5F5F5;height: 50rpx;">
 			<view >
 				{{address}}
 			</view>
@@ -38,22 +38,23 @@
 				canSign:true,//是否在签到范围
 				time: formateDate(new Date(), 'h:min:s'), //当前时分秒
 				date: (new Date().getMonth()+1).toString()+'.'+new Date().getDate().toString(),//当前日期
-				isclick:false
+				isclick:false,
+				isSign:false
 			}
 		},
 		onShow() {
 			var that=this;
 			that.user=uni.getStorageSync('data')
-			that.classCode=uni.getStorageSync('classCode')
 			uni.getLocation({
 				type: 'wgs84',
 				success: function (res) {
 					console.log('当前位置的经度：' + res.longitude);
 					console.log('当前位置的纬度：' + res.latitude);
-					that.longitude=res.longitude,
+					that.longitude=res.longitude
 					that.latitude=res.latitude
 				}
 			});	
+			that.classCode=uni.getStorageSync('classCode')
 			//学生是否已经完成签到
 			uni.request({
 				url:'http://112.74.55.61:8081/scheckninrecords',
@@ -68,7 +69,7 @@
 					let main=res.data.data
 					if(main[main.length-1].isCheckin=='1'){
 						that.isclick=true
-						that.getAdd()
+						that.isSign=true
 					}
 				},
 				fail: (res) => {
@@ -87,15 +88,15 @@
 					console.log(res.data.data)
 					that.tcLongitude=res.data.data.checkinLocx
 					that.tcLatitude=res.data.data.checkinLocy
-					that.startTime=res.data.data.startTime
-					
+					that.startTime=res.data.data.startTime							
 					//计算两地距离
 					let PI = 3.14159265358979323;//圆周率
 					let R = 6371229;//地球半径
 					
-					var lon1 = parseFloat(that.longitude);
-					var lat1 = parseFloat(that.latitude);  
-					
+					var lon1 = that.longitude;
+					var lat1 = that.latitude;
+					lon1=parseFloat(lon1)
+					lat1=parseFloat(lat1)
 					var lon2 = parseFloat(that.tcLongitude);
 					var lat2 = parseFloat(that.tcLatitude);
 					let x,y,distance;
@@ -117,11 +118,12 @@
 		},
 		methods: {
 			clickSign(){
-				var that=this
+				var that=this		
 				if(!that.canSign){
 					uni.showToast({ title: '当前不在签到范围内！', icon: 'none' });
 					return;
 				}
+			
 				uni.request({
 					url:'http://112.74.55.61:8081/checkninstudents',
 					header: {Authorization:uni.getStorageSync('token')},
@@ -140,8 +142,10 @@
 						}if(res.data.msg==="学生签到失败"){
 							uni.showToast({ title: '老师还没有开始签到', icon: 'none' });
 						}else if(res.data.msg==="学生签到成功"){
-							uni.showToast({ title: '签到成功！', icon: 'none' });
 							that.getAdd()
+							uni.showToast({ title: '签到成功！', icon: 'none' });
+							
+						
 							that.isclick=true
 						}
 					},
@@ -155,12 +159,17 @@
 			// 腾讯位置服务
 			getAdd() {
 				var that =this
+				uni.showLoading({
+					title:"加载中..."
+				})
 				var url =
-					`https://apis.map.qq.com/ws/geocoder/v1/?location=${that.latitude},${that.longitude}&key=3DABZ-JP5EF-I6EJE-JALWN-IOBP6-A5FDF`;		
+					"https://apis.map.qq.com/ws/geocoder/v1/?location="+that.latitude+","+that.longitude+"&key=3DABZ-JP5EF-I6EJE-JALWN-IOBP6-A5FDF";		
+				    //"http://apis.map.qq.com/ws/geocoder/v1/?location="+"26.059"+","+"119.19769"+"&key=AZLBZ-FD7KK-HNBJV-ABCI2-GYLJV-D6FGC&get_poi=1";
 				uni.request({
 					url,
 					success(res) {
 						var data = res.data;
+						console.log(res.data)
 						if (data.status != 0) {
 							uni.showToast({
 								title: data.message,
@@ -168,11 +177,22 @@
 							})
 							return;
 						}		
-						that.address = res.data.result.address + res.data.result.formatted_addresses.recommend				
+						that.address = res.data.result.address + res.data.result.formatted_addresses.recommend
+						uni.hideLoading()
+						// setTimeout(()=>{
+						// 			// 服务端响应的 message 提示
+						// 			uni.showToast({
+						// 				title: "获取成功",
+						// 				icon: "none",
+						// 				position: 'bottom'
+						// 			})
+						// 			//延时关闭  加载中的 loading框
+						// 			uni.hideLoading()
+						// },1000)
 					}
 				})
 			},
-		}, 
+		},  
 		onLoad() {
 			var that=this
 			var timer=setInterval(()=>{

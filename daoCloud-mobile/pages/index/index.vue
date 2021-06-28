@@ -11,6 +11,7 @@
 				title: 'Hello'
 			}
 		},
+	
 		onShow() {
 		 // 从本地缓存中同步获取指定 key 对应的内容，用于判断是否是第一次打开应用
 		 var timer=setTimeout(function(){
@@ -26,7 +27,7 @@
 		 			url:"../login/login"
 		 		})
 		 	}
-		 },500)
+		 },1000)
 		},
 		methods: {
 

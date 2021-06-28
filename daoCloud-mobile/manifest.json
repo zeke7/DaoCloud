@@ -20,7 +20,9 @@
             "delay" : 0
         },
         /* 模块配置 */
-        "modules" : {},
+        "modules" : {
+            "Maps" : {}
+        },
         /* 应用发布信息 */
         "distribute" : {
             /* android打包配置 */
@@ -44,10 +46,21 @@
                 ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "privacyDescription" : {
+                    "NSLocationWhenInUseUsageDescription" : "请打开GPS"
+                }
+            },
             /* SDK配置 */
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "maps" : {
+                    "amap" : {
+                        "appkey_ios" : "cd362f5dae1ab5b54edb0784f77fd748",
+                        "appkey_android" : "4ba5896ce43bf3c1680a83f923fe3a19"
+                    }
+                },
+                "geolocation" : {}
             }
         }
     },
@@ -59,7 +72,12 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "测试"
+            }
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

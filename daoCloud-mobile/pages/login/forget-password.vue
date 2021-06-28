@@ -34,6 +34,7 @@
 </template>
 
 <script>
+	import {checkPhone,checkPwd,checkCode} from "@/common/common.js"
 	export default {
 		data() {
 			return {
@@ -48,14 +49,10 @@
 		methods: {
 			repassword(){
 				var that=this
-				//检查手机号密码验证码格式
-				if(checkPhone(this.userphone)){
-					return
-				};
 				if(checkCode(this.code)){
 					return
 				};
-				if(checkPwd(this.newpassword)){
+				if(checkPwd(this.newPassword)){
 					return
 				};
 				//检查两次密码格式
@@ -106,7 +103,8 @@
 								method:'POST',
 								data:{
 									userphone:that.userphone,
-									password:that.password,
+									newpassword:that.newPassword,
+									type:'R2',
 									codefromuser:that.code
 								},
 								success(res) {
@@ -126,7 +124,46 @@
 						console.log('链接失败')
 					}
 				})
-			}
+			},
+			//获取短信验证码
+			getCode() { 			
+				var that=this
+				console.log(that.userphone)
+				if (checkPhone(this.userphone)) {
+				    return
+				}
+				var interval = setInterval(() => {
+					this.showText = false;
+					var times = this.second - 1;
+					//that.second = times<10?'0'+times:times ;//小于10秒补 0
+					this.second = times;
+				}, 1000);
+				setTimeout(() => {
+					clearInterval(interval);
+					this.second = 60;
+					this.showText = true;
+				}, 60000);
+				//这里请求后台获取短信验证码
+				uni.request({
+					url:'http://112.74.55.61:8081/verifiedcodes',
+					method:'POST',
+					data:{
+						userphone:that.userphone,
+						type:'R2'
+					},
+					success(res) {
+						uni.showToast({
+							title:"验证码已发送",
+							icon:"none",
+							duration:2000					
+						})
+						console.log(res)
+					},
+					fail() {
+						console.log('链接失败')
+					}					
+				})
+			},
 			
 		}
 	}

@@ -4,14 +4,14 @@
 			<view class="bg">
 				<view class="box">
 					<view class="box-hd">
-						<view class="avator">
-							<img src="../../static/face.png">
+						<view >
+							<image src="../../static/face.png" style="width: 125upx;height: 125upx;padding-top: 10rpx;"></image>
 						</view>
 						<view style="text-align: center; width: 100%;">{{userName}}</view>
 					</view>
 					<view class="box-bd">
 						<view class="item" style="padding-right: 100rpx;">
-							<view style="color: #007AFF;">166</view>
+							<view style="color: #007AFF;">{{exp}}</view>
 							<view class="text">经验值</view>
 						</view>
 						<view class="item" style="padding-right: 50rpx;">
@@ -26,7 +26,7 @@
 			<view class="list">
 				<view class="li noborder" >
 					<view class="icon"><image src="../../static/cc-card1.png"></image></view>
-					<view class="text">我的信息</view>
+					<view class="text" @click="onMine">修改信息</view>
 					<!-- <image class="to" src="../../static/user/to.png"></image> -->
 				</view>
 			</view>
@@ -67,8 +67,39 @@
 				exp:'10'
 			};
 		},
-		async onLoad() {					
-			await this.getExp()
+		onShow() {
+			this.user=uni.getStorageSync('data')
+			uni.request({
+				url:'http://112.74.55.61:8081/allstuexp',
+				header: {Authorization:uni.getStorageSync('token')},
+				method:'POST',
+				data:{
+					studentphone:this.user.userPhone
+				}, 
+				success: (res) => {
+					console.log(res.data)
+					console.log(res.data.data)
+					this.exp=res.data.data
+					
+				},
+				fail: (res) => {
+					console.log(res)
+				}
+			})
+			uni.request({
+				url:'http://112.74.55.61:8081/classinfodto',
+				header: {Authorization:uni.getStorageSync('token')},
+				method:'GET',
+				data:{
+					userphone:this.user.userPhone			
+				},
+				success: (res) => {
+					this.userName=res.data.data.userName
+				},
+				fail: (res) => {
+					console.log(res)
+				}
+			})
 		},
 		methods: {
 			loginOut(){
@@ -86,24 +117,9 @@
 						}
 				});			
 			},
-			getExp(){
-				this.user=uni.getStorageSync('data')
-				this.userName=this.user.userName
-				uni.request({
-					url:'http://112.74.55.61:8081/allstuexp',
-					header: {Authorization:uni.getStorageSync('token')},
-					method:'POST',
-					data:{
-						studentphone:this.user.userPhone
-					}, 
-					success: (res) => {
-						console.log(res.data.data)
-						this.exp=res.data.data
-						
-					},
-					fail: (res) => {
-						console.log(res)
-					}
+			onMine(){
+				uni.navigateTo({
+					url:"information"
 				})
 			}
 		}

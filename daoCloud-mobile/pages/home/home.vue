@@ -132,6 +132,8 @@
 						console.log(res)
 					}
 				})
+			}else{
+				that.bulidClass=[]
 			}
 		},
 		onHide() {

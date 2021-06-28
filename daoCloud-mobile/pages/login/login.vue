@@ -55,7 +55,8 @@
 				userphone: '', //手机号码
 				code: '', //验证码			
 				username:'', //用户名
-				password:''//登录密码
+				password:'',//登录密码
+				type:''
 			}
 		},
 		methods: {
@@ -81,7 +82,7 @@
 			//获取短信验证码
 			getCode() { 			
 				var that=this
-				let type="";
+
 				console.log(that.userphone)
 				if (checkPhone(this.userphone)) {
 				    return
@@ -106,16 +107,16 @@
 						//账号不存在=>快速注册 type‘S1’
 						console.log(res.data)
 						if(res.data.data==null){
-							type='S1'
+							that.type='S1'
 						}else{
-							type='L0'					
+							that.type='L0'					
 						}
 						uni.request({
 							url:'http://112.74.55.61:8081/verifiedcodes',
 							method:'POST',
 							data:{
 								userphone:that.userphone,
-								type:type
+								type:that.type
 							},
 							success(res) {
 								uni.showToast({
@@ -129,7 +130,7 @@
 								console.log('链接失败')
 							}					
 						})
-						console.log(type)
+						console.log(that.type)
 					},
 					fail() {
 						console.log('链接失败')
@@ -146,18 +147,26 @@
 						userphone:that.userphone,
 						username:that.userphone,
 						codefromuser:that.code,
-						mobiledevice:'MOBILEDEVICE'
+						mobiledevice:'MOBILEDEVICE',
+						type:that.type
 					},
 					success(res){
 						console.log(res.data)
 						// //验证码输入错误
-						if(res.data.data!=='failed'){
+						if(res.data.msg!=='登录失败(Login Fail)'){
 							console.log("登录成功")
-							console.log(res.data)
 							uni.setStorageSync('token',res.header.Authorization)
-							uni.switchTab({
-								url:"../home/home"
-							})
+							if(that.type=='L0'){
+								uni.switchTab({
+									url:"../home/home"
+								})
+							}else{
+								uni.navigateTo({
+									url:"../home/information"
+								})
+							}
+								
+							
 						}
 						else{
 							uni.showToast({ title: '验证码错误', icon: 'none' });

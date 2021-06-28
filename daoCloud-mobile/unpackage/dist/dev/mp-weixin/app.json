@@ -15,7 +15,8 @@
     "pages/signin/signinDetail",
     "pages/signin/signinList",
     "pages/class/school",
-    "pages/class/college"
+    "pages/class/college",
+    "pages/home/information"
   ],
   "subPackages": [],
   "window": {
@@ -42,6 +43,11 @@
         "selectedIconPath": "static/cc-card1.png"
       }
     ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "测试"
+    }
   },
   "usingComponents": {}
 }

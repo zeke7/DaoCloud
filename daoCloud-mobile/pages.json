@@ -133,6 +133,14 @@
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }         
+		},
+		{
+		    "path" : "pages/home/information",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }         
 		}
     ],
 	"globalStyle": {

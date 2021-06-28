@@ -175,9 +175,10 @@
 				}
 			});	
 		},
-		async onShow() {
+		onShow() {
 			var that=this;
 			var classIsallowed='1';
+			that.startTime=''
 			that.isClose=uni.getStorageSync('classIsclose')
 			that.user=uni.getStorageSync('data')
 			that.classType=uni.getStorageSync('classType')
@@ -186,7 +187,7 @@
 			classIsallowed=uni.getStorageSync('classIsallowed')
 			that.switchA=true?classIsallowed=='1':false
 			//查看当时是否有签到
-			await uni.request({
+			uni.request({
 				url:'http://112.74.55.61:8081/checkinfo',
 				header: {Authorization:uni.getStorageSync('token')},
 				method:'GET',
@@ -204,7 +205,7 @@
 				}
 			})
 			//获取班级成员
-			await uni.request({
+			uni.request({
 				url:'http://112.74.55.61:8081/studentsfromclass',
 				header: {Authorization:uni.getStorageSync('token')},
 				method:'GET',
